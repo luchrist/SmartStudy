@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:title="Home"
+            android:icon="@drawable/ic_home" />
+        <item
+            android:id="@+id/nav_timetable"
+            android:title="Timetable"
+            android:icon="@drawable/icons8_zeitplan_30" />
+        <item
+            android:id="@+id/nav_plan"
+            android:title="Plan"
+            android:icon="@drawable/icons8_plan_64" />
+        <item
+            android:id="@+id/nav_time"
+            android:title="Time"
+            android:icon="@drawable/ic_baseline_access_time_24" />
+        <item
+            android:id="@+id/nav_study"
+            android:title="Study"
+            android:icon="@drawable/icons8_lernen_50" />
+    </group>
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_settings"
+            android:title="Settings"
+            android:icon="@drawable/ic_baseline_settings_24" />
+    </group>
+
+</menu>

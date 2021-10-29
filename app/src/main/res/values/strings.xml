@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">SmartStudy</string>
+    <string name="open_drawer">Open navigation drawer</string>
+    <string name="close_drawer">Close navigation drawer</string>
+    <string name="luckbad">, Good luck today! You will need it :).</string>
+    <string name="luckgood">, Good luck today! You are well prepared.</string>
+    <string name="good">, Good Job!</string>
+    <string name="bad">, Get up and study!</string>
+    <string-array name="weekdays">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+    </string-array>
+</resources>
+
+<!---->
