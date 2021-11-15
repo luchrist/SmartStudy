@@ -1,8 +1,12 @@
 package com.example.smartstudy;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -10,6 +14,8 @@ import java.sql.Time;
 
 public class DbHelper extends SQLiteOpenHelper {
 
+    private static final String LOG_TAG = DbHelper.class.getSimpleName();
+    private Context context;
     public static final String DB_NAME = "SmartStudy.db";
     public static final int DB_VERSION = 1;
     public static final String TABLE = "timetable";
@@ -18,29 +24,67 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_DAY = "day";
     public static final String COLUMN_TEACHER = "teacher";
     public static final String COLUMN_ROOM = "room";
-    public static final String COLUMN_BEGIN = "begin";
-    public static final String COLUMN_END = "end";
+    public static final String COLUMN_BEGIN = "starttime";
+    public static final String COLUMN_END = "endtime";
 
-    public DbHelper(@Nullable @org.jetbrains.annotations.Nullable Context context, @Nullable @org.jetbrains.annotations.Nullable String name, @Nullable @org.jetbrains.annotations.Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-
+    public DbHelper(Context context) {
+        super(context, DB_NAME, null, DB_VERSION);
+        Log.d(LOG_TAG, "DbHelper hat die Datenbank: " + getDatabaseName() + " erzeugt.");
+        this.context = context;
     }
 
     public static final String SQL_CREATE =
-            "create table "+ TABLE +"(" + COLUMN_ID +" integer primary key autoincrement, " +
-                    COLUMN_SUBJECT + " text not null, " +
-                    COLUMN_BEGIN + "time, " +
-                    COLUMN_END + "time, " +
-                    COLUMN_DAY + " text not null, " +
-                    COLUMN_ROOM + " text, " +
-                    COLUMN_TEACHER + " text);";
+            "create table "+ TABLE +"(" +
+                    COLUMN_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_SUBJECT + " TEXT NOT NULL, " +
+                    COLUMN_BEGIN + " TEXT NOT NULL, " +
+                    COLUMN_END + " TEXT NOT NULL, " +
+                    COLUMN_DAY + " TEXT NOT NULL, " +
+                    COLUMN_ROOM + " TEXT, " +
+                    COLUMN_TEACHER + " TEXT);";
+
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(SQL_CREATE);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE);
+        onCreate(db);
+    }
 
+    void addTimeTableObject(String sub, String beg, String end, String day, String room, String teach){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_SUBJECT, sub);
+        contentValues.put(COLUMN_BEGIN, beg);
+        contentValues.put(COLUMN_END, end);
+        contentValues.put(COLUMN_DAY, day);
+        contentValues.put(COLUMN_ROOM, room);
+        contentValues.put(COLUMN_TEACHER, teach);
+        if(sub.length() != 0 && beg.length() != 0 && end.length() != 0){
+            long result = db.insert(TABLE, null, contentValues);
+            if(result == -1){
+                Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(context , "Added succesfully!", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+    Cursor readAllData(){
+        String query = "SELECT * FROM " + TABLE;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if(db != null){
+            cursor = db.rawQuery(query, null);
+        }
+
+        return cursor;
     }
 }

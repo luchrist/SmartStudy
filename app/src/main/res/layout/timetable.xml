@@ -8,14 +8,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="#FFFFFF"
-            android:hapticFeedbackEnabled="true"
-            app:srcCompat="@drawable/icons8_hinzuf_gen_24" />
+            android:clickable="true"
+            app:srcCompat="@android:drawable/ic_input_add" />
+
     </TableRow>
 
     <TableRow
@@ -141,6 +140,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:minLines="2" />
+
     </TableRow>
 
     <TableRow
