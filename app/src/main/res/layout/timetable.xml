@@ -1,507 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal">
 
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/addBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            app:srcCompat="@android:drawable/ic_input_add" />
-
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/mon"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="4dp">
 
         <TextView
-            android:id="@+id/mo_title"
-            android:layout_width="wrap_content"
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
             android:text="Monday" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tue"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="4dp">
 
         <TextView
-            android:id="@+id/tu_title"
-            android:layout_width="wrap_content"
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
             android:text="Tuesday" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wed"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="4dp">
 
         <TextView
-            android:id="@+id/we_title"
-            android:layout_width="wrap_content"
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
             android:text="Wednesday" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/thu"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="4dp">
 
         <TextView
-            android:id="@+id/th_title"
-            android:layout_width="wrap_content"
+            android:id="@+id/textView7"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
             android:text="Thursday" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fri"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="4dp">
 
         <TextView
-            android:id="@+id/fr_title"
-            android:layout_width="wrap_content"
+            android:id="@+id/textView8"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
             android:text="Friday" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/mo1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="12dp"
-            android:minLines="2"
-            android:text="None" />
-
-        <TextView
-            android:id="@+id/tu1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2"
-            android:text="None" />
-
-        <TextView
-            android:id="@+id/we1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2"
-            android:text="None" />
-
-        <TextView
-            android:id="@+id/th1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2"
-            android:text="None" />
-
-        <TextView
-            android:id="@+id/fr1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2"
-            android:text="None" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/mo2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/tu2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/we2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/th2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/fr2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/mo3"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/tu3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/we3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/th3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/fr3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/mo4"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/tu4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/we4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/th4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/fr4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/mo5"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/tu5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/we5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/th5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/fr5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/mo6"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/tu6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/we6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/th6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/fr6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/mo7"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/tu7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/we7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/th7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/fr7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/mo8"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/tu8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/we8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/th8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/fr8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/mo9"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/tu9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/we9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/th9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/fr9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/mo10"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/tu10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/we10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/th10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/fr10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/mo11"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/tu11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/we11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/th11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-
-        <TextView
-            android:id="@+id/fr11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:minLines="2" />
-    </TableRow>
-
-
-</TableLayout>
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:layout_margin="4dp"
+        app:srcCompat="@android:drawable/ic_input_add" />
+</LinearLayout>

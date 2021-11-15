@@ -5,9 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 public class TimetableFragment extends Fragment implements View.OnClickListener {
 
     FloatingActionButton addBtn;
+    LinearLayout mon, tue, wed, thu, fri;
     DbHelper dbHelper;
     ArrayList<String> timetableId, timetableSub, timetableBeg, timetableEnd, timetableRoom, timetableTeach, timetableDay;
     @Nullable
@@ -29,6 +29,12 @@ public class TimetableFragment extends Fragment implements View.OnClickListener 
     public View onCreateView(@NonNull @org.jetbrains.annotations.NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.timetable, container, false);
         addBtn = view.findViewById(R.id.addBtn);
+        mon = view.findViewById(R.id.mon);
+        tue = view.findViewById(R.id.tue);
+        wed = view.findViewById(R.id.wed);
+        thu = view.findViewById(R.id.thu);
+        fri = view.findViewById(R.id.fri);
+
         addBtn.setOnClickListener(this);
 
         dbHelper = new DbHelper(getActivity());
@@ -40,8 +46,37 @@ public class TimetableFragment extends Fragment implements View.OnClickListener 
         timetableTeach = new ArrayList<>();
         timetableDay = new ArrayList<>();
         storeDatainArrays();
-
+        showData(view);
         return view;
+    }
+
+    private void showData(View view) {
+        for (int i = 0; i < timetableId.toArray().length; i++) {
+            String text = timetableSub.get(i) + "\n" + timetableBeg.get(i) + " - " +
+                    timetableEnd.get(i) + "\n" + timetableRoom.get(i) + "\n" + timetableTeach.get(i);
+            TextView newLesson = new TextView(view.getContext());
+            newLesson.setText(text);
+            switch (timetableDay.get(i)){
+                case "Monday":
+                    mon.addView(newLesson);
+                    break;
+                case "Tuesday":
+                    tue.addView(newLesson);
+                    break;
+                case "Wednesday":
+                    wed.addView(newLesson);
+                    break;
+                case "Thursday":
+                    thu.addView(newLesson);
+                    break;
+                case "Friday":
+                    fri.addView(newLesson);
+                    break;
+                default:
+                    break;
+            }
+
+        }
     }
 
     @Override
