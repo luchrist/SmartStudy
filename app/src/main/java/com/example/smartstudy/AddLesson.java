@@ -53,6 +53,8 @@ public class AddLesson extends DialogFragment{
                                     day.getSelectedItem().toString(),
                                     room.getText().toString(),
                                     teacher.getText().toString());
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                                    new TimetableFragment()).commit();
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
