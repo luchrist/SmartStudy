@@ -2,6 +2,7 @@ package com.example.smartstudy;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -157,6 +158,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
                         TextView newLesson = new TextView(view.getContext());
                         newLesson.setText(text);
+                        newLesson.setGravity(Gravity.CENTER_HORIZONTAL);
                         lessonsList.addView(newLesson);
 
                     }
