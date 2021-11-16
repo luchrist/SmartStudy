@@ -68,60 +68,107 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                 switch (day) {
                     case Calendar.MONDAY:
                         spinner.setSelection(0);
-                        if (cursor.getString(4).equals("Monday")) {
-                            text = cursor.getString(1) + "\n" + cursor.getString(2) + " - " +
-                                    cursor.getString(3) + "\n" + cursor.getString(5) + "\n" +
-                                    cursor.getString(6);
-                        }
+
+
                         // Current day is Monday
                         break;
                     case Calendar.TUESDAY:
                         spinner.setSelection(1);
-                        if (cursor.getString(4).equals("Tuesday")) {
-                            text = cursor.getString(1) + "\n" + cursor.getString(2) + " - " +
-                                    cursor.getString(3) + "\n" + cursor.getString(5) + "\n" +
-                                    cursor.getString(6);
-                        }
+
                         break;
                     case Calendar.WEDNESDAY:
                         spinner.setSelection(2);
-                        if (cursor.getString(4).equals("Wednesday")) {
-                            text = cursor.getString(1) + "\n" + cursor.getString(2) + " - " +
-                                    cursor.getString(3) + "\n" + cursor.getString(5) + "\n" +
-                                    cursor.getString(6);
-                        }
+
                         break;
                     case Calendar.THURSDAY:
                         spinner.setSelection(3);
-                        if (cursor.getString(4).equals("Thursday")) {
-                            text = cursor.getString(1) + "\n" + cursor.getString(2) + " - " +
-                                    cursor.getString(3) + "\n" + cursor.getString(5) + "\n" +
-                                    cursor.getString(6);
-                        }
+
                         break;
                     case Calendar.FRIDAY:
                         spinner.setSelection(4);
-                        if (cursor.getString(4).equals("Friday")) {
-                            text = cursor.getString(1) + "\n" + cursor.getString(2) + " - " +
-                                    cursor.getString(3) + "\n" + cursor.getString(5) + "\n" +
-                                    cursor.getString(6);
-                        }
+
                         break;
                     default:
                         spinner.setSelection(5);
 
                         break;
                 }
-                TextView newLesson = new TextView(view.getContext());
-                newLesson.setText(text);
-                lessonsList.addView(newLesson);
 
             }
         }
 
         lessonsList.setOnClickListener(this);
         homeTitle.setOnClickListener(this);
-        //spinner.setOnItemClickListener(this);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                System.out.println(position);
+                lessonsList.removeAllViewsInLayout();
+                Cursor cursor = dbHelper.readAllData();
+                if (cursor.getCount() == 0){
+                    Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
+                }else {
+                    while (cursor.moveToNext()) {
+                        String text = "";
+                        switch (position) {
+                            case 0:
+                                if (cursor.getString(4).equals("Monday")) {
+                                    text = cursor.getString(1) + "\n" + cursor.getString(2) + " - " +
+                                            cursor.getString(3) + "\n" + cursor.getString(5) + "\n" +
+                                            cursor.getString(6);
+                                }
+                                // Current day is Monday
+                                break;
+                            case 1:
+
+                                if (cursor.getString(4).equals("Tuesday")) {
+                                    text = cursor.getString(1) + "\n" + cursor.getString(2) + " - " +
+                                            cursor.getString(3) + "\n" + cursor.getString(5) + "\n" +
+                                            cursor.getString(6);
+                                }
+                                break;
+                            case 2:
+
+                                if (cursor.getString(4).equals("Wednesday")) {
+                                    text = cursor.getString(1) + "\n" + cursor.getString(2) + " - " +
+                                            cursor.getString(3) + "\n" + cursor.getString(5) + "\n" +
+                                            cursor.getString(6);
+                                }
+                                break;
+                            case 3:
+                                if (cursor.getString(4).equals("Thursday")) {
+                                    text = cursor.getString(1) + "\n" + cursor.getString(2) + " - " +
+                                            cursor.getString(3) + "\n" + cursor.getString(5) + "\n" +
+                                            cursor.getString(6);
+                                }
+                                break;
+                            case 4:
+                                if (cursor.getString(4).equals("Friday")) {
+                                    text = cursor.getString(1) + "\n" + cursor.getString(2) + " - " +
+                                            cursor.getString(3) + "\n" + cursor.getString(5) + "\n" +
+                                            cursor.getString(6);
+                                }
+                                break;
+                            default:
+                                spinner.setSelection(5);
+
+                                break;
+                        }
+
+                        TextView newLesson = new TextView(view.getContext());
+                        newLesson.setText(text);
+                        lessonsList.addView(newLesson);
+
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+
+            }
+
+        });
 
         return view;
     }
@@ -137,12 +184,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         }
     }
 
+
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        //System.out.println(adapterView);
-        //System.out.println(view);
-        //System.out.println(i);
-   //     System.out.println(l);
+
     }
 }
 
