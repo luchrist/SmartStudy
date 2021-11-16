@@ -1,10 +1,12 @@
 package com.example.smartstudy;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +38,11 @@ public class TimetableFragment extends Fragment implements View.OnClickListener 
         fri = view.findViewById(R.id.fri);
 
         addBtn.setOnClickListener(this);
+        mon.setOnClickListener(this);
+        tue.setOnClickListener(this);
+        wed.setOnClickListener(this);
+        thu.setOnClickListener(this);
+        fri.setOnClickListener(this);
 
         dbHelper = new DbHelper(getActivity());
         timetableId = new ArrayList<>();
@@ -51,7 +58,14 @@ public class TimetableFragment extends Fragment implements View.OnClickListener 
     }
 
     private void showData(View view) {
+
         for (int i = 0; i < timetableId.toArray().length; i++) {
+            String day = timetableDay.get(i);
+            String sub = timetableSub.get(i);
+            String beg = timetableBeg.get(i);
+            String end = timetableEnd.get(i);
+            String room = timetableRoom.get(i);
+            String teach = timetableTeach.get(i);
             String text = timetableSub.get(i) + "\n" + timetableBeg.get(i) + " - " +
                     timetableEnd.get(i) + "\n" + timetableRoom.get(i) + "\n" + timetableTeach.get(i);
             TextView newLesson = new TextView(view.getContext());
@@ -62,12 +76,15 @@ public class TimetableFragment extends Fragment implements View.OnClickListener 
                     break;
                 case "Tuesday":
                     tue.addView(newLesson);
+
                     break;
                 case "Wednesday":
                     wed.addView(newLesson);
+
                     break;
                 case "Thursday":
                     thu.addView(newLesson);
+
                     break;
                 case "Friday":
                     fri.addView(newLesson);
@@ -75,6 +92,13 @@ public class TimetableFragment extends Fragment implements View.OnClickListener 
                 default:
                     break;
             }
+            newLesson.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UpdateLesson upAlert = new UpdateLesson(day,sub,beg, end, room, teach );
+                    upAlert.show(getParentFragmentManager(), "test2");
+                }
+            });
 
         }
     }
