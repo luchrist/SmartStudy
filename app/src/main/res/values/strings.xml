@@ -12,6 +12,7 @@
         <item>Wednesday</item>
         <item>Thursday</item>
         <item>Friday</item>
+        <item>Weekend</item>
     </string-array>
 </resources>
 
