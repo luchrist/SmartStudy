@@ -76,6 +76,38 @@ public class DbHelper extends SQLiteOpenHelper {
         }
 
     }
+    void updateTimetableObject(String id, String sub, String beg, String end, String day, String room, String teach){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_SUBJECT, sub);
+        contentValues.put(COLUMN_BEGIN, beg);
+        contentValues.put(COLUMN_END, end);
+        contentValues.put(COLUMN_DAY, day);
+        contentValues.put(COLUMN_ROOM, room);
+        contentValues.put(COLUMN_TEACHER, teach);
+
+        if(sub.length() != 0 && beg.length() != 0 && end.length() != 0){
+            long result = db.update(TABLE,contentValues, "id=?", new String[]{id});
+            if(result == -1){
+                Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(context , "Saved succesfully!", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+    void deleteTimetableObject(String id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        long result = db.delete(TABLE, "id=?", new String[]{id});
+        if(result == -1){
+            Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(context , "Removed succesfully!", Toast.LENGTH_SHORT).show();
+        }
+    }
     Cursor readAllData(){
         String query = "SELECT * FROM " + TABLE;
         SQLiteDatabase db = this.getReadableDatabase();

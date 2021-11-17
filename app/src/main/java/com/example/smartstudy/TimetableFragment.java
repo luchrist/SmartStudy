@@ -2,6 +2,7 @@ package com.example.smartstudy;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +67,7 @@ public class TimetableFragment extends Fragment implements View.OnClickListener 
             String end = timetableEnd.get(i);
             String room = timetableRoom.get(i);
             String teach = timetableTeach.get(i);
+            String id = timetableId.get(i);
             String text = timetableSub.get(i) + "\n" + timetableBeg.get(i) + " - " +
                     timetableEnd.get(i) + "\n" + timetableRoom.get(i) + "\n" + timetableTeach.get(i);
             TextView newLesson = new TextView(view.getContext());
@@ -95,7 +97,7 @@ public class TimetableFragment extends Fragment implements View.OnClickListener 
             newLesson.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UpdateLesson upAlert = new UpdateLesson(day,sub,beg, end, room, teach );
+                    UpdateLesson upAlert = new UpdateLesson(day,sub,beg, end, room, teach, id);
                     upAlert.show(getParentFragmentManager(), "test2");
                 }
             });

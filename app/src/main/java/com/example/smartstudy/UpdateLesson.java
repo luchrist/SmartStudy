@@ -2,6 +2,7 @@ package com.example.smartstudy;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,16 +16,19 @@ import androidx.fragment.app.DialogFragment;
 public class UpdateLesson extends DialogFragment {
     EditText lesson, timeBegin, timeTo, room, teacher;
     Spinner day;
-    String weekday, sub, beg, end, roomtext, teach;
+    String weekday, sub, beg, end, roomtext, teach, id;
 
 
-    public UpdateLesson(String day, String sub, String beg, String end, String room, String teach) {
+
+    public UpdateLesson(String day, String sub, String beg, String end, String room, String teach, String id) {
         weekday = day;
         this.sub = sub;
         this.beg = beg;
         this.end = end;
         this.roomtext = room;
         this.teach = teach;
+        this.id = id;
+
     }
 
     @Override
@@ -63,16 +67,12 @@ public class UpdateLesson extends DialogFragment {
                 // Pass null as the parent view because its going in the dialog layout
                 .setView(view)
                 .setPositiveButton("Save Changes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                    public void onClick(DialogInterface dialog, int i) {
                         DbHelper dbHelper = new DbHelper(getActivity());
+                        dbHelper.updateTimetableObject(id, lesson.getText().toString(),
+                                timeBegin.getText().toString(), timeTo.getText().toString()
+                                , day.getSelectedItem().toString(), room.getText().toString(), teacher.getText().toString());
 
-                        dbHelper.addTimeTableObject(
-                                lesson.getText().toString(),
-                                timeBegin.getText().toString(),
-                                timeTo.getText().toString(),
-                                day.getSelectedItem().toString(),
-                                room.getText().toString(),
-                                teacher.getText().toString());
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                                 new TimetableFragment()).commit();
                     }
@@ -80,7 +80,10 @@ public class UpdateLesson extends DialogFragment {
                 .setNeutralButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        DbHelper dbHelper = new DbHelper(getActivity());
+                        dbHelper.deleteTimetableObject(id);
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                                new TimetableFragment()).commit();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
