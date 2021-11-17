@@ -72,6 +72,9 @@ public class TimetableFragment extends Fragment implements View.OnClickListener 
                     timetableEnd.get(i) + "\n" + timetableRoom.get(i) + "\n" + timetableTeach.get(i);
             TextView newLesson = new TextView(view.getContext());
             newLesson.setText(text);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(0,16,0 ,0 );
+            newLesson.setLayoutParams(lp);
             switch (timetableDay.get(i)){
                 case "Monday":
                     mon.addView(newLesson);

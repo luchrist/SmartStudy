@@ -11,13 +11,14 @@
         android:layout_height="80dp"
         android:src="@drawable/icons8_kleeblatt_80"
         />
+
     <TextView
+        android:id="@+id/headertext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hallo"
-        android:textColor="@color/primary"
         android:paddingTop="8dp"
-        />
+        android:text="Hallo"
+        android:textColor="@color/primary" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

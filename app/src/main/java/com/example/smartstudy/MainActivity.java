@@ -7,9 +7,16 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Layout;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -23,16 +30,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
-    TextView title;
+    TextView title, headertext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences sp = this.getSharedPreferences("SP", 0);
+        String username = sp.getString("username", null);
+        if( username == null){
+            Intent intent = new Intent(this, StartActivity.class);
+            startActivity(intent);
+            this.finish();
+        }
+
+
         drawerLayout = findViewById(R.id.drawer);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
         title = findViewById(R.id.variabel_text);
+
+        navigationView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                headertext = navigationView.findViewById(R.id.headertext);
+                headertext.setText("Hello " + username + ", no need to study today");
+                navigationView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+        //headertext.setText("Hello " + username + ", no need to study today");
+        //", good job!"
+        //", you have to study more!"
 
         setSupportActionBar(toolbar);
 

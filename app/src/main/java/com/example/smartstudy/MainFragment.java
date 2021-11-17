@@ -39,7 +39,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     @org.jetbrains.annotations.Nullable
     @Override
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.main_fragment, container, false);
+        View view = inflater.inflate(R.layout.main_fragment, container, false);
         title = getActivity().findViewById(R.id.variabel_text);
         homeTitle = view.findViewById(R.id.timetable_title);
         navigationView = getActivity().findViewById(R.id.nav_view);
@@ -60,55 +60,48 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_WEEK);
 
-        Cursor cursor = dbHelper.readAllData();
-        if (cursor.getCount() == 0){
-            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
-        }else {
-            while (cursor.moveToNext()) {
-                String text = "";
-                switch (day) {
-                    case Calendar.MONDAY:
-                        spinner.setSelection(0);
+
+        switch (day) {
+            case Calendar.MONDAY:
+                spinner.setSelection(0);
 
 
-                        // Current day is Monday
-                        break;
-                    case Calendar.TUESDAY:
-                        spinner.setSelection(1);
+                // Current day is Monday
+                break;
+            case Calendar.TUESDAY:
+                spinner.setSelection(1);
 
-                        break;
-                    case Calendar.WEDNESDAY:
-                        spinner.setSelection(2);
+                break;
+            case Calendar.WEDNESDAY:
+                spinner.setSelection(2);
 
-                        break;
-                    case Calendar.THURSDAY:
-                        spinner.setSelection(3);
+                break;
+            case Calendar.THURSDAY:
+                spinner.setSelection(3);
 
-                        break;
-                    case Calendar.FRIDAY:
-                        spinner.setSelection(4);
+                break;
+            case Calendar.FRIDAY:
+                spinner.setSelection(4);
 
-                        break;
-                    default:
-                        spinner.setSelection(5);
+                break;
+            default:
+                spinner.setSelection(5);
 
-                        break;
-                }
-
-            }
+                break;
         }
+
 
         lessonsList.setOnClickListener(this);
         homeTitle.setOnClickListener(this);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                System.out.println(position);
+
                 lessonsList.removeAllViewsInLayout();
                 Cursor cursor = dbHelper.readAllData();
-                if (cursor.getCount() == 0){
-                    Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
-                }else {
+                if (cursor.getCount() == 0) {
+                    //doing nothing :)
+                } else {
                     while (cursor.moveToNext()) {
                         String text = "";
                         switch (position) {
@@ -159,6 +152,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                         TextView newLesson = new TextView(view.getContext());
                         newLesson.setText(text);
                         newLesson.setGravity(Gravity.CENTER_HORIZONTAL);
+                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                        lp.setMargins(0, 16, 0, 0);
+                        newLesson.setLayoutParams(lp);
                         lessonsList.addView(newLesson);
 
                     }
@@ -177,7 +173,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
     @Override
     public void onClick(View v) {
-        if (v.equals(lessonsList) || v.equals(homeTitle)){
+        if (v.equals(lessonsList) || v.equals(homeTitle)) {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                     new TimetableFragment()).commit();
             title.setText("Timetable");
