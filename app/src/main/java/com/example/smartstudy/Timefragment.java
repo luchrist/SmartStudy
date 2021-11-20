@@ -2,6 +2,7 @@ package com.example.smartstudy;
 
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,8 +21,9 @@ import java.util.Locale;
 public class Timefragment extends Fragment implements View.OnClickListener {
 
     int hour, minute;
-    Button monTimePicker, tueTimePicker, wedTimePicker, thuTimePicker, friTimePicker, satTimePicker,sunTimePicker;
-
+    Button monTimePicker, tueTimePicker, wedTimePicker, thuTimePicker, friTimePicker, satTimePicker, sunTimePicker;
+    DbTimeHelper dbTimeHelper;
+    TimeObject mon, tue, wed, thu, fri, sat, sun;
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
@@ -34,6 +37,15 @@ public class Timefragment extends Fragment implements View.OnClickListener {
         friTimePicker = view.findViewById(R.id.friTimePicker);
         satTimePicker = view.findViewById(R.id.satTimePicker);
         sunTimePicker = view.findViewById(R.id.sunTimePicker);
+        storeDatainObjects();
+        monTimePicker.setText(mon.getTime());
+        tueTimePicker.setText(tue.getTime());
+        wedTimePicker.setText(wed.getTime());
+        thuTimePicker.setText(thu.getTime());
+        friTimePicker.setText(fri.getTime());
+        satTimePicker.setText(sat.getTime());
+        sunTimePicker.setText(sun.getTime());
+
         monTimePicker.setOnClickListener(this);
         tueTimePicker.setOnClickListener(this);
         wedTimePicker.setOnClickListener(this);
@@ -43,42 +55,76 @@ public class Timefragment extends Fragment implements View.OnClickListener {
         sunTimePicker.setOnClickListener(this);
 
 
-
         return view;
     }
 
+    private void storeDatainObjects() {
+        Cursor cursor = dbTimeHelper.readAllData();
+        if (cursor.getCount() == 0) {
+            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()) {
+                switch(cursor.getString(1)){
+                    case "Monday":
+                        mon = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                        break;
+                    case "Tuesday":
+                        tue = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                        break;
+                    case "Wednesday":
+                        wed = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                        break;
+                    case "Thursday":
+                        thu = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                        break;
+                    case "Friday":
+                        fri = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                        break;
+                    case "Saturday":
+                        sat = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                        break;
+                    case "Sunday":
+                        sun = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                        break;
 
-    @Override
-    public void onClick(View view) {
-        TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                hour = selectedHour;
-                minute = selectedMinute;
-                if (monTimePicker.equals(view)) {
-                    monTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                } else if (tueTimePicker.equals(view)) {
-                    tueTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                }else if(view == wedTimePicker){
-                    wedTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                }else if (view == thuTimePicker){
-                    thuTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                }else if(view == friTimePicker){
-                    friTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                }else if(view == satTimePicker){
-                    satTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                }else if(view == sunTimePicker){
-                    sunTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+
                 }
+            }
+        }
+    }
+
+
+            @Override
+            public void onClick (View view){
+                TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        hour = selectedHour;
+                        minute = selectedMinute;
+                        if (monTimePicker.equals(view)) {
+                            monTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                        } else if (tueTimePicker.equals(view)) {
+                            tueTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                        } else if (view == wedTimePicker) {
+                            wedTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                        } else if (view == thuTimePicker) {
+                            thuTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                        } else if (view == friTimePicker) {
+                            friTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                        } else if (view == satTimePicker) {
+                            satTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                        } else if (view == sunTimePicker) {
+                            sunTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                        }
+
+                    }
+                };
+                int style = AlertDialog.THEME_HOLO_DARK;
+
+                TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), style, timeSetListener, 00, 00, true);
+                timePickerDialog.setTitle("Select Time");
+                timePickerDialog.show();
 
             }
-        };
-        int style = AlertDialog.THEME_HOLO_DARK;
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), style, timeSetListener, hour, minute,true);
-        timePickerDialog.setTitle("Select Time");
-        timePickerDialog.show();
-
-    }
-}
+        }
 
