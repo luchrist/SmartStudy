@@ -101,6 +101,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 title.setText("Timetable");
                 navigationView.setCheckedItem(R.id.nav_timetable);
                 break;
+            case R.id.nav_time:
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, new Timefragment()).commit();
+                title.setText("Time");
+                navigationView.setCheckedItem(R.id.nav_time);
+                break;
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
