@@ -31,6 +31,7 @@ public class DbHelper extends SQLiteOpenHelper {
         super(context, DB_NAME, null, DB_VERSION);
         Log.d(LOG_TAG, "DbHelper hat die Datenbank: " + getDatabaseName() + " erzeugt.");
         this.context = context;
+
     }
 
     public static final String SQL_CREATE =

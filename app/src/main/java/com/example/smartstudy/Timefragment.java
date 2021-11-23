@@ -30,6 +30,7 @@ public class Timefragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull @org.jetbrains.annotations.NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.time_fragment, container, false);
 
+        dbTimeHelper = new DbTimeHelper(getContext());
         monTimePicker = view.findViewById(R.id.monTimePicker);
         tueTimePicker = view.findViewById(R.id.tueTimePicker);
         wedTimePicker = view.findViewById(R.id.wedTimePicker);
@@ -103,18 +104,25 @@ public class Timefragment extends Fragment implements View.OnClickListener {
                         minute = selectedMinute;
                         if (monTimePicker.equals(view)) {
                             monTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                            dbTimeHelper.updateTimeObject(mon.getId(), mon.getDay(), monTimePicker.getText().toString());
                         } else if (tueTimePicker.equals(view)) {
                             tueTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                            dbTimeHelper.updateTimeObject(tue.getId(), tue.getDay(), tueTimePicker.getText().toString());
                         } else if (view == wedTimePicker) {
                             wedTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                            dbTimeHelper.updateTimeObject(wed.getId(), wed.getDay(), wedTimePicker.getText().toString());
                         } else if (view == thuTimePicker) {
                             thuTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                            dbTimeHelper.updateTimeObject(thu.getId(), thu.getDay(), thuTimePicker.getText().toString());
                         } else if (view == friTimePicker) {
                             friTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                            dbTimeHelper.updateTimeObject(fri.getId(), fri.getDay(), friTimePicker.getText().toString());
                         } else if (view == satTimePicker) {
                             satTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                            dbTimeHelper.updateTimeObject(sat.getId(), sat.getDay(), satTimePicker.getText().toString());
                         } else if (view == sunTimePicker) {
                             sunTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                            dbTimeHelper.updateTimeObject(sun.getId(), sun.getDay(), sunTimePicker.getText().toString());
                         }
 
                     }
