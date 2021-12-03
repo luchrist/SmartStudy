@@ -106,6 +106,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 title.setText("Time");
                 navigationView.setCheckedItem(R.id.nav_time);
                 break;
+            case R.id.nav_study:
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, new StudyFragment()).commit();
+                title.setText("Study");
+                navigationView.setCheckedItem(R.id.nav_study);
+                break;
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);

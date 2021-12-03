@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ public class Timefragment extends Fragment implements View.OnClickListener {
     Button monTimePicker, tueTimePicker, wedTimePicker, thuTimePicker, friTimePicker, satTimePicker, sunTimePicker;
     DbTimeHelper dbTimeHelper;
     TimeObject mon, tue, wed, thu, fri, sat, sun;
+    CalendarView calendarView;
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
@@ -31,6 +33,7 @@ public class Timefragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.time_fragment, container, false);
 
         dbTimeHelper = new DbTimeHelper(getContext());
+        calendarView =  view.findViewById(R.id.calendarExceptions);
         monTimePicker = view.findViewById(R.id.monTimePicker);
         tueTimePicker = view.findViewById(R.id.tueTimePicker);
         wedTimePicker = view.findViewById(R.id.wedTimePicker);
@@ -46,6 +49,8 @@ public class Timefragment extends Fragment implements View.OnClickListener {
         friTimePicker.setText(fri.getTime());
         satTimePicker.setText(sat.getTime());
         sunTimePicker.setText(sun.getTime());
+
+        //calendarView.s
 
         monTimePicker.setOnClickListener(this);
         tueTimePicker.setOnClickListener(this);
