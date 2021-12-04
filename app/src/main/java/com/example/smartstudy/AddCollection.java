@@ -87,7 +87,8 @@ public class AddCollection extends Fragment {
                show_text = natWord +" <-> " + foreignWord;
                TextView txt = new TextView(view.getContext());
                txt.setText(show_text);
-
+               txt.setTextSize(18);
+               transList.addView(txt);
 
                //DB Speicherung fehlt
 
