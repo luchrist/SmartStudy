@@ -25,6 +25,7 @@ public class AddCollection extends Fragment {
     public ImageButton back;
     public TextInputEditText title, languageOne , foreign;
     public LinearLayout transList;
+    DBLanguageHelper dbLanguageHelper;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -84,12 +85,17 @@ public class AddCollection extends Fragment {
                String natWord, foreignWord, show_text;
                natWord = languageOne.getText().toString();
                foreignWord = foreign.getText().toString();
-               show_text = natWord +" <-> " + foreignWord;
+
+               Translation translation = new Translation(title.getText().toString(), natWord, foreignWord, 0, 0);
+               dbLanguageHelper.addLanguageObject(translation);
+              /* show_text = natWord +" <-> " + foreignWord;
                TextView txt = new TextView(view.getContext());
                txt.setText(show_text);
                txt.setTextSize(18);
                transList.addView(txt);
 
+
+               */
                //DB Speicherung fehlt
 
            }
