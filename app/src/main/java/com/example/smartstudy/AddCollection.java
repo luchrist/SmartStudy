@@ -72,6 +72,8 @@ public class AddCollection extends Fragment {
                              Bundle savedInstanceState) {
        View view =  inflater.inflate(R.layout.fragment_add_collection, container, false);
 
+       dbLanguageHelper = new DBLanguageHelper(getActivity());
+
        addTrans = view.findViewById(R.id.addTrans);
        title = view.findViewById(R.id.titleInput);
        foreign = view.findViewById(R.id.foreignInput);
@@ -85,8 +87,11 @@ public class AddCollection extends Fragment {
                String natWord, foreignWord, show_text;
                natWord = languageOne.getText().toString();
                foreignWord = foreign.getText().toString();
+               String tit = title.getText().toString();
 
-               Translation translation = new Translation(title.getText().toString(), natWord, foreignWord, 0, 0);
+               System.out.println(tit + "    " + natWord + "    "+ foreignWord);
+               Translation translation = new Translation(tit, natWord, foreignWord, 0, 0);
+
                dbLanguageHelper.addLanguageObject(translation);
               /* show_text = natWord +" <-> " + foreignWord;
                TextView txt = new TextView(view.getContext());

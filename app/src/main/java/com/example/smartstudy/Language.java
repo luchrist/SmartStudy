@@ -21,13 +21,13 @@ public class Language extends Fragment implements View.OnClickListener {
     public ImageButton backbtn;
     public Button addCollection;
     public LinearLayout collections_list;
-    DBLanguageHelper dbLanguageHelper = new DBLanguageHelper(getActivity());
+    DBLanguageHelper dbLanguageHelper;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_language, container, false);
-
+        dbLanguageHelper = new DBLanguageHelper(getActivity());
         backbtn = view.findViewById(R.id.backbtn);
         addCollection = view.findViewById(R.id.addCollection);
         collections_list = view.findViewById(R.id.collectionsLayout);
@@ -43,10 +43,11 @@ public class Language extends Fragment implements View.OnClickListener {
     private void showCollections(View view) {
         ArrayList<String> collections = getCollections();
         for (String collection : collections){
-            TextView txt = new TextView(view.getContext());
-            txt.setText(collection);
-            txt.setTextSize(18);
-            collections_list.addView(txt);
+            Button btn = new Button(view.getContext());
+            btn.setText(collection);
+            btn.setTextSize(18);
+            collections_list.addView(btn);
+            btn.setOnClickListener(this);
 
         }
     }
@@ -71,7 +72,7 @@ public class Language extends Fragment implements View.OnClickListener {
                     single = false;
                 }
             }
-            if(single = true){
+            if(single == true){
                 collections.add(c);
             }
         }

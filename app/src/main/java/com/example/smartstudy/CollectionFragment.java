@@ -53,7 +53,7 @@ public class CollectionFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_collection, container, false);
-
+        dbLanguageHelper = new DBLanguageHelper(getActivity());
         titleCollection = view.findViewById(R.id.titleCollection);
         titleCollection.setText(title);
         list = view.findViewById(R.id.list);

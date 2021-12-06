@@ -18,7 +18,7 @@ public class DBLanguageHelper extends SQLiteOpenHelper{
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_COLLECTION = "collection";
     public static final String COLUMN_NATIVE = "native";
-    public static final String COLUMN_FOREIGN = "foreign";
+    public static final String COLUMN_FOREIGN = "foreigner";
     public static final String COLUMN_CORRECT = "correct";
     public static final String COLUMN_WRONG = "wrong";
 
@@ -28,14 +28,16 @@ public class DBLanguageHelper extends SQLiteOpenHelper{
         this.context = context;
     }
 
+
     public static final String SQL_CREATE =
             "create table " + TABLE + "(" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_COLLECTION + " TEXT NOT NULL, " +
                     COLUMN_NATIVE + " TEXT NOT NULL, " +
-                    COLUMN_FOREIGN +  " TEXT NOT NULL" +
+                    COLUMN_FOREIGN +  " TEXT NOT NULL, " +
                     COLUMN_CORRECT + " INTEGER, " +
                     COLUMN_WRONG + " INTEGER);";
+
 
 
     @Override
