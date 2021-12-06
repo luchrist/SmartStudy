@@ -1,15 +1,24 @@
 package com.example.smartstudy;
 
 public class Translation {
-    private String collection, native_word, foreign_word;
+    private String collection, native_word, foreign_word, id;
     private int correct, wrong;
 
-    public Translation(String collection, String native_word, String foreign_word, int correct, int wrong) {
+    public Translation(String id, String collection, String native_word, String foreign_word, int correct, int wrong) {
+        this.id = id;
         this.collection = collection;
         this.native_word = native_word;
         this.foreign_word = foreign_word;
         this.correct = correct;
         this.wrong = wrong;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCollection() {

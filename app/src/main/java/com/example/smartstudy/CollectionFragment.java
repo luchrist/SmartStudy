@@ -8,6 +8,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,12 +18,15 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 
-public class CollectionFragment extends Fragment {
+public class CollectionFragment extends Fragment implements View.OnClickListener {
 
     String title;
     TextView titleCollection;
     LinearLayout list;
     DBLanguageHelper dbLanguageHelper;
+    ImageButton back;
+    Button practise, test;
+    CheckBox delete;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -55,6 +61,19 @@ public class CollectionFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_collection, container, false);
         dbLanguageHelper = new DBLanguageHelper(getActivity());
         titleCollection = view.findViewById(R.id.titleCollection);
+        back = view.findViewById(R.id.backBtn);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                        new Language()).commit();
+            }
+        });
+        test = view.findViewById(R.id.test);
+        test.setOnClickListener(this);
+        practise = view.findViewById(R.id.practise);
+        practise.setOnClickListener(this);
+        delete = view.findViewById(R.id.deleteMode);
         titleCollection.setText(title);
         list = view.findViewById(R.id.list);
         showTranslations(view);
@@ -70,6 +89,16 @@ public class CollectionFragment extends Fragment {
             txt.setText(show_text);
             txt.setTextSize(18);
             list.addView(txt);
+            txt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(delete.isChecked()){
+                        dbLanguageHelper.deleteLanguageObject(t.getId());
+                        list.removeView(txt);
+                    }
+
+                }
+            });
         }
 
     }
@@ -82,7 +111,7 @@ public class CollectionFragment extends Fragment {
             Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
         } else {
             while (cursor.moveToNext()) {
-                Translation translation = new Translation(cursor.getString(1), cursor.getString(2), cursor.getString(3),cursor.getInt(4), cursor.getInt(5) );
+                Translation translation = new Translation(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),cursor.getInt(4), cursor.getInt(5) );
                 translations.add(translation);
             }
 
@@ -95,5 +124,14 @@ public class CollectionFragment extends Fragment {
         }
         return collectionTranslations;
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view == test){
+
+        }else if(view == practise){
+
+        }
     }
 }

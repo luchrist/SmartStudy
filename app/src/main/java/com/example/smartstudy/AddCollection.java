@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -90,7 +89,7 @@ public class AddCollection extends Fragment {
                String tit = title.getText().toString();
 
                System.out.println(tit + "    " + natWord + "    "+ foreignWord);
-               Translation translation = new Translation(tit, natWord, foreignWord, 0, 0);
+               Translation translation = new Translation( "", tit, natWord, foreignWord, 0, 0);
 
                dbLanguageHelper.addLanguageObject(translation);
               /* show_text = natWord +" <-> " + foreignWord;
