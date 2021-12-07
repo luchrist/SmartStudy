@@ -1,5 +1,6 @@
 package com.example.smartstudy;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -20,7 +21,7 @@ import java.util.Random;
 public class MathFragment extends Fragment {
 
 
-    TextView calc, highscore, score;
+    TextView calc, hs, score;
     EditText sol;
     Button send;
     CheckBox add, sub, mul, div;
@@ -28,7 +29,7 @@ public class MathFragment extends Fragment {
     String op;
     int numOne;
     int numTwo;
-    int points;
+    int points, highestPoints;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,9 +38,10 @@ public class MathFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_math, container, false);
         start = true;
         points = 0;
-
+        SharedPreferences sp = getActivity().getSharedPreferences("SP", 0);
+        highestPoints = sp.getInt("highscore", 0);
         calc = view.findViewById(R.id.calc);
-        highscore = view.findViewById(R.id.highscore);
+        hs = view.findViewById(R.id.mathHighscore);
         score = view.findViewById(R.id.mathScore);
         sol = view.findViewById(R.id.sol);
         send = view.findViewById(R.id.sendBtn);
@@ -47,6 +49,8 @@ public class MathFragment extends Fragment {
         sub = view.findViewById(R.id.checkBoxSub);
         mul = view.findViewById(R.id.checkBoxMul);
         div = view.findViewById(R.id.checkBoxDiv);
+
+        hs.setText("" + highestPoints);
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +73,15 @@ public class MathFragment extends Fragment {
                 }else{
                     checkSol();
                     score.setText("" + points);
+
+                    if(points > highestPoints){
+                        highestPoints = points;
+                        hs.setText(""+highestPoints);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putInt("highscore", highestPoints );
+                        editor.commit();
+                    }
+
                     op = getOperator();  // Division soll nur auf 0,5 genau sein.
 
                     numOne = getNumber((int)((points + 5)/10));
