@@ -89,9 +89,11 @@ public class AddCollection extends Fragment {
                String tit = title.getText().toString();
 
                System.out.println(tit + "    " + natWord + "    "+ foreignWord);
-               Translation translation = new Translation( "", tit, natWord, foreignWord, 0, 0);
+               Translation translation = new Translation( "", tit, natWord, foreignWord, 0);
 
                dbLanguageHelper.addLanguageObject(translation);
+               languageOne.setText("");
+               foreign.setText("");
               /* show_text = natWord +" <-> " + foreignWord;
                TextView txt = new TextView(view.getContext());
                txt.setText(show_text);

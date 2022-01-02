@@ -2,15 +2,15 @@ package com.example.smartstudy;
 
 public class Translation {
     private String collection, native_word, foreign_word, id;
-    private int correct, wrong;
+    private int correct;
 
-    public Translation(String id, String collection, String native_word, String foreign_word, int correct, int wrong) {
+    public Translation(String id, String collection, String native_word, String foreign_word, int correct) {
         this.id = id;
         this.collection = collection;
         this.native_word = native_word;
         this.foreign_word = foreign_word;
         this.correct = correct;
-        this.wrong = wrong;
+
     }
 
     public String getId() {
@@ -53,11 +53,5 @@ public class Translation {
         this.correct = correct;
     }
 
-    public int getWrong() {
-        return wrong;
-    }
 
-    public void setWrong(int wrong) {
-        this.wrong = wrong;
-    }
 }

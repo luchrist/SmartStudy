@@ -111,7 +111,7 @@ public class CollectionFragment extends Fragment implements View.OnClickListener
             Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
         } else {
             while (cursor.moveToNext()) {
-                Translation translation = new Translation(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),cursor.getInt(4), cursor.getInt(5) );
+                Translation translation = new Translation(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),cursor.getInt(4));
                 translations.add(translation);
             }
 
@@ -129,8 +129,12 @@ public class CollectionFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View view) {
         if(view == test){
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                    new TestFragment()).commit();
 
         }else if(view == practise){
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                    new PractiseFragment(title)).commit();
 
         }
     }

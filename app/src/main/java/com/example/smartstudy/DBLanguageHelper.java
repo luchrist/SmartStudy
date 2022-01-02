@@ -20,7 +20,7 @@ public class DBLanguageHelper extends SQLiteOpenHelper{
     public static final String COLUMN_NATIVE = "native";
     public static final String COLUMN_FOREIGN = "foreigner";
     public static final String COLUMN_CORRECT = "correct";
-    public static final String COLUMN_WRONG = "wrong";
+
 
     public DBLanguageHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -35,8 +35,7 @@ public class DBLanguageHelper extends SQLiteOpenHelper{
                     COLUMN_COLLECTION + " TEXT NOT NULL, " +
                     COLUMN_NATIVE + " TEXT NOT NULL, " +
                     COLUMN_FOREIGN +  " TEXT NOT NULL, " +
-                    COLUMN_CORRECT + " INTEGER, " +
-                    COLUMN_WRONG + " INTEGER);";
+                    COLUMN_CORRECT + " INTEGER);";
 
 
 
@@ -59,7 +58,7 @@ public class DBLanguageHelper extends SQLiteOpenHelper{
         contentValues.put(COLUMN_NATIVE, translation.getNative_word());
         contentValues.put(COLUMN_FOREIGN, translation.getForeign_word());
         contentValues.put(COLUMN_CORRECT, translation.getCorrect());
-        contentValues.put(COLUMN_WRONG, translation.getWrong());
+
 
 
         long result = db.insert(TABLE, null, contentValues);
@@ -68,6 +67,27 @@ public class DBLanguageHelper extends SQLiteOpenHelper{
             System.out.println("Hier läuft was falsch");
         } else {
             //Toast.makeText(context, "Added succesfully!", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    void updateLanguageObject(Translation translation){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_COLLECTION, translation.getCollection());
+        contentValues.put(COLUMN_NATIVE, translation.getNative_word());
+        contentValues.put(COLUMN_FOREIGN, translation.getForeign_word());
+        contentValues.put(COLUMN_CORRECT, translation.getCorrect());
+
+
+        if(translation.getCollection().length() != 0 && translation.getNative_word().length() != 0 && translation.getForeign_word().length() != 0){
+            long result = db.update(TABLE,contentValues, "id=?", new String[]{translation.getId()});
+            if(result == -1){
+                Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
         }
 
 

@@ -40,10 +40,10 @@ public class MathFragment extends Fragment {
         points = 0;
         SharedPreferences sp = getActivity().getSharedPreferences("SP", 0);
         highestPoints = sp.getInt("highscore", 0);
-        calc = view.findViewById(R.id.calc);
+        calc = view.findViewById(R.id.word);
         hs = view.findViewById(R.id.mathHighscore);
         score = view.findViewById(R.id.mathScore);
-        sol = view.findViewById(R.id.sol);
+        sol = view.findViewById(R.id.trans);
         send = view.findViewById(R.id.sendBtn);
         add = view.findViewById(R.id.checkBoxAdd);
         sub = view.findViewById(R.id.checkBoxSub);
