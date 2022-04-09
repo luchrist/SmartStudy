@@ -8,26 +8,24 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+public class DBExamHelper extends SQLiteOpenHelper {
 
-import java.sql.Time;
-
-public class DbHelper extends SQLiteOpenHelper {
-
-    private static final String LOG_TAG = DbHelper.class.getSimpleName();
+    private static final String LOG_TAG = DBExamHelper.class.getSimpleName();
     private Context context;
-    public static final String DB_NAME = "SmartStudy.db";
+    public static final String DB_NAME = "ExamStudy.db";
     public static final int DB_VERSION = 1;
-    public static final String TABLE = "timetable";
+    public static final String TABLE = "exam";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_SUBJECT = "subject";
-    public static final String COLUMN_DAY = "day";
-    public static final String COLUMN_TEACHER = "teacher";
-    public static final String COLUMN_ROOM = "room";
+    public static final String COLUMN_TYPE = "type";
+    public static final String COLUMN_VOLUME = "volume";
     public static final String COLUMN_BEGIN = "starttime";
     public static final String COLUMN_END = "endtime";
+    public static final String COLUMN_COLOUR = "colour";
 
-    public DbHelper(Context context) {
+
+
+    public DBExamHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         Log.d(LOG_TAG, "DbHelper hat die Datenbank: " + getDatabaseName() + " erzeugt.");
         this.context = context;
@@ -38,11 +36,12 @@ public class DbHelper extends SQLiteOpenHelper {
             "create table "+ TABLE +"(" +
                     COLUMN_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_SUBJECT + " TEXT NOT NULL, " +
+                    COLUMN_TYPE + " TEXT NOT NULL, " +
+                    COLUMN_VOLUME + " INTEGER NOT NULL, " +
                     COLUMN_BEGIN + " TEXT NOT NULL, " +
                     COLUMN_END + " TEXT NOT NULL, " +
-                    COLUMN_DAY + " TEXT NOT NULL, " +
-                    COLUMN_ROOM + " TEXT, " +
-                    COLUMN_TEACHER + " TEXT);";
+                    COLUMN_COLOUR + " TEXT NOT NULL);";
+
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -55,53 +54,53 @@ public class DbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    void addTimeTableObject(String sub, String beg, String end, String day, String room, String teach){
+    void addExamObject(Exam exam){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_SUBJECT, sub);
-        contentValues.put(COLUMN_BEGIN, beg);
-        contentValues.put(COLUMN_END, end);
-        contentValues.put(COLUMN_DAY, day);
-        contentValues.put(COLUMN_ROOM, room);
-        contentValues.put(COLUMN_TEACHER, teach);
-        if(sub.length() != 0 && beg.length() != 0 && end.length() != 0){
-            long result = db.insert(TABLE, null, contentValues);
-            if(result == -1){
-                Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(context , "Added succesfully!", Toast.LENGTH_SHORT).show();
-            }
-        }else{
-            Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
+        contentValues.put(COLUMN_SUBJECT, exam.getSubject());
+        contentValues.put(COLUMN_TYPE, exam.getType());
+        contentValues.put(COLUMN_VOLUME, exam.getVolume());
+        contentValues.put(COLUMN_BEGIN, exam.getStartdate());
+        contentValues.put(COLUMN_END, exam.getEnddate());
+        contentValues.put(COLUMN_COLOUR, exam.getColour());
+
+        long result = db.insert(TABLE, null, contentValues);
+        if (result == -1) {
+            Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show();
+            System.out.println("Hier läuft was falsch");
+        } else {
+            //Toast.makeText(context, "Added succesfully!", Toast.LENGTH_SHORT).show();
         }
 
+
+
+
+
     }
-    void updateTimetableObject(String id, String sub, String beg, String end, String day, String room, String teach){
+    void updateExamObject(Exam exam){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_SUBJECT, sub);
-        contentValues.put(COLUMN_BEGIN, beg);
-        contentValues.put(COLUMN_END, end);
-        contentValues.put(COLUMN_DAY, day);
-        contentValues.put(COLUMN_ROOM, room);
-        contentValues.put(COLUMN_TEACHER, teach);
+        contentValues.put(COLUMN_SUBJECT, exam.getSubject());
+        contentValues.put(COLUMN_TYPE, exam.getType());
+        contentValues.put(COLUMN_VOLUME, exam.getVolume());
+        contentValues.put(COLUMN_BEGIN, exam.getStartdate());
+        contentValues.put(COLUMN_END, exam.getEnddate());
+        contentValues.put(COLUMN_COLOUR, exam.getColour());
 
-        if(sub.length() != 0 && beg.length() != 0 && end.length() != 0){
-            long result = db.update(TABLE,contentValues, "id=?", new String[]{id});
+
+            long result = db.update(TABLE,contentValues, "id=?", new String[]{exam.getId()});
             if(result == -1){
                 Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(context , "Saved succesfully!", Toast.LENGTH_SHORT).show();
             }
-        }else{
-            Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
-        }
+
 
 
     }
-    void deleteTimetableObject(String id){
+    void deleteExamObject(Exam exam){
         SQLiteDatabase db = this.getWritableDatabase();
-        long result = db.delete(TABLE, "id=?", new String[]{id});
+        long result = db.delete(TABLE, "id=?", new String[]{exam.getId()});
         if(result == -1){
             Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
         }else{
