@@ -79,7 +79,7 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String sub, typ, enddate, startdate, col,key;
-                        int vol;
+                        float vol;
 
                         sub = subject.getText().toString();
                         typ = type.getText().toString();
@@ -87,7 +87,8 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
                         startdate = startDate.getText().toString();
                         col = colour.getSelectedItem().toString();
                         key = sub+typ;
-                        vol = volume.getNumStars();
+                        vol = volume.getRating();
+                        System.out.println(vol);
 
                         DBExamHelper dbHelper = new DBExamHelper(AddExam.this.getContext());
 

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class Exam {
     private String id, subject, type, enddate, startdate, colour;
-    private int volume;
+    private float volume;
 
 
-    public Exam(String id, String subject, String type, String enddate, String startdate, String colour, int volume) {
+    public Exam(String id, String subject, String type, String enddate, String startdate, String colour, float volume) {
         this.id = id;
         this.subject = subject;
         this.type = type;
@@ -65,12 +65,11 @@ public class Exam {
         this.colour = colour;
     }
 
-    public int getVolume() {
+    public float getVolume() {
         return volume;
     }
 
-    public void setVolume(int volume) {
+    public void setVolume(float volume) {
         this.volume = volume;
     }
-
 }

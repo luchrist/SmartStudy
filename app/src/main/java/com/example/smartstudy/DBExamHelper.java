@@ -37,7 +37,7 @@ public class DBExamHelper extends SQLiteOpenHelper {
                     COLUMN_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_SUBJECT + " TEXT NOT NULL, " +
                     COLUMN_TYPE + " TEXT NOT NULL, " +
-                    COLUMN_VOLUME + " INTEGER NOT NULL, " +
+                    COLUMN_VOLUME + " FLOA NOT NULL, " +
                     COLUMN_BEGIN + " TEXT NOT NULL, " +
                     COLUMN_END + " TEXT NOT NULL, " +
                     COLUMN_COLOUR + " TEXT NOT NULL);";

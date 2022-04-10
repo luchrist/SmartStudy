@@ -32,7 +32,8 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
     LocalDate selectedDate;
     DBExamHelper dbHelper;
     DBTodoHelper dbTodoHelper;
-    ArrayList<String> PlanId, PlanSub, PlanType, PlanVol, PlanBeg, PlanEnd, PlanCol, TodoId, TodoDo, TodoTi, TodoColec;
+    ArrayList<String> PlanId, PlanSub, PlanType, PlanBeg, PlanEnd, PlanCol, TodoId, TodoDo, TodoTi, TodoColec;
+    ArrayList<Float> PlanVol;
     String id;
 
     public EditExam(LocalDate selectedDate) {
@@ -144,12 +145,13 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
     private void showDayData() {
         for(int i = 0; i < PlanId.size(); i++){
             if(PlanEnd.get(i).equals(selectedDate.toString())){
-                String vol;
+
                 subject.setText(PlanSub.get(i));
                 id = PlanId.get(i);
                 type.setText(PlanType.get(i));
-                vol = PlanVol.get(i);
-                volume.setNumStars(Integer.parseInt(vol));
+
+                System.out.println(PlanVol.get(i));
+                volume.setRating(PlanVol.get(i));
                 startDate.setText(PlanBeg.get(i));
                 dueDay.setText(PlanEnd.get(i));
                 String col = PlanCol.get(i);
@@ -199,7 +201,7 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                 PlanId.add(cursor.getString(0));
                 PlanSub.add(cursor.getString(1));
                 PlanType.add(cursor.getString(2));
-                PlanVol.add(cursor.getString(3));
+                PlanVol.add(cursor.getFloat(3));
                 PlanBeg.add(cursor.getString(4));
                 PlanEnd.add(cursor.getString(5));
                 PlanCol.add(cursor.getString(6));
