@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,8 +24,9 @@ public class Plan extends Fragment implements CalendarAdapter.OnItemListener, Vi
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
     private LocalDate selectedDate;
-    Button prev;
-    Button nex;
+    Button prev, nex;
+    ImageButton editBtn, detailBtn;
+    private boolean editable;
 
 
     @Override
@@ -39,6 +41,12 @@ public class Plan extends Fragment implements CalendarAdapter.OnItemListener, Vi
         prev.setOnClickListener(this);
         nex = view.findViewById(R.id.nextbtn);
         nex.setOnClickListener(this);
+        editBtn = view.findViewById(R.id.editbtn);
+        editBtn.setOnClickListener(this);
+        detailBtn = view.findViewById(R.id.detailbtn);
+        detailBtn.setOnClickListener(this);
+        editable = false;
+
         return view;
     }
 
@@ -91,14 +99,22 @@ public class Plan extends Fragment implements CalendarAdapter.OnItemListener, Vi
 
     @Override
     public void onItemClick(int position, String dayText) {
-        System.out.println("tets");
-        long daysToAdd = Integer.parseInt(dayText)-selectedDate.getDayOfMonth();
-        selectedDate = selectedDate.plusDays(daysToAdd);
+
+
         if(!dayText.equals("")){
             String message = "Selected Date " + dayText + " " + monthYearFromDate(selectedDate);
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-            AddExam alert = new AddExam(selectedDate);
-            alert.show(getParentFragmentManager(), "test");
+            long daysToAdd = Integer.parseInt(dayText)-selectedDate.getDayOfMonth();
+            selectedDate = selectedDate.plusDays(daysToAdd);
+            if (editable){
+
+                AddExam alert = new AddExam(selectedDate);
+                alert.show(getParentFragmentManager(), "test");
+            }else{
+                EditExam editExam = new EditExam((selectedDate));
+                editExam.show(getParentFragmentManager(), "");
+            }
+
         }
     }
 
@@ -111,6 +127,12 @@ public class Plan extends Fragment implements CalendarAdapter.OnItemListener, Vi
         } else if (view.equals(nex)) {
 
             nextMonthAction(nex);
+        }else if (view.equals(editBtn)){
+            editable = true;
+            Toast.makeText(getContext(), "Plan is now in edit mode!", Toast.LENGTH_SHORT).show();
+        }else if(view.equals(detailBtn)){
+            editable = false;
+            Toast.makeText(getContext(), "Plan is now in view mode!", Toast.LENGTH_SHORT).show();
         }
     }
 }

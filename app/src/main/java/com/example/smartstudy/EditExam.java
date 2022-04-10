@@ -2,6 +2,7 @@ package com.example.smartstudy;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
@@ -19,7 +21,7 @@ import androidx.fragment.app.DialogFragment;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class AddExam extends DialogFragment implements View.OnClickListener {
+public class EditExam extends DialogFragment implements View.OnClickListener {
     Button addTodo;
     LinearLayout todos, times;
     EditText inputTodo, subject, type, dueDay, startDate;
@@ -27,17 +29,21 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
     Spinner colour, inputTime;
     ArrayList<String> todoList = new ArrayList<>();
     ArrayList<String> timeList = new ArrayList<>();
-    LocalDate dueDate;
+    LocalDate selectedDate;
+    DBExamHelper dbHelper;
+    DBTodoHelper dbTodoHelper;
+    ArrayList<String> PlanId, PlanSub, PlanType, PlanVol, PlanBeg, PlanEnd, PlanCol, TodoId, TodoDo, TodoTi, TodoColec;
+    String id;
 
-    public AddExam(LocalDate selectedDate) {
-        dueDate = selectedDate;
+    public EditExam(LocalDate selectedDate) {
+        this.selectedDate = selectedDate;
     }
 
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.exam_dialog, null);
+        View view = inflater.inflate(R.layout.dialog_edit_exam, null);
         // Inflate and set the layout for the dialog
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -53,7 +59,22 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
         startDate = view.findViewById(R.id.startDateEdit);
         volume = view.findViewById(R.id.volume_edit);
         addTodo.setOnClickListener(this);
-        dueDay.setText(dueDate.toString());
+
+        PlanId = new ArrayList<>();
+        PlanSub = new ArrayList<>();
+        PlanType= new ArrayList<>();
+        PlanVol= new ArrayList<>();
+        PlanBeg= new ArrayList<>();
+        PlanEnd= new ArrayList<>();
+        PlanCol= new ArrayList<>();
+        TodoId= new ArrayList<>();
+        TodoDo= new ArrayList<>();
+        TodoTi= new ArrayList<>();
+        TodoColec= new ArrayList<>();
+
+        dbHelper = new DBExamHelper(EditExam.this.getContext());
+        dbTodoHelper = new DBTodoHelper(EditExam.this.getContext());
+
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
@@ -70,13 +91,15 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
         adapterTimes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
         inputTime.setAdapter(adapterTimes);
+        loadData();
+        showDayData();
 
 
 
-        builder.setTitle("Add a Exam")
+        builder.setTitle("Edit Exam")
                 // Pass null as the parent view because its going in the dialog layout
                 .setView(view)
-                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Save Changes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String sub, typ, enddate, startdate, col,key;
                         int vol;
@@ -89,11 +112,11 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
                         key = sub+typ;
                         vol = volume.getNumStars();
 
-                        DBExamHelper dbHelper = new DBExamHelper(AddExam.this.getContext());
+
 
                         Exam exam = new Exam("",sub, typ,enddate,startdate,col,vol);
 
-                        DBTodoHelper dbTodoHelper = new DBTodoHelper(AddExam.this.getContext());
+
                         for (int i  = 0; i < todoList.size(); i++){
                             Todo tod = new Todo(key, "", todoList.get(i), timeList.get(i));
                             dbTodoHelper.addTodoObject(tod);
@@ -118,6 +141,86 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
         return builder.create();
     }
 
+    private void showDayData() {
+        for(int i = 0; i < PlanId.size(); i++){
+            if(PlanEnd.get(i).equals(selectedDate.toString())){
+                String vol;
+                subject.setText(PlanSub.get(i));
+                id = PlanId.get(i);
+                type.setText(PlanType.get(i));
+                vol = PlanVol.get(i);
+                volume.setNumStars(Integer.parseInt(vol));
+                startDate.setText(PlanBeg.get(i));
+                dueDay.setText(PlanEnd.get(i));
+                String col = PlanCol.get(i);
+                int co = 0;
+                switch (col){
+                    case "red":
+                        co = 0;
+                        break;
+                    case "blue":
+                        co = 1;
+                        break;
+                    case "green":
+                        co = 2;
+                        break;
+                    case "yellow":
+                        co = 3;
+                        break;
+                    case "brown":
+                        co = 4;
+                        break;
+                    case "orange":
+                        co = 5;
+                        break;
+                    case "pink":
+                        co = 6;
+                        break;
+                    case "purple":
+                        co = 7;
+                        break;
+                    default:
+                        co = 1;
+                        break;
+
+                }
+
+                colour.setSelection(co);
+            }
+        }
+    }
+
+    private void loadData() {
+        Cursor cursor = dbHelper.readAllData();
+        if (cursor.getCount() == 0){
+            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
+        }else {
+            while (cursor.moveToNext()) {
+                PlanId.add(cursor.getString(0));
+                PlanSub.add(cursor.getString(1));
+                PlanType.add(cursor.getString(2));
+                PlanVol.add(cursor.getString(3));
+                PlanBeg.add(cursor.getString(4));
+                PlanEnd.add(cursor.getString(5));
+                PlanCol.add(cursor.getString(6));
+
+            }
+        }
+        cursor = dbTodoHelper.readAllData();
+        if (cursor.getCount() == 0){
+            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
+        }else {
+            while (cursor.moveToNext()) {
+                TodoId.add(cursor.getString(0));
+                TodoDo.add(cursor.getString(1));
+                TodoTi.add(cursor.getString(2));
+                TodoColec.add(cursor.getString(3));
+
+
+            }
+        }
+    }
+
     @Override
     public void onClick(View view) {
         TextView newTodo = new TextView(todos.getContext());
@@ -136,3 +239,4 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
 
     }
 }
+
