@@ -97,6 +97,7 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
 
 
 
+
         builder.setTitle("Edit Exam")
                 // Pass null as the parent view because its going in the dialog layout
                 .setView(view)
@@ -149,8 +150,7 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                 subject.setText(PlanSub.get(i));
                 id = PlanId.get(i);
                 type.setText(PlanType.get(i));
-
-                System.out.println(PlanVol.get(i));
+                String key = PlanSub.get(i)+PlanType.get(i);
                 volume.setRating(PlanVol.get(i));
                 startDate.setText(PlanBeg.get(i));
                 dueDay.setText(PlanEnd.get(i));
@@ -188,6 +188,37 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                 }
 
                 colour.setSelection(co);
+                for(int j = 0; j < TodoColec.size(); j++){
+                    if (TodoColec.get(j).equals(key)){
+                        TextView newTodo = new TextView(todos.getContext());
+                        newTodo.setText(TodoDo.get(j));
+                        todos.addView(newTodo);
+                        Todo delTodo = new Todo(key,TodoId.get(j),TodoDo.get(j), TodoTi.get(j));
+
+
+                        TextView newEstimated = new TextView(times.getContext());
+                        newEstimated.setText(TodoTi.get(j));
+                        times.addView(newEstimated);
+                        newTodo.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dbTodoHelper.deleteTodoObject(delTodo);
+                                todos.removeView(newTodo);
+                                times.removeView(newEstimated);
+                            }
+                        });
+                        newEstimated.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                                dbTodoHelper.deleteTodoObject(delTodo);
+                                todos.removeView(newTodo);
+                                times.removeView(newEstimated);
+                            }
+                        });
+                    }
+                }
+
             }
         }
     }
