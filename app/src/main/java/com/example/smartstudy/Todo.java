@@ -3,12 +3,14 @@ package com.example.smartstudy;
 public class Todo {
 
     private String key,id, todo, time;
+    private int checked;
 
-    public Todo(String key, String id, String todo, String time) {
+    public Todo(String key, String id, String todo, String time, int checked) {
         this.key = key;
         this.id = id;
         this.todo = todo;
         this.time = time;
+        this.checked = checked;
     }
 
     public String getKey() {
@@ -41,5 +43,13 @@ public class Todo {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public int getChecked() {
+        return checked;
+    }
+
+    public void setChecked(int checked) {
+        this.checked = checked;
     }
 }

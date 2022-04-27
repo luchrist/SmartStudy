@@ -33,7 +33,7 @@ public class DbTimeHelper extends SQLiteOpenHelper {
             "create table " + TABLE + "(" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_DAY + " TEXT NOT NULL, " +
-                    COLUMN_DURATION + " TEXT NOT NULL);";
+                    COLUMN_DURATION + " INTEGER NOT NULL);";
 
 
     @Override
@@ -48,7 +48,7 @@ public class DbTimeHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    void addTimeObject(String day, String duration) {
+    void addTimeObject(String day, int duration) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_DAY, day);
@@ -66,7 +66,7 @@ public class DbTimeHelper extends SQLiteOpenHelper {
 
     }
 
-    void updateTimeObject(String id, String day, String duration) {
+    void updateTimeObject(String id, String day, int duration) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 

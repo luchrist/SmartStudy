@@ -88,20 +88,21 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
                         col = colour.getSelectedItem().toString();
                         key = sub+typ;
                         vol = volume.getRating();
-                        System.out.println(vol);
+                        int volInt = (int) (vol *2);
 
                         DBExamHelper dbHelper = new DBExamHelper(AddExam.this.getContext());
 
-                        Exam exam = new Exam("",sub, typ,enddate,startdate,col,vol);
+                        Exam exam = new Exam("",sub, typ,enddate,startdate,col,volInt, 0.0f);
 
                         DBTodoHelper dbTodoHelper = new DBTodoHelper(AddExam.this.getContext());
                         for (int i  = 0; i < todoList.size(); i++){
-                            Todo tod = new Todo(key, "", todoList.get(i), timeList.get(i));
+                            Todo tod = new Todo(key, "", todoList.get(i), timeList.get(i), 0);
                             dbTodoHelper.addTodoObject(tod);
                         }
 
                         dbHelper.addExamObject(exam);
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+
                                 new Plan()).commit();
 
 

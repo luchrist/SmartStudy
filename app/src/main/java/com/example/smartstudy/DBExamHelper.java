@@ -22,6 +22,8 @@ public class DBExamHelper extends SQLiteOpenHelper {
     public static final String COLUMN_BEGIN = "starttime";
     public static final String COLUMN_END = "endtime";
     public static final String COLUMN_COLOUR = "colour";
+    public static final String COLUMN_PROGRESS = "progress";
+
 
 
 
@@ -37,10 +39,11 @@ public class DBExamHelper extends SQLiteOpenHelper {
                     COLUMN_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_SUBJECT + " TEXT NOT NULL, " +
                     COLUMN_TYPE + " TEXT NOT NULL, " +
-                    COLUMN_VOLUME + " FLOA NOT NULL, " +
+                    COLUMN_VOLUME + " INTEGER NOT NULL, " +
                     COLUMN_BEGIN + " TEXT NOT NULL, " +
                     COLUMN_END + " TEXT NOT NULL, " +
-                    COLUMN_COLOUR + " TEXT NOT NULL);";
+                    COLUMN_COLOUR + " TEXT NOT NULL," +
+                    COLUMN_PROGRESS + "REAL);";
 
 
     @Override
@@ -63,6 +66,7 @@ public class DBExamHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_BEGIN, exam.getStartdate());
         contentValues.put(COLUMN_END, exam.getEnddate());
         contentValues.put(COLUMN_COLOUR, exam.getColour());
+        contentValues.put(COLUMN_PROGRESS, 0);
 
         long result = db.insert(TABLE, null, contentValues);
         if (result == -1) {
@@ -86,6 +90,7 @@ public class DBExamHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_BEGIN, exam.getStartdate());
         contentValues.put(COLUMN_END, exam.getEnddate());
         contentValues.put(COLUMN_COLOUR, exam.getColour());
+        contentValues.put(COLUMN_PROGRESS, exam.getProgres());
 
 
             long result = db.update(TABLE,contentValues, "id=?", new String[]{exam.getId()});

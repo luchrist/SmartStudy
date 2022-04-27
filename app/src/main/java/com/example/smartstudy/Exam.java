@@ -4,10 +4,11 @@ import java.util.ArrayList;
 
 public class Exam {
     private String id, subject, type, enddate, startdate, colour;
-    private float volume;
+    private int volume; // davon abhängig werden benöigte LERNSTUNDEN berechnet
+    private float progres; // bereits gelernte stunden
 
 
-    public Exam(String id, String subject, String type, String enddate, String startdate, String colour, float volume) {
+    public Exam(String id, String subject, String type, String enddate, String startdate, String colour, int volume, float progres) {
         this.id = id;
         this.subject = subject;
         this.type = type;
@@ -15,6 +16,7 @@ public class Exam {
         this.startdate = startdate;
         this.colour = colour;
         this.volume = volume;
+        this.progres = progres;
     }
 
     public String getId() {
@@ -65,11 +67,19 @@ public class Exam {
         this.colour = colour;
     }
 
-    public float getVolume() {
+    public int getVolume() {
         return volume;
     }
 
-    public void setVolume(float volume) {
+    public void setVolume(int volume) {
         this.volume = volume;
+    }
+
+    public float getProgres() {
+        return progres;
+    }
+
+    public void setProgres(float progres) {
+        this.progres = progres;
     }
 }

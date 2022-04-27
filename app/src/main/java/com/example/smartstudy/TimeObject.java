@@ -2,7 +2,8 @@ package com.example.smartstudy;
 
 public class TimeObject {
 
-    String id, day, time;
+    String id, day;
+    int time;
 
     public String getId() {
         return id;
@@ -20,15 +21,15 @@ public class TimeObject {
         this.day = day;
     }
 
-    public String getTime() {
+    public int getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(int time) {
         this.time = time;
     }
 
-    public TimeObject(String id, String day, String time) {
+    public TimeObject(String id, String day, int time) {
         this.id = id;
         this.day = day;
         this.time = time;

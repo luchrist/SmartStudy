@@ -3,6 +3,7 @@ package com.example.smartstudy;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -33,8 +35,11 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
     DBExamHelper dbHelper;
     DBTodoHelper dbTodoHelper;
     ArrayList<String> PlanId, PlanSub, PlanType, PlanBeg, PlanEnd, PlanCol, TodoId, TodoDo, TodoTi, TodoColec;
-    ArrayList<Float> PlanVol;
+    ArrayList<Integer>  TodoCheck, PlanVol;
+    ArrayList<Float> PlanProg;
     String id;
+    ProgressBar progressBar; // zeigt prozentual den Progress an der aber absolut in STunden abgespeichert wird
+    float progre;
 
     public EditExam(LocalDate selectedDate) {
         this.selectedDate = selectedDate;
@@ -60,6 +65,7 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
         startDate = view.findViewById(R.id.startDateEdit);
         volume = view.findViewById(R.id.volume_edit);
         addTodo.setOnClickListener(this);
+        progressBar = view.findViewById(R.id.progressEdit);
 
         PlanId = new ArrayList<>();
         PlanSub = new ArrayList<>();
@@ -68,10 +74,12 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
         PlanBeg= new ArrayList<>();
         PlanEnd= new ArrayList<>();
         PlanCol= new ArrayList<>();
+        PlanProg= new ArrayList<>();
         TodoId= new ArrayList<>();
         TodoDo= new ArrayList<>();
         TodoTi= new ArrayList<>();
         TodoColec= new ArrayList<>();
+        TodoCheck = new ArrayList<>();
 
         dbHelper = new DBExamHelper(EditExam.this.getContext());
         dbTodoHelper = new DBTodoHelper(EditExam.this.getContext());
@@ -105,6 +113,7 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                     public void onClick(DialogInterface dialog, int id) {
                         String sub, typ, enddate, startdate, col,key;
                         int vol;
+                        float vols, prog;
 
                         sub = subject.getText().toString();
                         typ = type.getText().toString();
@@ -112,15 +121,16 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                         startdate = startDate.getText().toString();
                         col = colour.getSelectedItem().toString();
                         key = sub+typ;
-                        vol = volume.getNumStars();
+                        vols = volume.getRating();
+                        vol = (int) (vols * 2);
 
 
 
-                        Exam exam = new Exam("",sub, typ,enddate,startdate,col,vol);
+                        Exam exam = new Exam("",sub, typ,enddate,startdate,col,vol, progre);
 
 
                         for (int i  = 0; i < todoList.size(); i++){
-                            Todo tod = new Todo(key, "", todoList.get(i), timeList.get(i));
+                            Todo tod = new Todo(key, "", todoList.get(i), timeList.get(i), 0);
                             dbTodoHelper.addTodoObject(tod);
                         }
 
@@ -151,9 +161,38 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                 id = PlanId.get(i);
                 type.setText(PlanType.get(i));
                 String key = PlanSub.get(i)+PlanType.get(i);
-                volume.setRating(PlanVol.get(i));
+                volume.setRating(PlanVol.get(i)/2);
                 startDate.setText(PlanBeg.get(i));
                 dueDay.setText(PlanEnd.get(i));
+                float progr = PlanProg.get(i); //bereits gelernte Stunden
+                float gesStd;
+                switch(PlanVol.get(i)){
+                    case 0:
+                        gesStd = 5;
+                        break;
+                    case 1:
+                        gesStd = 10;
+                        break;
+                    case 2:
+                        gesStd = 15;
+                        break;
+                    case 3:
+                        gesStd = 20;
+                        break;
+                    case 4:
+                        gesStd = 25;
+                        break;
+                    case 5:
+                        gesStd = 30;
+                        break;
+                    case 6:
+                        gesStd = 35;
+                        break;
+                    default:
+                        gesStd = 35;
+                        break;
+                }
+
                 String col = PlanCol.get(i);
                 int co = 0;
                 switch (col){
@@ -188,23 +227,32 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                 }
 
                 colour.setSelection(co);
+                float toDoTime = 0;
                 for(int j = 0; j < TodoColec.size(); j++){
                     if (TodoColec.get(j).equals(key)){
                         TextView newTodo = new TextView(todos.getContext());
                         newTodo.setText(TodoDo.get(j));
+                        if (TodoCheck.get(j) == 1){
+                            newTodo.setPaintFlags(newTodo.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        }
                         todos.addView(newTodo);
-                        Todo delTodo = new Todo(key,TodoId.get(j),TodoDo.get(j), TodoTi.get(j));
+                        Todo delTodo = new Todo(key,TodoId.get(j),TodoDo.get(j), TodoTi.get(j), TodoCheck.get(j));
 
 
                         TextView newEstimated = new TextView(times.getContext());
                         newEstimated.setText(TodoTi.get(j));
+                        toDoTime += Float.parseFloat(TodoTi.get(j));
                         times.addView(newEstimated);
+                        int p = j;
                         newTodo.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 dbTodoHelper.deleteTodoObject(delTodo);
                                 todos.removeView(newTodo);
                                 times.removeView(newEstimated);
+                                TodoDo.remove(p);
+                                TodoTi.remove(p);
+                                TodoCheck.remove(p);
                             }
                         });
                         newEstimated.setOnClickListener(new View.OnClickListener() {
@@ -214,10 +262,22 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                                 dbTodoHelper.deleteTodoObject(delTodo);
                                 todos.removeView(newTodo);
                                 times.removeView(newEstimated);
+                                TodoDo.remove(p);
+                                TodoTi.remove(p);
+                                TodoCheck.remove(p);
                             }
                         });
                     }
                 }
+                float faktor;
+                if(toDoTime < gesStd){
+                    faktor = 100 / gesStd;
+                    progressBar.setProgress((int) (progr*faktor));
+                }else{
+                    faktor = 100 / toDoTime;
+                    progressBar.setProgress((int) (progr*faktor));
+                }
+                progre = progr;
 
             }
         }
@@ -232,10 +292,11 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                 PlanId.add(cursor.getString(0));
                 PlanSub.add(cursor.getString(1));
                 PlanType.add(cursor.getString(2));
-                PlanVol.add(cursor.getFloat(3));
+                PlanVol.add(cursor.getInt(3));
                 PlanBeg.add(cursor.getString(4));
                 PlanEnd.add(cursor.getString(5));
                 PlanCol.add(cursor.getString(6));
+                PlanProg.add(cursor.getFloat(7));
 
             }
         }
@@ -248,6 +309,7 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                 TodoDo.add(cursor.getString(1));
                 TodoTi.add(cursor.getString(2));
                 TodoColec.add(cursor.getString(3));
+                TodoCheck.add(cursor.getInt(4));
 
 
             }

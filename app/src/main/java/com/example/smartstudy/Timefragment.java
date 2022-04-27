@@ -1,6 +1,7 @@
 package com.example.smartstudy;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -17,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class Timefragment extends Fragment implements View.OnClickListener {
@@ -25,7 +29,9 @@ public class Timefragment extends Fragment implements View.OnClickListener {
     Button monTimePicker, tueTimePicker, wedTimePicker, thuTimePicker, friTimePicker, satTimePicker, sunTimePicker;
     DbTimeHelper dbTimeHelper;
     TimeObject mon, tue, wed, thu, fri, sat, sun;
-    CalendarView calendarView;
+    private DatePickerDialog date_picker_dialog;
+    private Button date_button, save, exeptionTime;
+    private DBExeptionHelper dbExeptionHelper;
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
@@ -33,7 +39,7 @@ public class Timefragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.time_fragment, container, false);
 
         dbTimeHelper = new DbTimeHelper(getContext());
-        calendarView =  view.findViewById(R.id.calendarExceptions);
+        dbExeptionHelper = new DBExeptionHelper(getContext());
         monTimePicker = view.findViewById(R.id.monTimePicker);
         tueTimePicker = view.findViewById(R.id.tueTimePicker);
         wedTimePicker = view.findViewById(R.id.wedTimePicker);
@@ -60,10 +66,58 @@ public class Timefragment extends Fragment implements View.OnClickListener {
         satTimePicker.setOnClickListener(this);
         sunTimePicker.setOnClickListener(this);
 
+        initDatePicker();
+        date_button = view.findViewById(R.id.datePickerBtn);
+        date_button.setText(getTodaysDate());
+        date_button.setOnClickListener(this);
+
+        save = view.findViewById(R.id.saveException);
+        save.setOnClickListener(this);
+
+        exeptionTime = view.findViewById(R.id.exceptiontime);
+
 
         return view;
     }
 
+
+    //get todays date as a string
+    private String getTodaysDate() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        month++;
+
+        return makeDateString(year, month, day);
+    }
+
+    //open datepickerdialog for user when date is clicked
+    private void initDatePicker() {
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                month++;
+                String date = makeDateString(year, month, day);
+                date_button.setText(date);
+            }
+        };
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        int style = AlertDialog.THEME_HOLO_LIGHT;
+
+        date_picker_dialog = new DatePickerDialog(getActivity(), style, dateSetListener, year, month, day);
+
+    }
+
+    //european date format
+    private String makeDateString(int year, int month, int day) {
+        return day + "." + getMonthFormat(month) + "." + year;
+    }
     private void storeDatainObjects() {
         Cursor cursor = dbTimeHelper.readAllData();
         if (cursor.getCount() == 0) {
@@ -72,25 +126,25 @@ public class Timefragment extends Fragment implements View.OnClickListener {
             while (cursor.moveToNext()) {
                 switch(cursor.getString(1)){
                     case "Monday":
-                        mon = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                        mon = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
                         break;
                     case "Tuesday":
-                        tue = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                        tue = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
                         break;
                     case "Wednesday":
-                        wed = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                        wed = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
                         break;
                     case "Thursday":
-                        thu = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                        thu = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
                         break;
                     case "Friday":
-                        fri = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                        fri = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
                         break;
                     case "Saturday":
-                        sat = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                        sat = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
                         break;
                     case "Sunday":
-                        sun = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                        sun = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
                         break;
 
 
@@ -109,27 +163,26 @@ public class Timefragment extends Fragment implements View.OnClickListener {
                         minute = selectedMinute;
                         if (monTimePicker.equals(view)) {
                             monTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                            dbTimeHelper.updateTimeObject(mon.getId(), mon.getDay(), monTimePicker.getText().toString());
+                            dbTimeHelper.updateTimeObject(mon.getId(), mon.getDay(), stringToMinutes(monTimePicker.getText().toString()));
                         } else if (tueTimePicker.equals(view)) {
                             tueTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                            dbTimeHelper.updateTimeObject(tue.getId(), tue.getDay(), tueTimePicker.getText().toString());
+                            dbTimeHelper.updateTimeObject(tue.getId(), tue.getDay(), stringToMinutes(tueTimePicker.getText().toString()));
                         } else if (view == wedTimePicker) {
                             wedTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                            dbTimeHelper.updateTimeObject(wed.getId(), wed.getDay(), wedTimePicker.getText().toString());
+                            dbTimeHelper.updateTimeObject(wed.getId(), wed.getDay(), stringToMinutes(wedTimePicker.getText().toString()));
                         } else if (view == thuTimePicker) {
                             thuTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                            dbTimeHelper.updateTimeObject(thu.getId(), thu.getDay(), thuTimePicker.getText().toString());
+                            dbTimeHelper.updateTimeObject(thu.getId(), thu.getDay(), stringToMinutes(thuTimePicker.getText().toString()));
                         } else if (view == friTimePicker) {
                             friTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                            dbTimeHelper.updateTimeObject(fri.getId(), fri.getDay(), friTimePicker.getText().toString());
+                            dbTimeHelper.updateTimeObject(fri.getId(), fri.getDay(), stringToMinutes(friTimePicker.getText().toString()));
                         } else if (view == satTimePicker) {
                             satTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                            dbTimeHelper.updateTimeObject(sat.getId(), sat.getDay(), satTimePicker.getText().toString());
+                            dbTimeHelper.updateTimeObject(sat.getId(), sat.getDay(), stringToMinutes(satTimePicker.getText().toString()));
                         } else if (view == sunTimePicker) {
                             sunTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                            dbTimeHelper.updateTimeObject(sun.getId(), sun.getDay(), sunTimePicker.getText().toString());
+                            dbTimeHelper.updateTimeObject(sun.getId(), sun.getDay(), stringToMinutes(sunTimePicker.getText().toString()));
                         }
-
                     }
                 };
                 int style = AlertDialog.THEME_HOLO_DARK;
@@ -138,6 +191,79 @@ public class Timefragment extends Fragment implements View.OnClickListener {
                 timePickerDialog.setTitle("Select Time");
                 timePickerDialog.show();
 
+                if (view.equals(date_button)) {
+                    date_picker_dialog.show();
+
+                }else if(view.equals(save)){
+                    dbExeptionHelper.addExeptionObject(date_button.getText().toString(), timeToMinutes());
+                    Toast.makeText(getContext(), "Saved Succesfully", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
+
+    private int stringToMinutes(String time) {
+        String[] timeSplittet = time.split(":");
+        int hours = Integer.parseInt(timeSplittet[0]);
+        int mins = Integer.parseInt(timeSplittet[1]);
+        return  hours*60 + mins;
+    }
+
+    private int timeToMinutes() {
+        String time = exeptionTime.getText().toString();
+        String[] timeSplittet = time.split(":");
+        int hours = Integer.parseInt(timeSplittet[0]);
+        int mins = Integer.parseInt(timeSplittet[1]);
+        return  hours*60 + mins;
+    }
+
+    //integer month transform into String
+    public String getMonthFormat(int month) {
+        String s;
+        switch (month) {
+            case 1:
+                s = "Jan";
+                break;
+            case 2:
+                s = "Feb";
+                break;
+            case 3:
+                s = "Mar";
+                break;
+            case 4:
+                s = "Apr";
+                break;
+            case 5:
+                s = "May";
+                break;
+            case 6:
+                s = "Jun";
+                break;
+            case 7:
+                s = "Jul";
+                break;
+            case 8:
+                s = "Aug";
+                break;
+            case 9:
+                s = "Sep";
+                break;
+            case 10:
+                s = "Oct";
+                break;
+            case 11:
+                s = "Nov";
+                break;
+            case 12:
+                s = "Dec";
+                break;
+            default:
+                s = "Jan";
+                break;
         }
+        return s;
+    }
+
+}
+
 

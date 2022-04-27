@@ -8,7 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,18 +23,35 @@ import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.time.temporal.ChronoUnit;
 
 public class MainFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
 
-    TextView title;
+    TextView title, sub, ty,tim,shownDate, homeTitle;
     NavigationView navigationView;
-    TextView homeTitle;
     Spinner spinner;
-    LinearLayout lessonsList;
+    LinearLayout lessonsList, tasks;
     DbHelper dbHelper;
+    DBExamHelper dbExamHelper;
+    DBTodoHelper dbTodoHelper;
+    DbTimeHelper dbTimeHelper;
+    DBExeptionHelper dbExeptionHelper;
+    Button prev, next, start;
+    ProgressBar progressBar;
+    private LocalDate today;
+    ArrayList<String> dayTasks, PlanId, PlanSub, PlanType, PlanBeg, PlanEnd, PlanCol, TodoId, TodoDo, TodoTi, TodoColec;
+    ArrayList<Integer>  TodoCheck, PlanProg, PlanVol, remainingDays, exeptionminutes;
+    ArrayList<String> BeforeExamsId;
+    String id;
+    ArrayList<Float> absolutHours;
+    ArrayList<LocalDate> exeptionDates;
+
+
+
 
 
     @Nullable
@@ -45,8 +64,44 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         navigationView = getActivity().findViewById(R.id.nav_view);
         spinner = view.findViewById(R.id.spinner);
         lessonsList = view.findViewById(R.id.lessonslist);
-
+        sub = view.findViewById(R.id.subStudyPlan);
+        ty = view.findViewById(R.id.typeStudyPlan);
+        tim = view.findViewById(R.id.timeNeeded);
+        shownDate = view.findViewById(R.id.shownDate);
+        tasks  = view.findViewById(R.id.tasks);
+        prev  = view.findViewById(R.id.prev);
+        next  = view.findViewById(R.id.next);
+        start  = view.findViewById(R.id.start);
+        progressBar = view.findViewById(R.id.progressBar);
         dbHelper = new DbHelper(getActivity());
+        dbExamHelper = new DBExamHelper(getActivity());
+        dbTodoHelper = new DBTodoHelper(getActivity());
+        dbTimeHelper = new DbTimeHelper(getActivity());
+        dbExeptionHelper = new DBExeptionHelper(getActivity());
+        today = LocalDate.now();
+
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
+        String dateString =today.format(formatter);
+        shownDate.setText(dateString);
+
+        PlanId = new ArrayList<>();
+        PlanSub = new ArrayList<>();
+        PlanType= new ArrayList<>();
+        PlanVol= new ArrayList<>();
+        PlanBeg= new ArrayList<>();
+        PlanEnd= new ArrayList<>();
+        PlanCol= new ArrayList<>();
+        PlanProg= new ArrayList<>();
+        TodoId= new ArrayList<>();
+        TodoDo= new ArrayList<>();
+        TodoTi= new ArrayList<>();
+        TodoColec= new ArrayList<>();
+        TodoCheck = new ArrayList<>();
+        BeforeExamsId = new ArrayList<>();
+        remainingDays = new ArrayList<>();
+        absolutHours = new ArrayList<>();
+        dayTasks = new ArrayList<>();
 
 
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -157,6 +212,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                         newLesson.setLayoutParams(lp);
                         lessonsList.addView(newLesson);
 
+                        loadData();
+                        plan();
+                        showDayData();
+
                     }
                 }
             }
@@ -169,6 +228,260 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         });
 
         return view;
+    }
+
+    private void plan() {
+        for(int i = 0; i < PlanId.size(); i++) {
+            LocalDate begin = LocalDate.parse(PlanBeg.get(i));
+            if (begin.isBefore(today) || begin.isEqual(today)) {
+                LocalDate end = LocalDate.parse(PlanEnd.get(i));
+                if(!end.isBefore(today)){
+                    BeforeExamsId.add(PlanId.get(i));
+                }else{
+                    Exam delExam = new Exam(PlanId.get(i),PlanSub.get(i),PlanType.get(i), PlanEnd.get(i),
+                            PlanBeg.get(i), PlanCol.get(i), PlanVol.get(i), PlanProg.get(i));
+                    dbExamHelper.deleteExamObject(delExam);
+                }
+            }
+        }
+        for(int i = 0; i < BeforeExamsId.size(); i++) {
+            float gesStd = 0;
+            float toDoTime = 0;
+            for (int j = 0; j < PlanId.size(); j++) {
+                if (PlanId.get(j).equals(BeforeExamsId.get(i))) {
+                    switch (PlanVol.get(j)) {
+                        case 0:
+                            gesStd = 5;
+                            break;
+                        case 1:
+                            gesStd = 10;
+                            break;
+                        case 2:
+                            gesStd = 15;
+                            break;
+                        case 3:
+                            gesStd = 20;
+                            break;
+                        case 4:
+                            gesStd = 25;
+                            break;
+                        case 5:
+                            gesStd = 30;
+                            break;
+                        case 6:
+                            gesStd = 35;
+                            break;
+                        default:
+                            gesStd = 35;
+                            break;
+                    }
+                    String end = PlanEnd.get(j);
+                    LocalDate endDate = LocalDate.parse(end);
+                    long days = ChronoUnit.DAYS.between(endDate, today);
+                    remainingDays.add((int) days);
+
+                    String key = PlanSub.get(j) + PlanType.get(j);
+                    for (int s = 0; s < TodoTi.size(); s++) {
+                        if (TodoColec.get(s).equals(key)) {
+                            toDoTime += Float.parseFloat(TodoTi.get(s));
+                        }
+
+                    }
+                    if (gesStd > toDoTime) {
+                        absolutHours.add(gesStd);
+                    } else {
+                        absolutHours.add(toDoTime);
+                    }
+                }
+            }
+
+
+        }
+        boolean isTomorrow = false;
+        for (int k = 0; k < PlanId.size(); k++){
+            String endd = PlanEnd.get(k);
+            LocalDate endDa = LocalDate.parse(endd);
+            if(ChronoUnit.DAYS.between(today, endDa) < 1){
+                isTomorrow = true;
+                sub.setText(PlanSub.get(k));
+                ty.setText(PlanType.get(k));
+                float absolut = 0;
+                for(int i = 0; i < BeforeExamsId.size(); i++) {
+                    for (int j = 0; j < PlanId.size(); j++) {
+                        if (PlanId.get(j).equals(BeforeExamsId.get(i)) &&
+                                PlanId.get(k).equals(PlanId.get(j))) {
+                            absolut = absolutHours.get(i);
+
+                        }
+                    }
+                }
+                float prog = PlanProg.get(k);
+                float faktor = 100 / absolut;
+                progressBar.setProgress((int) (prog*faktor));
+                String key = PlanSub.get(k) + PlanType.get(k);
+                for(int t = 0; t < TodoId.size(); t++){
+                    if(TodoColec.get(t).equals(key)){
+                        if (TodoCheck.get(t) == 0){
+                            boolean exepted = false;
+                            int time = 0;
+                            for (int h = 0 ; h < exeptionDates.size(); h++){
+                                if(exeptionDates.get(h).equals(today)){
+                                    exepted = true;
+                                    time= exeptionminutes.get(h);
+
+                                }
+                            }
+                            if(!exepted){
+                                String weekday = today.getDayOfWeek().name();
+                                switch (weekday){
+                                    case "MONDAY":
+                                        time = getTime("Monday");
+                                        break;
+                                    case "TUESDAY":
+                                        time = getTime("Tuesday");
+                                        break;
+                                    case "WEDNESDAY":
+                                        time = getTime("Wednesday");
+                                        break;
+                                    case "THURSDAY":
+                                        time=  getTime("Thursday");
+                                        break;
+                                    case "FRIDAY":
+                                        time = getTime("Friday");
+                                        break;
+                                    case "SATURDAY":
+                                        time = getTime("Saturday");
+                                        break;
+                                    case "SUNDAY":
+                                        time = getTime("Sunday");
+                                        break;
+
+
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+
+            }
+
+        }
+
+    }
+
+    private int getTime(String day) {
+        Cursor cursor = dbTimeHelper.readAllData();
+        if (cursor.getCount() == 0){
+            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
+        }else {
+            while (cursor.moveToNext()) {
+                if (cursor.getString(1).equalsIgnoreCase(day)){
+                    return cursor.getInt(2);
+                }
+
+
+            }
+        }
+        return 0;
+    }
+
+    private void showDayData() {
+    }
+
+    private void loadData(){
+        Cursor cursor1 = dbHelper.readAllData();
+        if (cursor1.getCount() == 0){
+            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
+        }else {
+            while (cursor1.moveToNext()) {
+                PlanId.add(cursor1.getString(0));
+                PlanSub.add(cursor1.getString(1));
+                PlanType.add(cursor1.getString(2));
+                PlanVol.add(cursor1.getInt(3));
+                PlanBeg.add(cursor1.getString(4));
+                PlanEnd.add(cursor1.getString(5));
+                PlanCol.add(cursor1.getString(6));
+                PlanProg.add(cursor1.getInt(7));
+
+            }
+        }
+        cursor1 = dbTodoHelper.readAllData();
+        if (cursor1.getCount() == 0){
+            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
+        }else {
+            while (cursor1.moveToNext()) {
+                TodoId.add(cursor1.getString(0));
+                TodoDo.add(cursor1.getString(1));
+                TodoTi.add(cursor1.getString(2));
+                TodoColec.add(cursor1.getString(3));
+                TodoCheck.add(cursor1.getInt(4));
+
+
+            }
+        }
+        cursor1 = dbExeptionHelper.readAllData();
+        if (cursor1.getCount() == 0){
+            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
+        }else {
+            while (cursor1.moveToNext()) {
+                exeptionminutes.add(cursor1.getInt(2));
+                String date = cursor1.getString(1);
+                String[] dateParts = date.split(".");
+                String dateFormatted = dateParts[2] + "-"+ getMonat(dateParts[1]) + "-" + dateParts[0];
+                LocalDate date1 = LocalDate.parse(dateFormatted);
+                exeptionDates.add(date1);
+
+
+            }
+        }
+    }
+
+    private String getMonat(String datePart) {
+        String s;
+        switch (datePart) {
+            case "Jan":
+                s = "01";
+                break;
+            case "Feb":
+                s = "02";
+                break;
+            case "Mar":
+                s = "03";
+                break;
+            case "Apr":
+                s = "04";
+                break;
+            case "May":
+                s = "05";
+                break;
+            case "Jun":
+                s = "06";
+                break;
+            case "Jul":
+                s = "07";
+                break;
+            case "Aug":
+                s = "08";
+                break;
+            case "Sep":
+                s = "09";
+                break;
+            case "Oct":
+                s = "10";
+                break;
+            case "Nov":
+                s = "11";
+                break;
+            case "Dec":
+                s = "12";
+                break;
+            default:
+                s = "01";
+                break;
+        }
+        return s;
     }
 
     @Override
