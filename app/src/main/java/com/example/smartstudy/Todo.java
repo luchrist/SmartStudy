@@ -2,10 +2,10 @@ package com.example.smartstudy;
 
 public class Todo {
 
-    private String key,id, todo, time;
-    private int checked;
+    private String key,id, todo;
+    private int checked, time;
 
-    public Todo(String key, String id, String todo, String time, int checked) {
+    public Todo(String key, String id, String todo, int time, int checked) {
         this.key = key;
         this.id = id;
         this.todo = todo;
@@ -37,11 +37,11 @@ public class Todo {
         this.todo = todo;
     }
 
-    public String getTime() {
+    public int getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(int time) {
         this.time = time;
     }
 

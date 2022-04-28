@@ -130,7 +130,7 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
 
 
                         for (int i  = 0; i < todoList.size(); i++){
-                            Todo tod = new Todo(key, "", todoList.get(i), timeList.get(i), 0);
+                            Todo tod = new Todo(key, "", todoList.get(i), stringToMinutes(timeList.get(i)), 0);
                             dbTodoHelper.addTodoObject(tod);
                         }
 
@@ -151,6 +151,12 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
 
         // Create the AlertDialog object and return it
         return builder.create();
+    }
+    private int stringToMinutes(String time) {
+        String[] timeSplittet = time.split(":");
+        int hours = Integer.parseInt(timeSplittet[0]);
+        int mins = Integer.parseInt(timeSplittet[1]);
+        return  hours*60 + mins;
     }
 
     private void showDayData() {
@@ -236,7 +242,7 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                             newTodo.setPaintFlags(newTodo.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                         }
                         todos.addView(newTodo);
-                        Todo delTodo = new Todo(key,TodoId.get(j),TodoDo.get(j), TodoTi.get(j), TodoCheck.get(j));
+                        Todo delTodo = new Todo(key,TodoId.get(j),TodoDo.get(j), stringToMinutes(TodoTi.get(j)), TodoCheck.get(j));
 
 
                         TextView newEstimated = new TextView(times.getContext());

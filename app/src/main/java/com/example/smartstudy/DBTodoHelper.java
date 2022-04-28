@@ -33,7 +33,7 @@ public class DBTodoHelper extends SQLiteOpenHelper {
             "create table "+ TABLE +"(" +
                     COLUMN_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_TODO + " TEXT NOT NULL, " +
-                    COLUMN_TIME + " TEXT NOT NULL, " +
+                    COLUMN_TIME + " INTEGER NOT NULL, " +
                     COLUMN_COLLECTION + " TEXT NOT NULL, " +
                     COLUMN_CHECKED + "INTEGER NOT NULL);";
 

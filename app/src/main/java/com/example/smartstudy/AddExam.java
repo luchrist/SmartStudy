@@ -96,7 +96,7 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
 
                         DBTodoHelper dbTodoHelper = new DBTodoHelper(AddExam.this.getContext());
                         for (int i  = 0; i < todoList.size(); i++){
-                            Todo tod = new Todo(key, "", todoList.get(i), timeList.get(i), 0);
+                            Todo tod = new Todo(key, "", todoList.get(i), stringToMinutes(timeList.get(i)), 0);
                             dbTodoHelper.addTodoObject(tod);
                         }
 
@@ -118,6 +118,13 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
 
         // Create the AlertDialog object and return it
         return builder.create();
+    }
+
+    private int stringToMinutes(String time) {
+        String[] timeSplittet = time.split(":");
+        int hours = Integer.parseInt(timeSplittet[0]);
+        int mins = Integer.parseInt(timeSplittet[1]);
+        return  hours*60 + mins;
     }
 
     @Override
