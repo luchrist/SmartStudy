@@ -48,13 +48,13 @@ public class Timefragment extends Fragment implements View.OnClickListener {
         satTimePicker = view.findViewById(R.id.satTimePicker);
         sunTimePicker = view.findViewById(R.id.sunTimePicker);
         storeDatainObjects();
-        monTimePicker.setText(mon.getTime());
-        tueTimePicker.setText(tue.getTime());
-        wedTimePicker.setText(wed.getTime());
-        thuTimePicker.setText(thu.getTime());
-        friTimePicker.setText(fri.getTime());
-        satTimePicker.setText(sat.getTime());
-        sunTimePicker.setText(sun.getTime());
+        monTimePicker.setText(minutesToString(mon.getTime()));
+        tueTimePicker.setText(minutesToString(tue.getTime()));
+        wedTimePicker.setText(minutesToString(wed.getTime()));
+        thuTimePicker.setText(minutesToString(thu.getTime()));
+        friTimePicker.setText(minutesToString(fri.getTime()));
+        satTimePicker.setText(minutesToString(sat.getTime()));
+        sunTimePicker.setText(minutesToString(sun.getTime()));
 
         //calendarView.s
 
@@ -78,6 +78,13 @@ public class Timefragment extends Fragment implements View.OnClickListener {
 
 
         return view;
+    }
+
+    private String minutesToString(int time) {
+        int hours = time/60;
+        int minutes = time%60;
+
+        return  hours +":"+minutes;
     }
 
 
