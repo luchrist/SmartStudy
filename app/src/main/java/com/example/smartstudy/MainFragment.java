@@ -47,11 +47,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     ArrayList<String> dayTasks, PlanId, PlanSub, PlanType, PlanBeg, PlanEnd, PlanCol, TodoId, TodoDo, TodoColec;
     ArrayList<Integer>  TodoTi, TodoCheck, PlanProg, PlanVol, remainingDays, exeptionminutes;
     ArrayList<String> BeforeExamsId;
-    String id;
+    String id, enddate, startdate, col;
     ArrayList<Integer> absolutHours, todoIndex;
     ArrayList<LocalDate> exeptionDates;
     int absolut;
-    int prog;
+    int prog, vol;
 
 
 
@@ -310,6 +310,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
             if(ChronoUnit.DAYS.between(localDate, endDa) < 1){
                 isTomorrow = true;
                 id = PlanId.get(k);
+                enddate = PlanEnd.get(k);
+                startdate = PlanBeg.get(k);
+                col = PlanCol.get(k);
+                vol = PlanVol.get(k);
                 sub.setText(PlanSub.get(k));
                 ty.setText(PlanType.get(k));
                 absolut = 0;
@@ -408,6 +412,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                             //prog = PlanProg.get(k);
                             if (highestRemAbs == (absolut - prog)) {
                                 id = PlanId.get(k);
+                                enddate = PlanEnd.get(k);
+                                startdate = PlanBeg.get(k);
+                                col = PlanCol.get(k);
+                                vol = PlanVol.get(k);
                                 sub.setText(PlanSub.get(k));
                                 ty.setText(PlanType.get(k));    //das Exam mit den meisten verbleibenden Stunden zuordnen
                                 float faktor = 100 / absolut;
@@ -613,7 +621,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                     new LearnFragment(sub.getText().toString(),ty.getText().toString(),prog,
                             absolut, Integer.parseInt(tim.getText().toString()),
-                            todoIndex, id)).commit();
+                            todoIndex, id, enddate,startdate,  col, vol)).commit();
             title.setText("Learn");
         }
     }
