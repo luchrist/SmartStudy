@@ -1,6 +1,7 @@
 package com.example.smartstudy;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -36,8 +37,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     NavigationView navigationView;
     Spinner spinner;
     LinearLayout lessonsList, tasks, times;
-    DbHelper dbHelper;
+
     DBExamHelper dbExamHelper;
+    DbHelper dbHelper;
     DBTodoHelper dbTodoHelper;
     DbTimeHelper dbTimeHelper;
     DBExeptionHelper dbExeptionHelper;
@@ -52,6 +54,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     ArrayList<LocalDate> exeptionDates;
     int absolut;
     int prog, vol;
+    SharedPreferences sp;
+    MainActivity mainActivity = new MainActivity();
 
 
 
@@ -63,6 +67,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     @Override
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_fragment, container, false);
+        sp = getActivity().getSharedPreferences("SP", 0);
         title = getActivity().findViewById(R.id.variabel_text);
         homeTitle = view.findViewById(R.id.timetable_title);
         navigationView = getActivity().findViewById(R.id.nav_view);
@@ -79,6 +84,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         start  = view.findViewById(R.id.start);
         start.setOnClickListener(this);
         progressBar = view.findViewById(R.id.progressBar);
+
         dbHelper = new DbHelper(getActivity());
         dbExamHelper = new DBExamHelper(getActivity());
         dbTodoHelper = new DBTodoHelper(getActivity());
@@ -109,6 +115,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         absolutHours = new ArrayList<>();
         dayTasks = new ArrayList<>();
         todoIndex = new ArrayList<>();
+        exeptionDates = new ArrayList<>();
+        exeptionminutes = new ArrayList<>();
+
+        loadData();
+        plan(today);
 
 
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -219,8 +230,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                         newLesson.setLayoutParams(lp);
                         lessonsList.addView(newLesson);
 
-                        loadData();
-                        plan(today);
+
 
                     }
                 }
@@ -233,16 +243,20 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
         });
 
+
         return view;
     }
 
     private void plan(LocalDate localDate) {
+
         for(int i = 0; i < PlanId.size(); i++) {
+
             LocalDate begin = LocalDate.parse(PlanBeg.get(i));
             if (begin.isBefore(localDate) || begin.isEqual(localDate)) {
                 LocalDate end = LocalDate.parse(PlanEnd.get(i));
                 if(!end.isBefore(localDate)){
                     BeforeExamsId.add(PlanId.get(i));
+
                 }else{
                     Exam delExam = new Exam(PlanId.get(i),PlanSub.get(i),PlanType.get(i), PlanEnd.get(i),
                             PlanBeg.get(i), PlanCol.get(i), PlanVol.get(i), PlanProg.get(i));
@@ -295,9 +309,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                     }
                     if (gesStd > toDoTime) {
                         absolutHours.add(gesStd);
+
                     } else {
                         absolutHours.add(toDoTime);
+
                     }
+
                 }
             }
 
@@ -361,12 +378,14 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                     newEstimated.setText("1");
                     time -= 1;
                 }else{
-                    newEstimated.setText(time);
+                    newEstimated.setText(String.valueOf(time));
                     time = 0;
                 }
 
                 times.addView(newEstimated);
-                tim.setText(time);
+                tim.setText(String.valueOf(time));
+
+                mainActivity.setStudyneed(true);
             }
 
         }
@@ -375,16 +394,19 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         boolean isInOneMonth = false;
         if(isTomorrow == false){
             isInThreeDays = showDayData(3, localDate);
-        }else if(isTomorrow == false && isInThreeDays == false){
+        }
+        if(isTomorrow == false && isInThreeDays == false){
 
              isInOneWeek = showDayData(7, localDate);
-        }else if(isTomorrow == false && isInThreeDays == false && isInOneWeek == false){
+        }
+        if(isTomorrow == false && isInThreeDays == false && isInOneWeek == false){
             isInOneMonth = showDayData(30, localDate);
         }
 
     }
 
     private boolean showDayData(int inDays, LocalDate localdate){
+
         boolean isInXDays = false;
         int highestRemAbs = 0;
         for (int k = 0; k < PlanId.size(); k++){
@@ -422,6 +444,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                                 progressBar.setProgress((int) (prog*faktor));
                                 String key = PlanSub.get(k) + PlanType.get(k);
                                 int time = maxTimeToday();
+                                //todos laden
                                 for(int t = 0; t < TodoId.size(); t++){
                                     if(TodoColec.get(t).equals(key)){
                                         if (TodoCheck.get(t) == 0){
@@ -440,10 +463,25 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                                         }
                                     }
                                 }
-                                if(time>0){
-                                    tim.setText(maxTimeToday()-time);
+                                if(highestRemAbs > 0){
+                                    mainActivity.setStudyneed(true);
+                                }else {
+                                    mainActivity.setStudyneed(false);
+                                }
+                                if(time>0) {
+                                    if (highestRemAbs >= maxTimeToday()) {
+                                        tim.setText(String.valueOf(maxTimeToday()));
+
+                                    } else if (highestRemAbs > (maxTimeToday() - time)){
+                                        tim.setText(String.valueOf(highestRemAbs));
+                                    }else{
+                                        tim.setText(String.valueOf(maxTimeToday()-time));
+                                    }
+
+
                                 }else{
-                                    tim.setText(maxTimeToday());
+
+                                    tim.setText(String.valueOf(maxTimeToday()));
                                 }
 
 
@@ -470,6 +508,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         }
         if(!exepted){
             String weekday = today.getDayOfWeek().name();
+
             switch (weekday){
                 case "MONDAY":
                     return getTime("Monday");
@@ -500,13 +539,18 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     private int getTime(String day) {
+        TimeObject time;
         Cursor cursor = dbTimeHelper.readAllData();
         if (cursor.getCount() == 0){
             Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
         }else {
             while (cursor.moveToNext()) {
                 if (cursor.getString(1).equalsIgnoreCase(day)){
-                    return cursor.getInt(2);
+                    //System.out.println("test"+ cursor.getString(1));
+                    //System.out.println("test"+sp.getInt(cursor.getString(1), 0));
+                    //return sp.getInt(cursor.getString(1), 0);
+                    return 5;
+                    //return cursor.getInt(2);
                 }
 
 
@@ -516,11 +560,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     private void loadData(){
-        Cursor cursor1 = dbHelper.readAllData();
+        Cursor cursor1 = dbExamHelper.readAllData();
         if (cursor1.getCount() == 0){
             Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
         }else {
             while (cursor1.moveToNext()) {
+
                 PlanId.add(cursor1.getString(0));
                 PlanSub.add(cursor1.getString(1));
                 PlanType.add(cursor1.getString(2));
@@ -534,7 +579,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         }
         cursor1 = dbTodoHelper.readAllData();
         if (cursor1.getCount() == 0){
-            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "NO TODO", Toast.LENGTH_SHORT).show();
         }else {
             while (cursor1.moveToNext()) {
                 TodoId.add(cursor1.getString(0));
@@ -548,7 +593,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         }
         cursor1 = dbExeptionHelper.readAllData();
         if (cursor1.getCount() == 0){
-            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "NO EXEPTION", Toast.LENGTH_SHORT).show();
         }else {
             while (cursor1.moveToNext()) {
                 exeptionminutes.add(cursor1.getInt(2));

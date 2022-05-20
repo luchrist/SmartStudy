@@ -1,5 +1,6 @@
 package com.example.smartstudy;
 
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -29,6 +30,7 @@ public class Plan extends Fragment implements CalendarAdapter.OnItemListener, Vi
     private boolean editable;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class Plan extends Fragment implements CalendarAdapter.OnItemListener, Vi
         View view =  inflater.inflate(R.layout.fragment_plan, container, false);
         initWidgets(view);
         selectedDate = LocalDate.now();
+        System.out.println(selectedDate.getMonth());
         setMonthView();
         prev = view.findViewById(R.id.prevbtn);
         prev.setOnClickListener(this);
@@ -54,7 +57,7 @@ public class Plan extends Fragment implements CalendarAdapter.OnItemListener, Vi
         monthYearText.setText(monthYearFromDate(selectedDate));
         ArrayList<String> daysInMonth = dayInMonthArray(selectedDate);
 
-        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this);
+        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this, selectedDate.getMonth());
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
@@ -134,5 +137,7 @@ public class Plan extends Fragment implements CalendarAdapter.OnItemListener, Vi
             editable = false;
             Toast.makeText(getContext(), "Plan is now in view mode!", Toast.LENGTH_SHORT).show();
         }
+
     }
+
 }

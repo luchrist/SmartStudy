@@ -58,6 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="total time left"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_pause_resume" />
@@ -68,6 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/textView45"
         app:layout_constraintTop_toBottomOf="@+id/btn_pause_resume" />
 
@@ -77,6 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="current Task"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView45" />
@@ -86,6 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textview47" />
@@ -96,6 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="time left on current task:"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/taskBox" />
@@ -105,6 +110,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/textView49"
         app:layout_constraintTop_toTopOf="@+id/textView49" />
 
@@ -114,6 +120,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="todays session time left:"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView49" />
@@ -123,6 +130,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/textView52"
         app:layout_constraintTop_toTopOf="@+id/textView52" />
 
@@ -132,6 +140,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="todays session time focused:"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView52" />
@@ -141,6 +150,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/textView54"
         app:layout_constraintTop_toTopOf="@+id/textView54" />
 

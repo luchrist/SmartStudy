@@ -31,6 +31,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     Toolbar toolbar;
     TextView title, headertext;
+    private boolean studyneed = false;
+
+    public boolean isStudyneed() {
+        return studyneed;
+    }
+
+    public void setStudyneed(boolean studyneed) {
+        this.studyneed = studyneed;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +64,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onGlobalLayout() {
                 headertext = navigationView.findViewById(R.id.headertext);
-                headertext.setText("Hello " + username + ", no need to study today");
+                if(!studyneed){
+                    headertext.setText("Hello " + username + ", no need to study anymore today");
+                }else{
+                    headertext.setText("Let's get to study, " + username);
+                }
+
                 navigationView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
@@ -115,6 +129,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, new Plan()).commit();
                 title.setText("Plan");
                 navigationView.setCheckedItem(R.id.nav_plan);
+                break;
+            case R.id.nav_settings:
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, new SettingsFragment()).commit();
+                title.setText("Settings");
+                navigationView.setCheckedItem(R.id.nav_settings);
                 break;
         }
 

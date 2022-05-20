@@ -36,10 +36,10 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
     DBTodoHelper dbTodoHelper;
     ArrayList<String> PlanId, PlanSub, PlanType, PlanBeg, PlanEnd, PlanCol, TodoId, TodoDo, TodoTi, TodoColec;
     ArrayList<Integer>  TodoCheck, PlanVol;
-    ArrayList<Float> PlanProg;
+    ArrayList<Integer> PlanProg;
     String id;
     ProgressBar progressBar; // zeigt prozentual den Progress an der aber absolut in STunden abgespeichert wird
-    float progre;
+    int progre;
 
     public EditExam(LocalDate selectedDate) {
         this.selectedDate = selectedDate;
@@ -170,7 +170,7 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                 volume.setRating(PlanVol.get(i)/2);
                 startDate.setText(PlanBeg.get(i));
                 dueDay.setText(PlanEnd.get(i));
-                float progr = PlanProg.get(i); //bereits gelernte Stunden
+                int progr = PlanProg.get(i); //bereits gelernte Stunden
                 float gesStd;
                 switch(PlanVol.get(i)){
                     case 0:
@@ -302,7 +302,7 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                 PlanBeg.add(cursor.getString(4));
                 PlanEnd.add(cursor.getString(5));
                 PlanCol.add(cursor.getString(6));
-                PlanProg.add(cursor.getFloat(7));
+                PlanProg.add(cursor.getInt(7));
 
             }
         }

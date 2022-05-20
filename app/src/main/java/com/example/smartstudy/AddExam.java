@@ -28,6 +28,8 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
     ArrayList<String> todoList = new ArrayList<>();
     ArrayList<String> timeList = new ArrayList<>();
     LocalDate dueDate;
+    DBExamHelper dbExamHelper;
+    LocalDate today;
 
     public AddExam(LocalDate selectedDate) {
         dueDate = selectedDate;
@@ -54,6 +56,9 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
         volume = view.findViewById(R.id.volume_edit);
         addTodo.setOnClickListener(this);
         dueDay.setText(dueDate.toString());
+        dbExamHelper = new DBExamHelper(getContext());
+        today = LocalDate.now();
+        startDate.setText(today.toString());
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
@@ -90,9 +95,9 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
                         vol = volume.getRating();
                         int volInt = (int) (vol *2);
 
-                        DBExamHelper dbHelper = new DBExamHelper(AddExam.this.getContext());
 
-                        Exam exam = new Exam("",sub, typ,enddate,startdate,col,volInt, 0.0f);
+
+                        Exam exam = new Exam("",sub, typ,enddate,startdate,col,volInt, 0);
 
                         DBTodoHelper dbTodoHelper = new DBTodoHelper(AddExam.this.getContext());
                         for (int i  = 0; i < todoList.size(); i++){
@@ -100,7 +105,7 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
                             dbTodoHelper.addTodoObject(tod);
                         }
 
-                        dbHelper.addExamObject(exam);
+                        dbExamHelper.addExamObject(exam);
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
 
                                 new Plan()).commit();

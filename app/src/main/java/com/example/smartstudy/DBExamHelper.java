@@ -42,13 +42,14 @@ public class DBExamHelper extends SQLiteOpenHelper {
                     COLUMN_VOLUME + " INTEGER NOT NULL, " +
                     COLUMN_BEGIN + " TEXT NOT NULL, " +
                     COLUMN_END + " TEXT NOT NULL, " +
-                    COLUMN_COLOUR + " TEXT NOT NULL," +
-                    COLUMN_PROGRESS + "REAL);";
+                    COLUMN_COLOUR + " TEXT NOT NULL, " +
+                    COLUMN_PROGRESS + " INTEGER);";
 
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(SQL_CREATE);
+        System.out.println("table created");
     }
 
     @Override
@@ -66,7 +67,7 @@ public class DBExamHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_BEGIN, exam.getStartdate());
         contentValues.put(COLUMN_END, exam.getEnddate());
         contentValues.put(COLUMN_COLOUR, exam.getColour());
-        contentValues.put(COLUMN_PROGRESS, 0);
+        contentValues.put(COLUMN_PROGRESS, exam.getProgres());
 
         long result = db.insert(TABLE, null, contentValues);
         if (result == -1) {

@@ -3,6 +3,7 @@ package com.example.smartstudy;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -32,12 +33,15 @@ public class Timefragment extends Fragment implements View.OnClickListener {
     private DatePickerDialog date_picker_dialog;
     private Button date_button, save, exeptionTime;
     private DBExeptionHelper dbExeptionHelper;
+    SharedPreferences sp;
+    SharedPreferences.Editor editor;
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
     public View onCreateView(@NonNull @org.jetbrains.annotations.NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.time_fragment, container, false);
-
+        sp = getActivity().getSharedPreferences("SP", 0);
+        editor = sp.edit();
         dbTimeHelper = new DbTimeHelper(getContext());
         dbExeptionHelper = new DBExeptionHelper(getContext());
         monTimePicker = view.findViewById(R.id.monTimePicker);
@@ -171,8 +175,10 @@ public class Timefragment extends Fragment implements View.OnClickListener {
                         if (monTimePicker.equals(view)) {
                             monTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
                             dbTimeHelper.updateTimeObject(mon.getId(), mon.getDay(), stringToMinutes(monTimePicker.getText().toString()));
+                            editor.putInt(mon.getDay(),stringToMinutes(monTimePicker.getText().toString()) );
                         } else if (tueTimePicker.equals(view)) {
                             tueTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                            editor.putInt(tue.getDay(),stringToMinutes(tueTimePicker.getText().toString()) );
                             dbTimeHelper.updateTimeObject(tue.getId(), tue.getDay(), stringToMinutes(tueTimePicker.getText().toString()));
                         } else if (view == wedTimePicker) {
                             wedTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
@@ -189,7 +195,9 @@ public class Timefragment extends Fragment implements View.OnClickListener {
                         } else if (view == sunTimePicker) {
                             sunTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
                             dbTimeHelper.updateTimeObject(sun.getId(), sun.getDay(), stringToMinutes(sunTimePicker.getText().toString()));
+                            editor.putInt(sun.getDay(),stringToMinutes(sunTimePicker.getText().toString()) );
                         }
+                        editor.commit();
                     }
                 };
                 int style = AlertDialog.THEME_HOLO_DARK;

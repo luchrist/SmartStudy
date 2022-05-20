@@ -6,11 +6,11 @@
     android:background="@color/secondary"
     android:gravity="bottom"
     android:padding="16dp">
+
     <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/icons8_kleeblatt_80"
-        />
+        android:layout_width="67dp"
+        android:layout_height="67dp"
+        android:src="@drawable/icons8_kleeblatt_80" />
 
     <TextView
         android:id="@+id/headertext"

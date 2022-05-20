@@ -88,7 +88,7 @@ public class LearnFragment extends Fragment implements View.OnClickListener {
         sp = getActivity().getSharedPreferences("SP", 0);
         loadData();
         getTask(taskCount);
-        timerInMillis= (sp.getInt("timer", 90) * 60) *1000;
+        timerInMillis= (sp.getInt("timer", 2) * 60) *1000;
         sessionTime = sp.getInt("sessionTime", 0);
         taskTime = sp.getInt("taskTime", 0);
         timerLeftInMillis = timerInMillis;
@@ -97,9 +97,10 @@ public class LearnFragment extends Fragment implements View.OnClickListener {
         isBreak = false;
         isDone = false;
         timeSpendSeconds = 0;
-        totalTimeLeft.setText(absolut- progress);
-        todayTimeLeft.setText(neededTime -sessionTime);
-        todayTimeSpend.setText(sessionTime);
+        subj.setText(sub);
+        totalTimeLeft.setText(String.valueOf(absolut- progress));
+        todayTimeLeft.setText(String.valueOf(neededTime -sessionTime));
+        todayTimeSpend.setText(String.valueOf(sessionTime));
         editor = sp.edit();
         resumeTimer();
 
@@ -107,16 +108,21 @@ public class LearnFragment extends Fragment implements View.OnClickListener {
     }
 
     private void getTask(int taskCount) {
-        task.setText(TodoDo.get(todoIndex.get(taskCount)));
-        taskNeededTime = TodoTi.get(todoIndex.get(taskCount));
-        taskTimeLeft.setText(taskNeededTime - taskTime);
-        this.taskCount++;
+        try {
+            task.setText(TodoDo.get(todoIndex.get(taskCount)));
+            taskNeededTime = TodoTi.get(todoIndex.get(taskCount));
+            taskTimeLeft.setText(String.valueOf(taskNeededTime - taskTime));
+            this.taskCount++;
+        }catch (Exception e){
+            System.out.println("kein Task verfügbar");
+        }
+
     }
 
     private void loadData() {
         Cursor cursor1 = dbTodoHelper.readAllData();
         if (cursor1.getCount() == 0){
-            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "NO TODO", Toast.LENGTH_SHORT).show();
         }else {
             while (cursor1.moveToNext()) {
                 TodoId.add(cursor1.getString(0));
@@ -149,12 +155,17 @@ public class LearnFragment extends Fragment implements View.OnClickListener {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                     new MainFragment()).commit();
         }else if(v.equals(task)){
-            Todo updateDo = new Todo(TodoColec.get(todoIndex.get(taskCount-1)), TodoId.get(todoIndex.get(taskCount-1)),
-                    TodoDo.get(todoIndex.get(taskCount-1)), TodoTi.get(todoIndex.get(taskCount-1)), 1 );
-            dbTodoHelper.updateTodoObject(updateDo);
-            taskTime = 0;
-            editor.putInt("taskTime", taskTime);
-            getTask(taskCount);
+            try {
+                Todo updateDo = new Todo(TodoColec.get(todoIndex.get(taskCount-1)), TodoId.get(todoIndex.get(taskCount-1)),
+                        TodoDo.get(todoIndex.get(taskCount-1)), TodoTi.get(todoIndex.get(taskCount-1)), 1 );
+                dbTodoHelper.updateTodoObject(updateDo);
+                taskTime = 0;
+                editor.putInt("taskTime", taskTime);
+                getTask(taskCount);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
 
     }
@@ -220,7 +231,7 @@ public class LearnFragment extends Fragment implements View.OnClickListener {
     private void doneSession() {
         titleLearn.setText("CONGRATULATION !!!");
         giveUp.setText("Done");
-        giveUp.setTextColor(Color.green(1));
+        giveUp.setTextColor(Color.GREEN);
         isDone = true;
     }
 
@@ -229,12 +240,13 @@ public class LearnFragment extends Fragment implements View.OnClickListener {
         if(!isBreak){
             isBreak = true;
             titleLearn.setText("PAUSE");
-            timerInMinutes = sp.getInt("break", 5);
+            timerInMinutes = sp.getInt("break", 1);
             timerLeftInMillis = (timerInMinutes*60)*1000;
             resumeTimer();
         }else{
             isBreak = false;
             timerLeftInMillis = timerInMillis;
+            titleLearn.setText("RESUME");
             resumeTimer();
         }
     }
@@ -247,20 +259,23 @@ public class LearnFragment extends Fragment implements View.OnClickListener {
             sessionTime +=1;
             taskTime += 1;
             timeSpendSeconds = 0;
-            if (taskNeededTime <= taskTime){
+            if (taskNeededTime > 0){
+                if (taskNeededTime <= taskTime){
+                    Todo updateDo = new Todo(TodoColec.get(todoIndex.get(taskCount-1)), TodoId.get(todoIndex.get(taskCount-1)),
+                            TodoDo.get(todoIndex.get(taskCount-1)), TodoTi.get(todoIndex.get(taskCount-1)), 1 );
+                    dbTodoHelper.updateTodoObject(updateDo);
+                    taskTime = 0;
+                    getTask(taskCount);
+                }
+                taskTimeLeft.setText(String.valueOf(taskNeededTime-taskTime));
                 Todo updateDo = new Todo(TodoColec.get(todoIndex.get(taskCount-1)), TodoId.get(todoIndex.get(taskCount-1)),
-                        TodoDo.get(todoIndex.get(taskCount-1)), TodoTi.get(todoIndex.get(taskCount-1)), 1 );
+                        TodoDo.get(todoIndex.get(taskCount-1)), taskNeededTime -taskTime, 0 );
                 dbTodoHelper.updateTodoObject(updateDo);
-                taskTime = 0;
-                getTask(taskCount);
             }
-            taskTimeLeft.setText(taskNeededTime-taskTime);
-            Todo updateDo = new Todo(TodoColec.get(todoIndex.get(taskCount-1)), TodoId.get(todoIndex.get(taskCount-1)),
-                    TodoDo.get(todoIndex.get(taskCount-1)), taskNeededTime -taskTime, 0 );
-            dbTodoHelper.updateTodoObject(updateDo);
-            totalTimeLeft.setText(absolut- progress);
-            todayTimeLeft.setText(neededTime -sessionTime);
-            todayTimeSpend.setText(sessionTime);
+
+            totalTimeLeft.setText(String.valueOf(absolut- progress));
+            todayTimeLeft.setText(String.valueOf(neededTime -sessionTime));
+            todayTimeSpend.setText(String.valueOf(sessionTime));
             editor.putInt("sessionTime", sessionTime );
             editor.putInt("taskTime", taskTime);
             editor.commit();
