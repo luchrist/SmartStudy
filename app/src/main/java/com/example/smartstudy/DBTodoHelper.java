@@ -30,12 +30,12 @@ public class DBTodoHelper extends SQLiteOpenHelper {
 
 
     public static final String SQL_CREATE =
-            "create table "+ TABLE +"(" +
+            "create table if not exists "+ TABLE +"(" +
                     COLUMN_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_TODO + " TEXT NOT NULL, " +
                     COLUMN_TIME + " INTEGER NOT NULL, " +
                     COLUMN_COLLECTION + " TEXT NOT NULL, " +
-                    COLUMN_CHECKED + "INTEGER NOT NULL);";
+                    COLUMN_CHECKED + " INTEGER NOT NULL);";
 
 
 
@@ -55,21 +55,25 @@ public class DBTodoHelper extends SQLiteOpenHelper {
     void addTodoObject(Todo todo) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_COLLECTION, todo.getKey());
         contentValues.put(COLUMN_TODO, todo.getTodo());
         contentValues.put(COLUMN_TIME, todo.getTime());
+        contentValues.put(COLUMN_COLLECTION, todo.getKey());
         contentValues.put(COLUMN_CHECKED, todo.getChecked());
 
 
 
-
-        long result = db.insert(TABLE, null, contentValues);
-        if (result == -1) {
-            Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show();
-            System.out.println("Hier läuft was falsch");
-        } else {
-            //Toast.makeText(context, "Added succesfully!", Toast.LENGTH_SHORT).show();
+        try{
+            long result = db.insertOrThrow(TABLE, null, contentValues);
+            if (result == -1) {
+                Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show();
+                System.out.println("Hier läuft was falsch");
+            } else {
+                //Toast.makeText(context, "Added succesfully!", Toast.LENGTH_SHORT).show();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
 
 
     }

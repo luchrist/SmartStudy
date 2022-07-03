@@ -248,161 +248,168 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     private void plan(LocalDate localDate) {
+        if (maxTimeToday() > 0){
+            for(int i = 0; i < PlanId.size(); i++) {
 
-        for(int i = 0; i < PlanId.size(); i++) {
+                LocalDate begin = LocalDate.parse(PlanBeg.get(i));
+                if (begin.isBefore(localDate) || begin.isEqual(localDate)) {
+                    LocalDate end = LocalDate.parse(PlanEnd.get(i));
+                    if(!end.isBefore(localDate)){
+                        BeforeExamsId.add(PlanId.get(i));
 
-            LocalDate begin = LocalDate.parse(PlanBeg.get(i));
-            if (begin.isBefore(localDate) || begin.isEqual(localDate)) {
-                LocalDate end = LocalDate.parse(PlanEnd.get(i));
-                if(!end.isBefore(localDate)){
-                    BeforeExamsId.add(PlanId.get(i));
-
-                }else{
-                    Exam delExam = new Exam(PlanId.get(i),PlanSub.get(i),PlanType.get(i), PlanEnd.get(i),
-                            PlanBeg.get(i), PlanCol.get(i), PlanVol.get(i), PlanProg.get(i));
-                    dbExamHelper.deleteExamObject(delExam);
+                    }else{
+                        Exam delExam = new Exam(PlanId.get(i),PlanSub.get(i),PlanType.get(i), PlanEnd.get(i),
+                                PlanBeg.get(i), PlanCol.get(i), PlanVol.get(i), PlanProg.get(i));
+                        dbExamHelper.deleteExamObject(delExam);
+                    }
                 }
             }
-        }
-        for(int i = 0; i < BeforeExamsId.size(); i++) {
-            int gesStd = 0;
-            int toDoTime = 0;
-            for (int j = 0; j < PlanId.size(); j++) {
-                if (PlanId.get(j).equals(BeforeExamsId.get(i))) {
-                    switch (PlanVol.get(j)) {
-                        case 0:
-                            gesStd = 5*60;
-                            break;
-                        case 1:
-                            gesStd = 10*60;
-                            break;
-                        case 2:
-                            gesStd = 15*60;
-                            break;
-                        case 3:
-                            gesStd = 20*60;
-                            break;
-                        case 4:
-                            gesStd = 25*60;
-                            break;
-                        case 5:
-                            gesStd = 30*60;
-                            break;
-                        case 6:
-                            gesStd = 35*60;
-                            break;
-                        default:
-                            gesStd = 35*60;
-                            break;
-                    }
-                    String end = PlanEnd.get(j);
-                    LocalDate endDate = LocalDate.parse(end);
-                    long days = ChronoUnit.DAYS.between(endDate, localDate);
-                    remainingDays.add((int) days);
+            for(int i = 0; i < BeforeExamsId.size(); i++) {
+                int gesStd = 0;
+                int toDoTime = 0;
+                for (int j = 0; j < PlanId.size(); j++) {
+                    if (PlanId.get(j).equals(BeforeExamsId.get(i))) {
+                        switch (PlanVol.get(j)) {
+                            case 0:
+                                gesStd = 5*60;
+                                break;
+                            case 1:
+                                gesStd = 10*60;
+                                break;
+                            case 2:
+                                gesStd = 15*60;
+                                break;
+                            case 3:
+                                gesStd = 20*60;
+                                break;
+                            case 4:
+                                gesStd = 25*60;
+                                break;
+                            case 5:
+                                gesStd = 30*60;
+                                break;
+                            case 6:
+                                gesStd = 35*60;
+                                break;
+                            default:
+                                gesStd = 35*60;
+                                break;
+                        }
+                        String end = PlanEnd.get(j);
+                        LocalDate endDate = LocalDate.parse(end);
+                        long days = ChronoUnit.DAYS.between(endDate, localDate);
+                        remainingDays.add((int) days);
 
-                    String key = PlanSub.get(j) + PlanType.get(j);
-                    for (int s = 0; s < TodoTi.size(); s++) {
-                        if (TodoColec.get(s).equals(key)) {
-                            toDoTime += TodoTi.get(s);
+                        String key = PlanSub.get(j) + PlanType.get(j);
+                        for (int s = 0; s < TodoTi.size(); s++) {
+                            if (TodoColec.get(s).equals(key)) {
+                                toDoTime += TodoTi.get(s);
+                            }
+
+                        }
+                        if (gesStd > toDoTime) {
+                            absolutHours.add(gesStd);
+
+                        } else {
+                            absolutHours.add(toDoTime);
+
                         }
 
                     }
-                    if (gesStd > toDoTime) {
-                        absolutHours.add(gesStd);
-
-                    } else {
-                        absolutHours.add(toDoTime);
-
-                    }
-
                 }
+
+
             }
+            boolean isTomorrow = false;
+            for (int k = 0; k < PlanId.size(); k++){
+                String endd = PlanEnd.get(k);
+                LocalDate endDa = LocalDate.parse(endd);
+                if(ChronoUnit.DAYS.between(localDate, endDa) < 1){
+                    isTomorrow = true;
+                    id = PlanId.get(k);
+                    enddate = PlanEnd.get(k);
+                    startdate = PlanBeg.get(k);
+                    col = PlanCol.get(k);
+                    vol = PlanVol.get(k);
+                    sub.setText(PlanSub.get(k));
+                    ty.setText(PlanType.get(k));
+                    absolut = 0;
+                    for(int i = 0; i < BeforeExamsId.size(); i++) {
+                        for (int j = 0; j < PlanId.size(); j++) {
+                            if (PlanId.get(j).equals(BeforeExamsId.get(i)) &&
+                                    PlanId.get(k).equals(PlanId.get(j))) {
+                                absolut = absolutHours.get(i);
 
-
-        }
-        boolean isTomorrow = false;
-        for (int k = 0; k < PlanId.size(); k++){
-            String endd = PlanEnd.get(k);
-            LocalDate endDa = LocalDate.parse(endd);
-            if(ChronoUnit.DAYS.between(localDate, endDa) < 1){
-                isTomorrow = true;
-                id = PlanId.get(k);
-                enddate = PlanEnd.get(k);
-                startdate = PlanBeg.get(k);
-                col = PlanCol.get(k);
-                vol = PlanVol.get(k);
-                sub.setText(PlanSub.get(k));
-                ty.setText(PlanType.get(k));
-                absolut = 0;
-                for(int i = 0; i < BeforeExamsId.size(); i++) {
-                    for (int j = 0; j < PlanId.size(); j++) {
-                        if (PlanId.get(j).equals(BeforeExamsId.get(i)) &&
-                                PlanId.get(k).equals(PlanId.get(j))) {
-                            absolut = absolutHours.get(i);
-
-                        }
-                    }
-                }
-                prog = PlanProg.get(k);
-                float faktor = 100 / absolut;
-                progressBar.setProgress((int) (prog*faktor));
-                String key = PlanSub.get(k) + PlanType.get(k);
-                int time = maxTimeToday();
-                for(int t = 0; t < TodoId.size(); t++){
-                    if(TodoColec.get(t).equals(key)){
-                        if (TodoCheck.get(t) == 0){
-
-                            if(time > 0){
-                                todoIndex.add(t);
-                                TextView newTodo = new TextView(tasks.getContext());
-                                newTodo.setText(TodoDo.get(t));
-                                tasks.addView(newTodo);
-
-                                TextView newEstimated = new TextView(times.getContext());
-                                newEstimated.setText(TodoTi.get(t));
-                                times.addView(newEstimated);
-
-                                time -= TodoTi.get(t);
                             }
                         }
                     }
-                }
-                TextView newTodo = new TextView(tasks.getContext());
-                newTodo.setText("Wiederholen");
-                tasks.addView(newTodo);
-                TextView newEstimated = new TextView(times.getContext());
-                if (time <= 0){
-                    newEstimated.setText("0");
-                    time = 0;
-                }else if(time > 1){
-                    newEstimated.setText("1");
-                    time -= 1;
-                }else{
-                    newEstimated.setText(String.valueOf(time));
-                    time = 0;
+                    prog = PlanProg.get(k);
+                    float faktor;
+                    if(absolut != 0){
+                        faktor = 100 / absolut;
+                    }else{
+                        faktor = 100/1;
+                    }
+
+                    progressBar.setProgress((int) (prog*faktor));
+                    String key = PlanSub.get(k) + PlanType.get(k);
+                    int time = maxTimeToday();
+                    for(int t = 0; t < TodoId.size(); t++){
+                        if(TodoColec.get(t).equals(key)){
+                            if (TodoCheck.get(t) == 0){
+
+                                if(time > 0){
+                                    todoIndex.add(t);
+                                    TextView newTodo = new TextView(tasks.getContext());
+                                    newTodo.setText(TodoDo.get(t));
+                                    tasks.addView(newTodo);
+
+                                    TextView newEstimated = new TextView(times.getContext());
+                                    newEstimated.setText(String.valueOf(TodoTi.get(t)));
+                                    times.addView(newEstimated);
+
+                                    time -= TodoTi.get(t);
+                                }
+                            }
+                        }
+                    }
+                    TextView newTodo = new TextView(tasks.getContext());
+                    newTodo.setText("Wiederholen");
+                    tasks.addView(newTodo);
+                    TextView newEstimated = new TextView(times.getContext());
+                    if (time <= 0){
+                        newEstimated.setText("0");
+                        time = 0;
+                    }else if(time > 1){
+                        newEstimated.setText("1");
+                        time -= 1;
+                    }else{
+                        newEstimated.setText(String.valueOf(time));
+                        time = 0;
+                    }
+
+                    times.addView(newEstimated);
+                    tim.setText(String.valueOf(time));
+
+                    mainActivity.setStudyneed(true);
                 }
 
-                times.addView(newEstimated);
-                tim.setText(String.valueOf(time));
+            }
+            boolean isInThreeDays= false;
+            boolean isInOneWeek = false;
+            boolean isInOneMonth = false;
+            if(isTomorrow == false){
+                isInThreeDays = showDayData(3, localDate);
+            }
+            if(isTomorrow == false && isInThreeDays == false){
 
-                mainActivity.setStudyneed(true);
+                isInOneWeek = showDayData(7, localDate);
+            }
+            if(isTomorrow == false && isInThreeDays == false && isInOneWeek == false){
+                isInOneMonth = showDayData(30, localDate);
             }
 
         }
-        boolean isInThreeDays= false;
-        boolean isInOneWeek = false;
-        boolean isInOneMonth = false;
-        if(isTomorrow == false){
-            isInThreeDays = showDayData(3, localDate);
-        }
-        if(isTomorrow == false && isInThreeDays == false){
-
-             isInOneWeek = showDayData(7, localDate);
-        }
-        if(isTomorrow == false && isInThreeDays == false && isInOneWeek == false){
-            isInOneMonth = showDayData(30, localDate);
-        }
-
     }
 
     private boolean showDayData(int inDays, LocalDate localdate){
@@ -455,7 +462,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                                                 tasks.addView(newTodo);
 
                                                 TextView newEstimated = new TextView(times.getContext());
-                                                newEstimated.setText(TodoTi.get(t));
+                                                newEstimated.setText(minutesToString(TodoTi.get(t)));
                                                 times.addView(newEstimated);
 
                                                 time -= TodoTi.get(t);
@@ -495,6 +502,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
             }
         }
         return isInXDays;
+    }
+
+    private String minutesToString(Integer m) {
+        return m/60 + "." + m%60;
     }
 
     private int maxTimeToday() {
@@ -598,8 +609,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
             while (cursor1.moveToNext()) {
                 exeptionminutes.add(cursor1.getInt(2));
                 String date = cursor1.getString(1);
-                String[] dateParts = date.split(".");
-                String dateFormatted = dateParts[2] + "-"+ getMonat(dateParts[1]) + "-" + dateParts[0];
+                String[] dateParts = date.split("\\.");
+                String d = dateParts[0];
+                if (Integer.parseInt(dateParts[0]) < 10){
+                    d = "0"+d;
+                }
+                String dateFormatted = dateParts[2] + "-"+ getMonat(dateParts[1]) + "-" + d;
                 LocalDate date1 = LocalDate.parse(dateFormatted);
                 exeptionDates.add(date1);
 
@@ -663,11 +678,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
             navigationView.setCheckedItem(R.id.nav_timetable);
 
         }else if (v.equals(start)){
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                    new LearnFragment(sub.getText().toString(),ty.getText().toString(),prog,
-                            absolut, Integer.parseInt(tim.getText().toString()),
-                            todoIndex, id, enddate,startdate,  col, vol)).commit();
-            title.setText("Learn");
+            if(maxTimeToday() > 0){
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                        new LearnFragment(sub.getText().toString(),ty.getText().toString(),prog,
+                                absolut, Integer.parseInt(tim.getText().toString()),
+                                todoIndex, id, enddate,startdate,  col, vol)).commit();
+                title.setText("Learn");
+            }else{
+                Toast.makeText(getContext(), "There is nothing to learn today!", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

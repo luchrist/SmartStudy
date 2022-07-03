@@ -70,6 +70,7 @@ public class Timefragment extends Fragment implements View.OnClickListener {
         satTimePicker.setOnClickListener(this);
         sunTimePicker.setOnClickListener(this);
 
+
         initDatePicker();
         date_button = view.findViewById(R.id.datePickerBtn);
         date_button.setText(getTodaysDate());
@@ -79,6 +80,7 @@ public class Timefragment extends Fragment implements View.OnClickListener {
         save.setOnClickListener(this);
 
         exeptionTime = view.findViewById(R.id.exceptiontime);
+        exeptionTime.setOnClickListener(this);
 
 
         return view;
@@ -87,8 +89,17 @@ public class Timefragment extends Fragment implements View.OnClickListener {
     private String minutesToString(int time) {
         int hours = time/60;
         int minutes = time%60;
+        String h = String.valueOf(hours);
+        String m = String.valueOf(minutes);
 
-        return  hours +":"+minutes;
+        if(hours < 10){
+            h = "0" + h;
+        }
+        if(minutes < 10){
+            m = "0" + m;
+        }
+
+        return  h +":"+ m;
     }
 
 
@@ -196,6 +207,8 @@ public class Timefragment extends Fragment implements View.OnClickListener {
                             sunTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
                             dbTimeHelper.updateTimeObject(sun.getId(), sun.getDay(), stringToMinutes(sunTimePicker.getText().toString()));
                             editor.putInt(sun.getDay(),stringToMinutes(sunTimePicker.getText().toString()) );
+                        }else if (view == exeptionTime) {
+                            exeptionTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
                         }
                         editor.commit();
                     }

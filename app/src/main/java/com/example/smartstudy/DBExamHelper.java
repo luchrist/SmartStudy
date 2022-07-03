@@ -35,7 +35,7 @@ public class DBExamHelper extends SQLiteOpenHelper {
     }
 
     public static final String SQL_CREATE =
-            "create table "+ TABLE +"(" +
+            "create table if not exists "+ TABLE +"(" +
                     COLUMN_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_SUBJECT + " TEXT NOT NULL, " +
                     COLUMN_TYPE + " TEXT NOT NULL, " +

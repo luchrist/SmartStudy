@@ -152,11 +152,36 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
         // Create the AlertDialog object and return it
         return builder.create();
     }
+
+
     private int stringToMinutes(String time) {
-        String[] timeSplittet = time.split(":");
+        String[] timeSplittet = time.split("\\.");
         int hours = Integer.parseInt(timeSplittet[0]);
         int mins = Integer.parseInt(timeSplittet[1]);
         return  hours*60 + mins;
+
+
+
+
+    }
+
+    private ArrayList<String> splitString(String text, char splitSymbol){
+        ArrayList<String> ziffern = new ArrayList<>();
+        int c = 0;
+        for(int i = 0; i < text.length(); i++){
+            if(text.charAt(i) == splitSymbol){
+                String part = "";
+                for (int j= 1; j <= c; j++){
+                    part+= text.charAt(i-j);
+                }
+                ziffern.add(part);
+                ziffern.add(String.valueOf(text.charAt(i+1)));
+                return ziffern;
+            }else{
+                c++;
+            }
+        }
+        return ziffern;
     }
 
     private void showDayData() {
@@ -242,11 +267,11 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                             newTodo.setPaintFlags(newTodo.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                         }
                         todos.addView(newTodo);
-                        Todo delTodo = new Todo(key,TodoId.get(j),TodoDo.get(j), stringToMinutes(TodoTi.get(j)), TodoCheck.get(j));
+                        Todo delTodo = new Todo(key,TodoId.get(j),TodoDo.get(j), TodoTi.get(j), TodoCheck.get(j));
 
 
                         TextView newEstimated = new TextView(times.getContext());
-                        newEstimated.setText(TodoTi.get(j));
+                        newEstimated.setText(minutesToString(TodoTi.get(j)));
                         toDoTime += Float.parseFloat(TodoTi.get(j));
                         times.addView(newEstimated);
                         int p = j;
@@ -287,6 +312,13 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
 
             }
         }
+    }
+
+    private String minutesToString(String s) {
+        int minutes = Integer.parseInt(s);
+        int hours = minutes/60;
+        int mins = minutes%60;
+        return String.valueOf(hours + "." + mins);
     }
 
     private void loadData() {

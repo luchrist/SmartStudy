@@ -126,7 +126,7 @@ public class AddExam extends DialogFragment implements View.OnClickListener {
     }
 
     private int stringToMinutes(String time) {
-        String[] timeSplittet = time.split(":");
+        String[] timeSplittet = time.split("\\.");
         int hours = Integer.parseInt(timeSplittet[0]);
         int mins = Integer.parseInt(timeSplittet[1]);
         return  hours*60 + mins;

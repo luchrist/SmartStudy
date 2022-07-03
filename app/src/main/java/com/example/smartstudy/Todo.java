@@ -13,6 +13,9 @@ public class Todo {
         this.checked = checked;
     }
 
+    public Todo(String key, String id, String todo, String s, int checked) {
+    }
+
     public String getKey() {
         return key;
     }
