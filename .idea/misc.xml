@@ -3,8 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/ADM-B4E8/AndroidStudioProjects/SmartStudy/app/src/main/res/layout/activity_main.xml" value="0.25679347826086957" />
+        <entry key="..\:/Users/ADM-B4E8/AndroidStudioProjects/SmartStudy/app/src/main/res/layout/header.xml" value="0.25679347826086957" />
         <entry key="..\:/Users/ADM-B4E8/AndroidStudioProjects/SmartStudy/app/src/main/res/layout/main_fragment.xml" value="0.16" />
         <entry key="..\:/Users/ADM-B4E8/AndroidStudioProjects/SmartStudy/app/src/main/res/layout/time_fragment.xml" value="0.10410334346504559" />
+        <entry key="..\:/Users/ADM-B4E8/AndroidStudioProjects/SmartStudy/app/src/main/res/layout/toolbar.xml" value="0.25679347826086957" />
       </map>
     </option>
   </component>

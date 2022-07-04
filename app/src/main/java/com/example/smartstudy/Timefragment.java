@@ -221,6 +221,7 @@ public class Timefragment extends Fragment implements View.OnClickListener {
 
                 if (view.equals(date_button)) {
                     date_picker_dialog.show();
+                    exeptionTime.setText(String.format(Locale.getDefault(), "%02d:%02d", 00, 00));
 
                 }else if(view.equals(save)){
                     dbExeptionHelper.addExeptionObject(date_button.getText().toString(), timeToMinutes());

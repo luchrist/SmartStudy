@@ -124,17 +124,23 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                         vols = volume.getRating();
                         vol = (int) (vols * 2);
 
+                        if (startdate.equals("")){
+                            startdate = LocalDate.now().toString();
+                        }
+                        if(enddate.equals("")){
+                            Toast.makeText(getContext(), "Set an Date!", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Exam exam = new Exam("",sub, typ,enddate,startdate,col,vol, progre);
 
 
-                        Exam exam = new Exam("",sub, typ,enddate,startdate,col,vol, progre);
+                            for (int i  = 0; i < todoList.size(); i++){
+                                Todo tod = new Todo(key, "", todoList.get(i), stringToMinutes(timeList.get(i)), 0);
+                                dbTodoHelper.addTodoObject(tod);
+                            }
 
-
-                        for (int i  = 0; i < todoList.size(); i++){
-                            Todo tod = new Todo(key, "", todoList.get(i), stringToMinutes(timeList.get(i)), 0);
-                            dbTodoHelper.addTodoObject(tod);
+                            dbHelper.addExamObject(exam);
                         }
 
-                        dbHelper.addExamObject(exam);
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                                 new Plan()).commit();
 

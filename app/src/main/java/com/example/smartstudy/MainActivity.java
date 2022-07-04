@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView title, headertext;
     private boolean studyneed = false;
 
+
     public boolean isStudyneed() {
         return studyneed;
     }
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onGlobalLayout() {
                 headertext = navigationView.findViewById(R.id.headertext);
-                if(!studyneed){
+                if(!sp.getBoolean("studyNeed", false)){
                     headertext.setText("Hello " + username + ", no need to study anymore today");
                 }else{
                     headertext.setText("Let's get to study, " + username);

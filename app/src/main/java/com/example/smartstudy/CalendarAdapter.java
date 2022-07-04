@@ -51,8 +51,10 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
             String month = endDateSplittet[1];
             month = getMonat(month);
             String showingMonth = String.valueOf(this.month);
+            showingMonth = monthShorted(showingMonth);
             if (showingMonth.equalsIgnoreCase(month)){
                 String day = endDateSplittet[2];
+                day = transformDay(day);
                     if(day.equalsIgnoreCase(daysOfMonth.get(position))){
                         String color = col.get(i);
                         switch (color){
@@ -91,6 +93,60 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
         }
 
+    }
+
+    private String transformDay(String day) {
+        if(day.charAt(0) == '0'){
+            return String.valueOf(day.charAt(1));
+        }else{
+            return day;
+        }
+    }
+
+    private String monthShorted(String showingMonth) {
+        String s;
+        switch (showingMonth) {
+            case "JANUARY":
+                s = "JAN";
+                break;
+            case "FEBRUARY":
+                s = "FEB";
+                break;
+            case "MARCH":
+                s = "MAR";
+                break;
+            case "APRIL":
+                s = "APR";
+                break;
+            case "MAY":
+                s = "MAY";
+                break;
+            case "JUNE":
+                s = "JUN";
+                break;
+            case "JULY":
+                s = "JUL";
+                break;
+            case "AUGUST":
+                s = "AUG";
+                break;
+            case "SEPTEMBER":
+                s = "SEP";
+                break;
+            case "OCTOBER":
+                s = "OCT";
+                break;
+            case "NOVEMBER":
+                s = "NOV";
+                break;
+            case "DECEMBER":
+                s = "DEC";
+                break;
+            default:
+                s = "JAN";
+                break;
+        }
+        return s;
     }
 
     private void loadData() {

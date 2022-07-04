@@ -38,7 +38,6 @@ public class Plan extends Fragment implements CalendarAdapter.OnItemListener, Vi
         View view =  inflater.inflate(R.layout.fragment_plan, container, false);
         initWidgets(view);
         selectedDate = LocalDate.now();
-        System.out.println(selectedDate.getMonth());
         setMonthView();
         prev = view.findViewById(R.id.prevbtn);
         prev.setOnClickListener(this);
@@ -55,7 +54,7 @@ public class Plan extends Fragment implements CalendarAdapter.OnItemListener, Vi
 
     private void setMonthView() {
         monthYearText.setText(monthYearFromDate(selectedDate));
-        ArrayList<String> daysInMonth = dayInMonthArray(selectedDate);
+        ArrayList<String> daysInMonth = dayInMonthArray();
 
         CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this, selectedDate.getMonth());
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 7);
@@ -63,9 +62,9 @@ public class Plan extends Fragment implements CalendarAdapter.OnItemListener, Vi
         calendarRecyclerView.setAdapter(calendarAdapter);
     }
 
-    private ArrayList<String> dayInMonthArray(LocalDate date) {
+    private ArrayList<String> dayInMonthArray() {
         ArrayList<String> daysInMonthArray = new ArrayList<>();
-        YearMonth yearMonth = YearMonth.from(date);
+        YearMonth yearMonth = YearMonth.from(selectedDate);
         int daysInMonth = yearMonth.lengthOfMonth();
         LocalDate firstOfMonth = selectedDate.withDayOfMonth(1);
         int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();

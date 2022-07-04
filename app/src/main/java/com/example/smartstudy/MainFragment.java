@@ -55,7 +55,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     int absolut;
     int prog, vol;
     SharedPreferences sp;
-    MainActivity mainActivity = new MainActivity();
+    SharedPreferences.Editor editor;
 
 
 
@@ -68,6 +68,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_fragment, container, false);
         sp = getActivity().getSharedPreferences("SP", 0);
+        editor = sp.edit();
         title = getActivity().findViewById(R.id.variabel_text);
         homeTitle = view.findViewById(R.id.timetable_title);
         navigationView = getActivity().findViewById(R.id.nav_view);
@@ -391,7 +392,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                     times.addView(newEstimated);
                     tim.setText(String.valueOf(time));
 
-                    mainActivity.setStudyneed(true);
+                    editor.putBoolean("studyNeed", true);
+                    editor.commit();
                 }
 
             }
@@ -471,10 +473,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                                     }
                                 }
                                 if(highestRemAbs > 0){
-                                    mainActivity.setStudyneed(true);
+                                    editor.putBoolean("studyNeed", true);
+
                                 }else {
-                                    mainActivity.setStudyneed(false);
+                                    editor.putBoolean("studyNeed", false);
                                 }
+                                editor.commit();
                                 if(time>0) {
                                     if (highestRemAbs >= maxTimeToday()) {
                                         tim.setText(String.valueOf(maxTimeToday()));
@@ -678,7 +682,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
             navigationView.setCheckedItem(R.id.nav_timetable);
 
         }else if (v.equals(start)){
-            if(maxTimeToday() > 0){
+            if(sub.getText().toString() != ""){
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                         new LearnFragment(sub.getText().toString(),ty.getText().toString(),prog,
                                 absolut, Integer.parseInt(tim.getText().toString()),
@@ -686,6 +690,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                 title.setText("Learn");
             }else{
                 Toast.makeText(getContext(), "There is nothing to learn today!", Toast.LENGTH_SHORT).show();
+
             }
         }
     }
