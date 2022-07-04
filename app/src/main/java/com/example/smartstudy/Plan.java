@@ -47,7 +47,7 @@ public class Plan extends Fragment implements CalendarAdapter.OnItemListener, Vi
         editBtn.setOnClickListener(this);
         detailBtn = view.findViewById(R.id.detailbtn);
         detailBtn.setOnClickListener(this);
-        editable = false;
+        editable = true;
 
         return view;
     }
