@@ -1,6 +1,6 @@
 # SmartStudy
 Smart Study is an Android App for students, that helps them studying more structured and smarter. 
-It calculates an optimal study-plan for the user, considering start dates of learning, deadlines and difficulty or learn volume.
+It calculates an optimal study-plan for the user, considering start dates of learning, deadlines and difficulty or learning volume.
 
 User can add new exams or edit existing exams, add a timetable, set the available time for each weekday aswell as exeptions
 and adjust settings for perfect individual learning behaviour.
