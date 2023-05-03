@@ -6,6 +6,8 @@
     <string name="luckgood">, Good luck today! You are well prepared.</string>
     <string name="good">, Good Job!</string>
     <string name="bad">, Get up and study!</string>
+    <string name="facebook_application_id" translatable="false">1:1030104945757:android:5c5eb6eea4135a866829b4</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb1:1030104945757:android:5c5eb6eea4135a866829b4</string>
     <string-array name="weekdays">
         <item>Monday</item>
         <item>Tuesday</item>
@@ -49,6 +51,18 @@
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="log_in">LOG IN</string>
+    <string name="new_user_sign_up">NEW USER? SIGN UP!</string>
+    <string name="sign_in_to_continue">Sign in to continue</string>
+    <string name="welcome_gymbro">Welcome Gymbro!</string>
+    <string name="sign_up">Sign up!</string>
+    <string name="register">REGISTER</string>
+    <string name="email">Email</string>
+    <string name="alreadyHaveAccountLogin">Already have an Account? Click to Login</string>
+    <string name="appicon">appIcon</string>
 </resources>
 
     <!---->

@@ -7,26 +7,24 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.Layout;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.jetbrains.annotations.NotNull;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     //Variables
+    FirebaseAuth auth;
+    FirebaseUser user;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
@@ -47,14 +45,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences sp = this.getSharedPreferences("SP", 0);
-        String username = sp.getString("username", null);
-        if( username == null){
-            Intent intent = new Intent(this, StartActivity.class);
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+
+        if (user == null) {
+            Intent intent = new Intent(this, Login.class);
             startActivity(intent);
             this.finish();
         }
 
+        SharedPreferences sp = this.getSharedPreferences("SP", 0);
 
         drawerLayout = findViewById(R.id.drawer);
         navigationView = findViewById(R.id.nav_view);
@@ -65,10 +65,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onGlobalLayout() {
                 headertext = navigationView.findViewById(R.id.headertext);
-                if(!sp.getBoolean("studyNeed", false)){
-                    headertext.setText("Hello " + username + ", no need to study anymore today");
-                }else{
-                    headertext.setText("Let's get to study, " + username);
+                if (!sp.getBoolean("studyNeed", false)) {
+                    headertext.setText("Hello " + user.getDisplayName() + ", no need to study anymore today");
+                } else {
+                    headertext.setText("Let's get to study, " + user.getDisplayName());
                 }
 
                 navigationView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -80,10 +80,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setSupportActionBar(toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,R.string.open_drawer, R.string.close_drawer);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.container,
                     new MainFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_home);
@@ -93,9 +93,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        }else {
+        } else {
             super.onBackPressed();
         }
 
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.nav_home:
                 getSupportFragmentManager().beginTransaction().replace(R.id.container,
                         new MainFragment()).commit();
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 navigationView.setCheckedItem(R.id.nav_timetable);
                 break;
             case R.id.nav_time:
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, new Timefragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, new TimeFragment()).commit();
                 title.setText("Time");
                 navigationView.setCheckedItem(R.id.nav_time);
                 break;
@@ -135,6 +135,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, new SettingsFragment()).commit();
                 title.setText("Settings");
                 navigationView.setCheckedItem(R.id.nav_settings);
+                break;
+            case R.id.nav_logout:
+                auth.signOut();
+                Intent intent = new Intent(this, Login.class);
+                startActivity(intent);
+                this.finish();
                 break;
         }
 

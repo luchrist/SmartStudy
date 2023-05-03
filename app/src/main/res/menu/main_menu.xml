@@ -28,8 +28,14 @@
     <group android:checkableBehavior="none">
         <item
             android:id="@+id/nav_settings"
-            android:title="Settings"
-            android:icon="@drawable/ic_baseline_settings_24" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_baseline_settings_24"
+            android:title="Settings" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/icons8_logout_abgerundet_50"
+            android:title="Logout" />
     </group>
 
 </menu>

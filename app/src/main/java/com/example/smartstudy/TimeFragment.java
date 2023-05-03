@@ -6,12 +6,10 @@ import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -20,11 +18,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class Timefragment extends Fragment implements View.OnClickListener {
+public class TimeFragment extends Fragment implements View.OnClickListener {
 
     int hour, minute;
     Button monTimePicker, tueTimePicker, wedTimePicker, thuTimePicker, friTimePicker, satTimePicker, sunTimePicker;
@@ -250,9 +247,6 @@ public class Timefragment extends Fragment implements View.OnClickListener {
     public String getMonthFormat(int month) {
         String s;
         switch (month) {
-            case 1:
-                s = "Jan";
-                break;
             case 2:
                 s = "Feb";
                 break;
