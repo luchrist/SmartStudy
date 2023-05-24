@@ -6,28 +6,31 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.textfield.TextInputEditText;
+import com.example.smartstudy.databinding.ActivityLoginBinding;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class Login extends AppCompatActivity implements View.OnClickListener{
+public class Login extends AppCompatActivity implements View.OnClickListener {
 
-    TextInputEditText emailInput, passwordInput;
+    private ActivityLoginBinding binding;
+    EditText emailInput, passwordInput;
     Button loginBtn;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
-    TextView login;
+    TextView createAccount;
 
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
@@ -38,22 +41,18 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setListeners();
         mAuth = FirebaseAuth.getInstance();
-        emailInput = findViewById(R.id.email);
-        passwordInput = findViewById(R.id.pw);
-        loginBtn = findViewById(R.id.logIN);
-        progressBar = findViewById(R.id.progress_bar);
-        loginBtn.setOnClickListener(this);
-        login = findViewById(R.id.signUp);
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Login.this, Registration.class);
-                startActivity(intent);
-                finish();
-            }
+    }
+
+    private void setListeners() {
+        binding.signInBtn.setOnClickListener(this);
+        binding.noAccount.setOnClickListener(v -> {
+            Intent intent = new Intent(Login.this, Registration.class);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -61,7 +60,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     public void onClick(View view) {
         progressBar.setVisibility(View.VISIBLE);
 
-        String email, username, pw;
+        String email, pw;
         email = emailInput.getText().toString().trim();
         pw = passwordInput.getText().toString().trim();
 

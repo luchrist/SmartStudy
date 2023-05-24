@@ -52,17 +52,25 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="username">username</string>
-    <string name="password">password</string>
+    <string name="password">Password</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="log_in">LOG IN</string>
     <string name="new_user_sign_up">NEW USER? SIGN UP!</string>
     <string name="sign_in_to_continue">Sign in to continue</string>
     <string name="welcome_gymbro">Welcome Gymbro!</string>
-    <string name="sign_up">Sign up!</string>
+    <string name="sign_up">Sign Up</string>
     <string name="register">REGISTER</string>
     <string name="email">Email</string>
     <string name="alreadyHaveAccountLogin">Already have an Account? Click to Login</string>
     <string name="appicon">appIcon</string>
+    <string name="search_hint">Search Group Name</string>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="login_to_continue">Login to continue</string>
+    <string name="sign_in">Sign In</string>
+    <string name="create_new_account">Create New Account</string>
+    <string name="add_image">Add Image</string>
+    <string name="name">Username</string>
+    <string name="confirm_password">Confirm Password</string>
 </resources>
 
     <!---->

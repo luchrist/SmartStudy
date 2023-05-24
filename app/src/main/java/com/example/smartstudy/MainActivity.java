@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -61,17 +62,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = findViewById(R.id.toolbar);
         title = findViewById(R.id.variabel_text);
 
-        navigationView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                headertext = navigationView.findViewById(R.id.headertext);
-                if (!sp.getBoolean("studyNeed", false)) {
-                    headertext.setText("Hello " + user.getDisplayName() + ", no need to study anymore today");
-                } else {
-                    headertext.setText("Let's get to study, " + user.getDisplayName());
-                }
+        final String[] username = new String[1];
+        FirebaseFirestore.getInstance().collection("users").get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (int i = 0; i < queryDocumentSnapshots.size(); i++) {
+                if (queryDocumentSnapshots.getDocuments().get(i).getString("email").equalsIgnoreCase(user.getEmail())) {
+                    username[0] = queryDocumentSnapshots.getDocuments().get(i).getString("username");
+                    navigationView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            headertext = navigationView.findViewById(R.id.headertext);
+                            if (!sp.getBoolean("studyNeed", false)) {
+                                headertext.setText("Hello " + username[0] + ", no need to study anymore today");
+                            } else {
+                                headertext.setText("Let's get to study, " + username[0]);
+                            }
 
-                navigationView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            navigationView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        }
+                    });
+                }
             }
         });
         //headertext.setText("Hello " + username + ", no need to study today");
@@ -109,6 +118,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         new MainFragment()).commit();
                 title.setText("Home");
                 navigationView.setCheckedItem(R.id.nav_home);
+                break;
+            case R.id.nav_group:
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                        new GroupFragment()).commit();
+                title.setText("Group");
+                navigationView.setCheckedItem(R.id.nav_group);
                 break;
             case R.id.nav_timetable:
                 getSupportFragmentManager().beginTransaction().replace(R.id.container,

@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "1030104945757",
-    "project_id": "gymbro-1e3ee",
-    "storage_bucket": "gymbro-1e3ee.appspot.com"
+    "project_number": "701601475764",
+    "project_id": "smartstudy-d7847",
+    "storage_bucket": "smartstudy-d7847.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1030104945757:android:5c5eb6eea4135a866829b4",
+        "mobilesdk_app_id": "1:701601475764:android:8ac80e25809edac451bbe1",
         "android_client_info": {
           "package_name": "com.example.smartstudy"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1030104945757-dfofoa6isc7kjmi3jdvmb1tme35r42gl.apps.googleusercontent.com",
+          "client_id": "701601475764-26oc4t83rlnnf1onnnk5701cgu7g0d8a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smartstudy",
+            "certificate_hash": "78f0c5bcebd12f4ec3c357662293a6b621916bd0"
+          }
+        },
+        {
+          "client_id": "701601475764-rc1atvnch5a41u10mbmcuutqbrg3nkqk.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD8mP1JmDfRZUK0sy3bYkqEfx1DsEmJJvU"
+          "current_key": "AIzaSyDEXe2Z4o_hz__VK8BZT1KXfCmufDb48Xk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1030104945757-dfofoa6isc7kjmi3jdvmb1tme35r42gl.apps.googleusercontent.com",
+              "client_id": "701601475764-rc1atvnch5a41u10mbmcuutqbrg3nkqk.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
