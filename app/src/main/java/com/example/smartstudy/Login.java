@@ -19,11 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private ActivityLoginBinding binding;
-    EditText emailInput, passwordInput;
-    Button loginBtn;
     FirebaseAuth mAuth;
-    ProgressBar progressBar;
-    TextView createAccount;
 
     @Override
     public void onStart() {
@@ -58,35 +54,35 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        progressBar.setVisibility(View.VISIBLE);
+        binding.progressBar.setVisibility(View.VISIBLE);
 
         String email, pw;
-        email = emailInput.getText().toString().trim();
-        pw = passwordInput.getText().toString().trim();
+        email = binding.emailInput.getText().toString().trim();
+        pw = binding.pwInput.getText().toString().trim();
 
         if (email.isEmpty()) {
-            emailInput.setError("Email is required!");
-            emailInput.requestFocus();
-            progressBar.setVisibility(View.GONE);
+            binding.emailInput.setError("Email is required!");
+            binding.emailInput.requestFocus();
+            binding.progressBar.setVisibility(View.GONE);
             return;
         }
 
         if (pw.isEmpty()) {
-            passwordInput.setError("Password is required!");
-            passwordInput.requestFocus();
-            progressBar.setVisibility(View.GONE);
+            binding.pwInput.setError("Password is required!");
+            binding.pwInput.requestFocus();
+            binding.progressBar.setVisibility(View.GONE);
             return;
         }
 
         if (pw.length() < 6) {
-            passwordInput.setError("Password must be at least 6 characters!");
-            passwordInput.requestFocus();
-            progressBar.setVisibility(View.GONE);
+            binding.pwInput.setError("Password must be at least 6 characters!");
+            binding.pwInput.requestFocus();
+            binding.progressBar.setVisibility(View.GONE);
             return;
         }
 
         mAuth.signInWithEmailAndPassword(email, pw).addOnCompleteListener(task -> {
-            progressBar.setVisibility(View.GONE);
+            binding.progressBar.setVisibility(View.GONE);
             if (task.isSuccessful()) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
