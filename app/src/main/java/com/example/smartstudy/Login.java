@@ -15,6 +15,9 @@ import com.example.smartstudy.databinding.ActivityLoginBinding;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
 

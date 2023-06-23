@@ -1,5 +1,14 @@
 package com.example.smartstudy;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.ViewTreeObserver;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,22 +16,22 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.ViewTreeObserver;
-import android.widget.TextView;
-
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+   private static final Logger logger = Logger.getLogger(MainActivity.class.getName());
     //Variables
     FirebaseAuth auth;
     FirebaseUser user;
@@ -50,54 +59,72 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         user = auth.getCurrentUser();
 
         if (user == null) {
-            Intent intent = new Intent(this, Login.class);
+            Intent intent = new Intent(MainActivity.this, Login.class);
             startActivity(intent);
             this.finish();
-        }
+        }else {
+            SharedPreferences sp = this.getSharedPreferences("SP", 0);
 
-        SharedPreferences sp = this.getSharedPreferences("SP", 0);
+            drawerLayout = findViewById(R.id.drawer);
+            navigationView = findViewById(R.id.nav_view);
+            toolbar = findViewById(R.id.toolbar);
+            title = findViewById(R.id.variabel_text);
 
-        drawerLayout = findViewById(R.id.drawer);
-        navigationView = findViewById(R.id.nav_view);
-        toolbar = findViewById(R.id.toolbar);
-        title = findViewById(R.id.variabel_text);
+            final String[] username = new String[1];
+            FirebaseFirestore.getInstance().collection("users").get().addOnSuccessListener(queryDocumentSnapshots -> {
+                for (int i = 0; i < queryDocumentSnapshots.size(); i++) {
+                    if (queryDocumentSnapshots.getDocuments().get(i).getString("email").equalsIgnoreCase(user.getEmail())) {
+                        username[0] = queryDocumentSnapshots.getDocuments().get(i).getString("username");
+                        navigationView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+                                headertext = navigationView.findViewById(R.id.headertext);
+                                if (!sp.getBoolean("studyNeed", false)) {
+                                    headertext.setText("Hello " + username[0] + ", no need to study anymore today");
+                                } else {
+                                    headertext.setText("Let's get to study, " + username[0]);
+                                }
 
-        final String[] username = new String[1];
-        FirebaseFirestore.getInstance().collection("users").get().addOnSuccessListener(queryDocumentSnapshots -> {
-            for (int i = 0; i < queryDocumentSnapshots.size(); i++) {
-                if (queryDocumentSnapshots.getDocuments().get(i).getString("email").equalsIgnoreCase(user.getEmail())) {
-                    username[0] = queryDocumentSnapshots.getDocuments().get(i).getString("username");
-                    navigationView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                navigationView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            }
+                        });
+                    }
+                }
+            });
+            //headertext.setText("Hello " + username + ", no need to study today");
+            //", good job!"
+            //", you have to study more!"
+
+            setSupportActionBar(toolbar);
+
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
+            drawerLayout.addDrawerListener(toggle);
+            toggle.syncState();
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                        new MainFragment()).commit();
+                navigationView.setCheckedItem(R.id.nav_home);
+            }
+            navigationView.setNavigationItemSelectedListener(this);
+
+            FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(new OnCompleteListener<String>() {
                         @Override
-                        public void onGlobalLayout() {
-                            headertext = navigationView.findViewById(R.id.headertext);
-                            if (!sp.getBoolean("studyNeed", false)) {
-                                headertext.setText("Hello " + username[0] + ", no need to study anymore today");
-                            } else {
-                                headertext.setText("Let's get to study, " + username[0]);
+                        public void onComplete(@NonNull Task<String> task) {
+                            if (!task.isSuccessful()) {
+                                logger.log(Level.WARNING, "Fetching FCM registration token failed", task.getException());
+                                return;
                             }
 
-                            navigationView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            // Get new FCM registration token
+                            String token = task.getResult();
+
+                            // Log and toast
+                           logger.log(Level.INFO, token);
+                           Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
                         }
                     });
-                }
-            }
-        });
-        //headertext.setText("Hello " + username + ", no need to study today");
-        //", good job!"
-        //", you have to study more!"
-
-        setSupportActionBar(toolbar);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                    new MainFragment()).commit();
-            navigationView.setCheckedItem(R.id.nav_home);
         }
-        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
