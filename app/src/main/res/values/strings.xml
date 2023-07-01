@@ -71,6 +71,7 @@
     <string name="add_image">Add Image</string>
     <string name="name">Username</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="group">Group</string>
 </resources>
 
     <!---->

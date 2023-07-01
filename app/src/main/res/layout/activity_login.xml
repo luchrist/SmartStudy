@@ -83,24 +83,30 @@
             android:paddingBottom="10dp"
             android:text="@string/forgot_password" />
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </ProgressBar>
-
-        <Button
-            android:id="@+id/signInBtn"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_50sdp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_20sdp"
-            android:backgroundTint="@color/primaryVariant"
-            android:text="@string/sign_in"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_13ssp"
-            android:textStyle="bold"
-            app:cornerRadius="@dimen/_8sdp" />
+            android:animateLayoutChanges="true">
+            <Button
+                android:id="@+id/signInBtn"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_50sdp"
+                android:backgroundTint="@color/primaryVariant"
+                android:text="@string/sign_in"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13ssp"
+                android:textStyle="bold"
+                app:cornerRadius="@dimen/_8sdp" />
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:visibility="invisible"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_gravity="center">
+            </ProgressBar>
+        </FrameLayout>
+
 
         <TextView
             android:id="@+id/noAccount"

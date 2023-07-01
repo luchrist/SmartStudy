@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Board"
+        android:icon="@drawable/baseline_dashboard_24"
+        android:id="@+id/board"/>
+    <item android:title="Chat"
+        android:icon="@drawable/chat"
+        android:id="@+id/chat"/>
+</menu>

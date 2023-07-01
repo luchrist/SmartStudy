@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.smartstudy.databinding.ActivityLoginBinding;
+import com.example.smartstudy.utilities.Constants;
+import com.example.smartstudy.utilities.PreferenceManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,6 +25,7 @@ import java.util.HashMap;
 public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private ActivityLoginBinding binding;
+    private PreferenceManager preferenceManager;
     FirebaseAuth mAuth;
 
     @Override
@@ -40,6 +44,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        preferenceManager = new PreferenceManager(getApplicationContext());
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setListeners();
@@ -57,7 +62,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        binding.progressBar.setVisibility(View.VISIBLE);
+        loading(true);
 
         String email, pw;
         email = binding.emailInput.getText().toString().trim();
@@ -66,33 +71,56 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         if (email.isEmpty()) {
             binding.emailInput.setError("Email is required!");
             binding.emailInput.requestFocus();
-            binding.progressBar.setVisibility(View.GONE);
+            loading(false);
             return;
         }
 
         if (pw.isEmpty()) {
             binding.pwInput.setError("Password is required!");
             binding.pwInput.requestFocus();
-            binding.progressBar.setVisibility(View.GONE);
+            loading(false);
+            return;
+        }
+        if(!Patterns.EMAIL_ADDRESS.matcher(binding.emailInput.getText().toString()).matches()) {
+            binding.emailInput.setError("Valid email is required!");
+            binding.emailInput.requestFocus();
+            loading(false);
             return;
         }
 
         if (pw.length() < 6) {
             binding.pwInput.setError("Password must be at least 6 characters!");
             binding.pwInput.requestFocus();
-            binding.progressBar.setVisibility(View.GONE);
+            loading(false);
             return;
         }
 
         mAuth.signInWithEmailAndPassword(email, pw).addOnCompleteListener(task -> {
-            binding.progressBar.setVisibility(View.GONE);
+            loading(false);
             if (task.isSuccessful()) {
+                preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                preferenceManager.putString(Constants.KEY_EMAIL, email);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
             } else {
-                Toast.makeText(Login.this, "Failed to login! Please check your credentials", Toast.LENGTH_LONG).show();
+                showToast("Failed to login! Please check your credentials");
             }
         });
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void loading(boolean isLoading) {
+        if (isLoading) {
+            binding.progressBar.setVisibility(View.VISIBLE);
+            binding.signInBtn.setVisibility(View.INVISIBLE);
+        } else {
+            binding.progressBar.setVisibility(View.INVISIBLE);
+            binding.signInBtn.setVisibility(View.VISIBLE);
+        }
     }
 }

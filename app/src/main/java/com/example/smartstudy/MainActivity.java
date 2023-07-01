@@ -16,11 +16,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.smartstudy.utilities.Constants;
+import com.example.smartstudy.utilities.PreferenceManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //Variables
     FirebaseAuth auth;
     FirebaseUser user;
+    PreferenceManager preferenceManager;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
@@ -74,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FirebaseFirestore.getInstance().collection("users").get().addOnSuccessListener(queryDocumentSnapshots -> {
                 for (int i = 0; i < queryDocumentSnapshots.size(); i++) {
                     if (queryDocumentSnapshots.getDocuments().get(i).getString("email").equalsIgnoreCase(user.getEmail())) {
-                        username[0] = queryDocumentSnapshots.getDocuments().get(i).getString("username");
+                        username[0] = queryDocumentSnapshots.getDocuments().get(i).getString(Constants.KEY_USER_NAME);
                         navigationView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                             @Override
                             public void onGlobalLayout() {
@@ -124,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                            Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
                         }
                     });
+            preferenceManager = new PreferenceManager(getApplicationContext());
         }
     }
 
@@ -179,14 +184,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 navigationView.setCheckedItem(R.id.nav_settings);
                 break;
             case R.id.nav_logout:
-                auth.signOut();
-                Intent intent = new Intent(this, Login.class);
-                startActivity(intent);
-                this.finish();
+                FirebaseFirestore.getInstance()
+                        .collection(Constants.KEY_COLLECTION_USERS)
+                        .document(user.getUid())
+                        .update(Constants.KEY_FCM_TOKEN, FieldValue.delete())
+                        .addOnSuccessListener(unused -> {
+                            preferenceManager.clearPreferences();
+                            auth.signOut();
+                            Intent intent = new Intent(this, Login.class);
+                            startActivity(intent);
+                            this.finish();
+                        })
+                        .addOnFailureListener(e -> {
+                            showToast("Unable to sign out");
+                        });
                 break;
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

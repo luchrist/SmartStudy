@@ -17,6 +17,7 @@
     <color name="secondaryText">#757575</color>
     <color name="inputBackground">#ECECEC</color>
     <color name="iconBackground">#20FFFFFF</color>
+    <color name="iconBackgroundVariant">#516783</color>
     <color name="error">#B00020</color>
     <color name="receivedMessageBackground">#090D16</color>
     <color name="secondary">#F01456</color>
