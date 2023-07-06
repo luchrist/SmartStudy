@@ -72,6 +72,11 @@
     <string name="name">Username</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="group">Group</string>
+    <string name="member">Member</string>
+    <string name="no_user_available">No user available</string>
+    <string name="your_groups">Your Groups</string>
+    <string name="no_groups_available">No Groups Added Yet</string>
+    <string name="logo">logo</string>
 </resources>
 
     <!---->

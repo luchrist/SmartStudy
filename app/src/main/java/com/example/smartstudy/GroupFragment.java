@@ -8,9 +8,11 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,21 +21,38 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.smartstudy.adapters.GroupsAdapter;
+import com.example.smartstudy.adapters.UsersAdapter;
+import com.example.smartstudy.models.Group;
+import com.example.smartstudy.models.User;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GroupFragment extends Fragment {
 
-    private MenuItem menuItem;
     private SearchView searchView;
-    private Button group;
+    private AppCompatImageView addBtn;
+    ProgressBar progressBar;
+    TextView errorMsg;
+    RecyclerView recyclerView;
     FirebaseFirestore db;
     private PreferenceManager preferenceManager;
 
@@ -43,13 +62,65 @@ public class GroupFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_group, container, false);
-        group = view.findViewById(R.id.testGroupBtn);
-        group.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), GroupActivity.class);
-            startActivity(intent);
-            getActivity().finish();
-        });
+        progressBar = view.findViewById(R.id.progressBar);
+        recyclerView = view.findViewById(R.id.groupsRecyclerView);
+        errorMsg = view.findViewById(R.id.errorMsg);
+        showGroups();
+        setListeners();
         return view;
+    }
+
+    private void setListeners() {
+
+    }
+
+    private void showGroups() {
+        loading(true);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection(Constants.KEY_COLLECTION_USERS)
+                .whereEqualTo(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID))
+                .get()
+                .addOnCompleteListener(task -> {
+                    List<String> groupIds;
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        groupIds = (List<String>) document.get(Constants.KEY_GROUP_ID);
+                        if(groupIds != null && groupIds.size() > 0) {
+                            getGroupInfos(groupIds);
+                        }
+                    }else {
+                        showErrorMsg();
+                    }
+                });
+
+    }
+
+    private void getGroupInfos(List<String> groupIds) {
+        CollectionReference groupCollection = db.collection(Constants.KEY_COLLECTION_GROUPS);
+        for (int i = 0; i < groupIds.size(); i++) {
+            groupCollection.document(groupIds.get(i))
+                    .get().addOnCompleteListener(task -> {
+                        Stream.Builder<Group> groups = Stream.builder();
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            DocumentSnapshot document = task.getResult();
+                                Group group = new Group();
+                                group.name = document.getString(Constants.KEY_GROUP_NAME);
+                                group.image = document.getString(Constants.KEY_IMAGE);
+                                group.id = document.getString(Constants.KEY_GROUP_ID);
+                                groups.accept(group);
+                            }
+                            List<Group> myGroups = groups.build().collect(Collectors.toList());
+                            if (myGroups.size() > 0) {
+                                GroupsAdapter groupsAdapter = new GroupsAdapter(myGroups);
+                                loading(false);
+                                recyclerView.setAdapter(groupsAdapter);
+                                recyclerView.setVisibility(View.VISIBLE);
+                            } else {
+                                showErrorMsg();
+                            }
+                    });
+        }
+
     }
 
     @Override
@@ -59,6 +130,19 @@ public class GroupFragment extends Fragment {
         preferenceManager = new PreferenceManager(requireContext());
         db = FirebaseFirestore.getInstance();
         getToken();
+    }
+
+    private void showErrorMsg() {
+        errorMsg.setText(R.string.no_groups_available);
+        errorMsg.setVisibility(View.VISIBLE);
+    }
+
+    private void loading(boolean isLoading) {
+        if (isLoading) {
+            progressBar.setVisibility(View.VISIBLE);
+        }else {
+            progressBar.setVisibility(View.INVISIBLE);
+        }
     }
 
     /*@Override

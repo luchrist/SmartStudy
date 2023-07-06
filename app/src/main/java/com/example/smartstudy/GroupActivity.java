@@ -12,9 +12,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class GroupActivity extends AppCompatActivity {
 
-    AppCompatImageView back;
+    AppCompatImageView back, chat;
     TextView groupName;
-    BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,36 +21,26 @@ public class GroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group);
 
         back = findViewById(R.id.backNavBtn);
-        bottomNavigationView = findViewById(R.id.groupBottomNav);
+        chat = findViewById(R.id.chatBtn);
         groupName = findViewById(R.id.groupName);
 
         setListeners();
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame,
-                new GroupBoardFragment()).commit();
     }
 
     private void setListeners() {
         groupName.setOnClickListener(v -> {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame,
-                    new GroupInfoFragment()).commit();
+            Intent intent = new Intent(this, GroupInfoActivity.class);
+            startActivity(intent);
+            this.finish();
                 });
+        chat.setOnClickListener(v -> {
+            Intent intent = new Intent(this, GroupChatActivity.class);
+            startActivity(intent);
+            this.finish();
+        });
         back.setOnClickListener(v -> {
             startActivity(new Intent(GroupActivity.this, MainActivity.class));
             finish();
-        });
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.board:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.frame,
-                            new GroupBoardFragment()).commit();
-                    break;
-                case R.id.chat:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.frame,
-                            new GroupChatFragment()).commit();
-                    break;
-            }
-            return true;
         });
     }
 }
