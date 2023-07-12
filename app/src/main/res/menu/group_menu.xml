@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Board"
+    <item
+        android:id="@+id/board"
         android:icon="@drawable/baseline_dashboard_24"
-        android:id="@+id/board"/>
-    <item android:title="Chat"
+        android:title="@string/create_group" />
+    <item
+        android:id="@+id/chat"
         android:icon="@drawable/chat"
-        android:id="@+id/chat"/>
+        android:title="@string/join_group" />
 </menu>

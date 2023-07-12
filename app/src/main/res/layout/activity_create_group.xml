@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primaryVariant"
+    tools:context=".CreateGroupActivity">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/cancelNavBtn"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:padding="@dimen/_6sdp"
+        android:src="@drawable/outline_cancel_24"
+        android:tint="@color/white"
+        android:background="@drawable/background_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <View
+        android:id="@+id/viewSupporter"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/createGroupBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_group"
+        android:background="@drawable/button_background_selected_left"
+        android:textColor="@color/white"
+        android:layout_marginStart="@dimen/_25sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        app:layout_constraintEnd_toStartOf="@+id/viewSupporter"
+        app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/joinGroupBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background_not_selected_right"
+        android:textColor="@color/white"
+        android:text="@string/join_group"
+        android:layout_marginTop="@dimen/_8sdp"
+        app:layout_constraintStart_toEndOf="@+id/createGroupBtn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/frame"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/background_content_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cancelNavBtn">
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,48 +1,32 @@
 package com.example.smartstudy;
 
 import android.annotation.SuppressLint;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.view.MenuItemCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.smartstudy.adapters.GroupsAdapter;
-import com.example.smartstudy.adapters.UsersAdapter;
 import com.example.smartstudy.models.Group;
-import com.example.smartstudy.models.User;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -65,34 +49,36 @@ public class GroupFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
         recyclerView = view.findViewById(R.id.groupsRecyclerView);
         errorMsg = view.findViewById(R.id.errorMsg);
+        addBtn = view.findViewById(R.id.addGroupBtn);
         showGroups();
         setListeners();
         return view;
     }
 
     private void setListeners() {
-
+        addBtn.setOnClickListener(v -> {
+            startActivity(new Intent(getContext(), CreateGroupActivity.class));
+        });
     }
 
     private void showGroups() {
         loading(true);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection(Constants.KEY_COLLECTION_USERS)
-                .whereEqualTo(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID))
+        db.collection(Constants.KEY_COLLECTION_USERS).document(preferenceManager.getString(Constants.KEY_EMAIL))
                 .get()
                 .addOnCompleteListener(task -> {
                     List<String> groupIds;
                     if (task.isSuccessful() && task.getResult() != null) {
-                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        DocumentSnapshot document = task.getResult();
                         groupIds = (List<String>) document.get(Constants.KEY_GROUP_ID);
-                        if(groupIds != null && groupIds.size() > 0) {
+                        if (groupIds != null && groupIds.size() > 0) {
                             getGroupInfos(groupIds);
+                        } else {
+                            showErrorMsg();
                         }
-                    }else {
+                    } else {
                         showErrorMsg();
                     }
                 });
-
     }
 
     private void getGroupInfos(List<String> groupIds) {
@@ -135,6 +121,7 @@ public class GroupFragment extends Fragment {
     private void showErrorMsg() {
         errorMsg.setText(R.string.no_groups_available);
         errorMsg.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     private void loading(boolean isLoading) {
@@ -187,7 +174,7 @@ public class GroupFragment extends Fragment {
 
     private void updateToken(String token) {
         DocumentReference documentReference = db.collection(Constants.KEY_COLLECTION_USERS)
-                .document(preferenceManager.getString(Constants.KEY_USER_ID));
+                .document(preferenceManager.getString(Constants.KEY_EMAIL));
         documentReference.update(Constants.KEY_FCM_TOKEN, token)
                 .addOnSuccessListener(unused -> showToast("Token updated successfully"))
                 .addOnFailureListener(e -> showToast("Unable to update token"));

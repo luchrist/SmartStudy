@@ -99,18 +99,17 @@ public class Registration extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        if (task.isSuccessful()) {
                             String username = usernameInput.getText().toString().trim();
                             HashMap<String, Object> user = new HashMap<>();
                             user.put(Constants.KEY_USER_NAME, username);
-                            user.put(Constants.KEY_EMAIL, email);
                             user.put(Constants.KEY_IMAGE, encodedImage);
                             db.collection(Constants.KEY_COLLECTION_USERS)
-                                    .add(user)
+                                    .document(email)
+                                    .set(user)
                                     .addOnSuccessListener(documentReference -> {
                                         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-                                        preferenceManager.putString(Constants.KEY_USER_ID, documentReference.getId());
+                                        preferenceManager.putString(Constants.KEY_EMAIL, email);
                                         preferenceManager.putString(Constants.KEY_USER_NAME, username);
                                         preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
                                         showToast("Account created");

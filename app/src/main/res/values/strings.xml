@@ -77,6 +77,17 @@
     <string name="your_groups">Your Groups</string>
     <string name="no_groups_available">No Groups Added Yet</string>
     <string name="logo">logo</string>
+    <string name="create_group">Create Group</string>
+    <string name="join_group">Join Group</string>
+    <string name="group_id">Group ID</string>
+    <string name="create">Create</string>
+    <string name="group_name">Group Name</string>
+    <string name="allow_joining_with_id">Allow joining with ID</string>
+    <string name="member_email">Member Email</string>
+    <string name="make_group_admin">Make Group Admin</string>
+    <string name="remove_from_group">Remove from Group</string>
+    <string name="cancel">Cancel</string>
+    <string name="admin">Admin</string>
 </resources>
 
     <!---->

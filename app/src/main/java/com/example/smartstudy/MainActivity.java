@@ -3,7 +3,6 @@ package com.example.smartstudy;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
@@ -43,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     Toolbar toolbar;
     TextView title, headertext;
+    SharedPreferences sp;
     private boolean studyneed = false;
 
 
@@ -67,34 +67,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
             this.finish();
         }else {
-            SharedPreferences sp = this.getSharedPreferences("SP", 0);
+            sp = this.getSharedPreferences("SP", 0);
 
             drawerLayout = findViewById(R.id.drawer);
             navigationView = findViewById(R.id.nav_view);
             toolbar = findViewById(R.id.toolbar);
             title = findViewById(R.id.variabel_text);
 
-            final String[] username = new String[1];
-            FirebaseFirestore.getInstance().collection("users").get().addOnSuccessListener(queryDocumentSnapshots -> {
-                for (int i = 0; i < queryDocumentSnapshots.size(); i++) {
-                    if (queryDocumentSnapshots.getDocuments().get(i).getString("email").equalsIgnoreCase(user.getEmail())) {
-                        username[0] = queryDocumentSnapshots.getDocuments().get(i).getString(Constants.KEY_USER_NAME);
+            final String[] username = {""};
+            FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS).document(user.getEmail()).get()
+                    .addOnSuccessListener(document -> {
+                        username[0] = document.getString(Constants.KEY_USER_NAME);
+                        headertext = navigationView.findViewById(R.id.headertext);
+                        setHeaderText(username[0]);
+
                         navigationView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                             @Override
                             public void onGlobalLayout() {
-                                headertext = navigationView.findViewById(R.id.headertext);
-                                if (!sp.getBoolean("studyNeed", false)) {
-                                    headertext.setText("Hello " + username[0] + ", no need to study anymore today");
-                                } else {
-                                    headertext.setText("Let's get to study, " + username[0]);
-                                }
-
-                                navigationView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                setHeaderText(username[0]);
                             }
                         });
-                    }
-                }
-            });
+                    });
             //headertext.setText("Hello " + username + ", no need to study today");
             //", good job!"
             //", you have to study more!"
@@ -129,6 +122,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     });
             preferenceManager = new PreferenceManager(getApplicationContext());
+        }
+    }
+
+    private void setHeaderText(String username) {
+        if (!sp.getBoolean("studyNeed", false)) {
+            headertext.setText("Hello " + username + ", no need to study anymore today");
+        } else {
+            headertext.setText("Let's get to study, " + username);
         }
     }
 
@@ -186,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_logout:
                 FirebaseFirestore.getInstance()
                         .collection(Constants.KEY_COLLECTION_USERS)
-                        .document(user.getUid())
+                        .document(user.getEmail())
                         .update(Constants.KEY_FCM_TOKEN, FieldValue.delete())
                         .addOnSuccessListener(unused -> {
                             preferenceManager.clearPreferences();
