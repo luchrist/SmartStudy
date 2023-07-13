@@ -14,6 +14,7 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -86,7 +87,7 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
         createGroupButton = view.findViewById(R.id.createGroupBtn);
 
         setListeners();
-        findMemberByEmail(preferenceManager.getString(Constants.KEY_EMAIL));
+        findMemberByEmail(preferenceManager.getString(Constants.KEY_EMAIL), true);
 
         return view;
     }
@@ -119,6 +120,7 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
         group.name = groupNameInput.getText().toString().trim();
         group.image = encodedImage;
         group.members = members;
+        group.joinWithId = allowJoiningCheck.isChecked();
         db.collection(Constants.KEY_COLLECTION_GROUPS).
                 add(group).addOnSuccessListener(documentReference -> {
                     startActivity(new Intent(getContext(), GroupActivity.class));
@@ -136,7 +138,7 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
         } else if (checkIfInvalidEmail(email)) {
             showToast("Enter valid email");
         } else {
-            findMemberByEmail(email);
+            findMemberByEmail(email, false);
         }
 
     }
@@ -159,7 +161,7 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
         return !Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    private void findMemberByEmail(String email) {
+    private void findMemberByEmail(String email, boolean isAdmin) {
         CollectionReference userCol = db.collection(Constants.KEY_COLLECTION_USERS);
         userCol.document(email).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
@@ -173,7 +175,7 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
                         member.name = result.getString(Constants.KEY_USER_NAME);
                         member.image = result.getString(Constants.KEY_IMAGE);
                         member.token = result.getString(Constants.KEY_FCM_TOKEN);
-                        member.isAdmin = false;
+                        member.isAdmin = isAdmin;
                         members.add(member);
                         membersAdapter.notifyItemInserted(members.size() - 1);
                     }
@@ -210,44 +212,68 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
 
     @Override
     public void onItemClicked(Member member) {
-        if(member.isAdmin){
-            showStandartDialog(member);
-        } else {
-            showAdminDialog(member);
+        if (member.email.equals(preferenceManager.getString(Constants.KEY_EMAIL))) {
+            return;
         }
-    }
-
-    private void showAdminDialog(Member member) {
-    }
-
-    private void showStandartDialog(Member member) {
         final Dialog dialog = new Dialog(getContext());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.bottom_sheet_layout);
+        if(member.isAdmin){
+            showAdminDialog(member, dialog);
+        } else {
+            showStandartDialog(member, dialog);
+        }
+    }
 
+    private void showAdminDialog(Member member, Dialog dialog) {
+        TextView dismissAdmin = dialog.findViewById(R.id.makeGroupAdmin);
+        dismissAdmin.setText(R.string.dismiss_as_admin);
+        int removeColor =  ContextCompat.getColor(getActivity(), R.color.remove);
+        dismissAdmin.setTextColor(removeColor);
+        prepareDialog(member, dialog);
+
+        dismissAdmin.setOnClickListener(v -> {
+            dialog.dismiss();
+            int i = members.indexOf(member);
+            member.isAdmin = false;
+            members.set(i, member);
+            membersAdapter.notifyItemChanged(i);
+        });
+        showDialog(dialog);
+    }
+
+    private void showStandartDialog(Member member, Dialog dialog) {
         TextView makeAdmin = dialog.findViewById(R.id.makeGroupAdmin);
-        TextView removeMember = dialog.findViewById(R.id.remove);
-        TextView cancel = dialog.findViewById(R.id.cancel);
+        prepareDialog(member, dialog);
 
         makeAdmin.setOnClickListener(v -> {
             dialog.dismiss();
             int i = members.indexOf(member);
             member.isAdmin = true;
             members.set(i, member);
-            //members.stream().filter(m -> m.email.equals(member.email)).findFirst().ifPresent(m -> m.isAdmin = true);
             membersAdapter.notifyItemChanged(i);
         });
+        showDialog(dialog);
+    }
+
+    private void showDialog(Dialog dialog) {
+        dialog.show();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+    }
+
+    private void prepareDialog(Member member, Dialog dialog) {
+        TextView name = dialog.findViewById(R.id.username);
+        name.setText(member.name);
+        TextView removeMember = dialog.findViewById(R.id.remove);
+        TextView cancel = dialog.findViewById(R.id.cancel);
         removeMember.setOnClickListener(v -> {
             dialog.dismiss();
             members.remove(member);
             membersAdapter.notifyItemRemoved(members.indexOf(member));
         });
         cancel.setOnClickListener(v -> dialog.dismiss());
-
-        dialog.show();
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-        dialog.getWindow().setGravity(Gravity.BOTTOM);
     }
 }

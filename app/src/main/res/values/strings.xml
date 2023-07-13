@@ -88,6 +88,7 @@
     <string name="remove_from_group">Remove from Group</string>
     <string name="cancel">Cancel</string>
     <string name="admin">Admin</string>
+    <string name="dismiss_as_admin">Dismiss as Admin</string>
 </resources>
 
     <!---->

@@ -99,7 +99,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_150sdp"
+            android:layout_height="@dimen/_200sdp"
             android:scrollbars="none">
 
             <androidx.recyclerview.widget.RecyclerView
