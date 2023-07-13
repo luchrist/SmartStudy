@@ -58,17 +58,18 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
     CheckBox allowJoiningCheck;
     RecyclerView membersRecyclerView;
     Button createGroupButton;
+    PreferenceManager preferenceManager = new PreferenceManager(getContext());
 
+    String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
     List<Member> members = new ArrayList<>();
-    MembersAdapter membersAdapter = new MembersAdapter(members, this);
-    PreferenceManager preferenceManager;
+    MembersAdapter membersAdapter = new MembersAdapter(members, this, currentUserEmail);
+
     FirebaseFirestore db;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
-        preferenceManager = new PreferenceManager(getContext());
     }
 
     @Override
@@ -87,7 +88,7 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
         createGroupButton = view.findViewById(R.id.createGroupBtn);
 
         setListeners();
-        findMemberByEmail(preferenceManager.getString(Constants.KEY_EMAIL), true);
+        findMemberByEmail(currentUserEmail, true);
 
         return view;
     }
@@ -122,16 +123,12 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
         group.members = members;
         group.joinWithId = allowJoiningCheck.isChecked();
         db.collection(Constants.KEY_COLLECTION_GROUPS).
-                add(group).addOnSuccessListener(documentReference -> {
-                    startActivity(new Intent(getContext(), GroupActivity.class));
-                }).addOnFailureListener(e -> {
-                    showToast("Failed to create group");
-                });
+                add(group).addOnSuccessListener(documentReference -> startActivity(new Intent(getContext(), GroupActivity.class))).addOnFailureListener(e -> showToast("Failed to create group"));
     }
 
     private void addMember() {
         String email = memberEmailInput.getText().toString().trim();
-        if (email.equals(preferenceManager.getString(Constants.KEY_EMAIL))) {
+        if (email.equals(currentUserEmail)) {
             showToast("You can't add yourself");
         } else if (checkIfMemberAlreadyExists(email)) {
            showToast("Member is already added");
@@ -212,7 +209,7 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
 
     @Override
     public void onItemClicked(Member member) {
-        if (member.email.equals(preferenceManager.getString(Constants.KEY_EMAIL))) {
+        if (member.email.equals(currentUserEmail)) {
             return;
         }
         final Dialog dialog = new Dialog(getContext());

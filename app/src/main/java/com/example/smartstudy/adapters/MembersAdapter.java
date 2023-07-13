@@ -20,10 +20,12 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberVi
 
     private final List<Member> members;
     private final SelectListener selectListener;
+    private final String currentUserEmail;
 
-    public MembersAdapter(List<Member> members, SelectListener selectListener) {
+    public MembersAdapter(List<Member> members, SelectListener selectListener, String currentUserEmail) {
         this.members = members;
         this.selectListener = selectListener;
+        this.currentUserEmail = currentUserEmail;
     }
 
     @NonNull
@@ -60,6 +62,9 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberVi
             binding.textName.setText(member.name);
             binding.textEmail.setText(member.email);
             binding.imageProfile.setImageBitmap(getMemberImage(member.image));
+            if (member.email.equals(currentUserEmail)) {
+                binding.memberMenu.setVisibility(View.GONE);
+            }
             if (member.isAdmin){
                 binding.adminStatus.setVisibility(View.VISIBLE);
             } else {

@@ -57,5 +57,14 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/backNavBtn">
+
+        <ImageView
+            android:id="@+id/groupImage"
+            android:contentDescription="@string/groupImage"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_60sdp"
+            android:background="@color/inputBackground"
+            android:scaleType="centerCrop"/>
+
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
