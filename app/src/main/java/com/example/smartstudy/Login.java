@@ -27,6 +27,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private ActivityLoginBinding binding;
     private PreferenceManager preferenceManager;
     FirebaseAuth mAuth;
+    FirebaseFirestore db;
 
     @Override
     public void onStart() {
@@ -81,7 +82,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             loading(false);
             return;
         }
-        if(!Patterns.EMAIL_ADDRESS.matcher(binding.emailInput.getText().toString()).matches()) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailInput.getText().toString()).matches()) {
             binding.emailInput.setError("Valid email is required!");
             binding.emailInput.requestFocus();
             loading(false);
@@ -100,6 +101,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             if (task.isSuccessful()) {
                 preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                 preferenceManager.putString(Constants.KEY_EMAIL, email);
+                db = FirebaseFirestore.getInstance();
+                db.collection(Constants.KEY_COLLECTION_USERS)
+                        .document(email)
+                        .get().addOnSuccessListener(documentSnapshot -> {
+                            preferenceManager.putString(Constants.KEY_USER_NAME, documentSnapshot.getString(Constants.KEY_USER_NAME));
+                        });
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);

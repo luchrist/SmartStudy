@@ -36,7 +36,7 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberVi
                 parent,
                 false
         );
-        return  new MembersAdapter.MemberViewHolder(itemContainerMemberBinding);
+        return new MembersAdapter.MemberViewHolder(itemContainerMemberBinding);
     }
 
     @Override

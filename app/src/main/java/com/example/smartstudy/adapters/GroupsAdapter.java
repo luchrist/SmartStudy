@@ -11,15 +11,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartstudy.databinding.ItemContainerGroupBinding;
 import com.example.smartstudy.models.Group;
+import com.example.smartstudy.utilities.GroupSelectListener;
 
 import java.util.List;
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewHolder> {
 
     private final List<Group> groups;
+    private final GroupSelectListener selectListener;
 
-    public GroupsAdapter(List<Group> groups) {
+    public GroupsAdapter(List<Group> groups, GroupSelectListener selectListener) {
         this.groups = groups;
+        this.selectListener = selectListener;
     }
 
     @NonNull
@@ -30,12 +33,13 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
                 parent,
                 false
         );
-        return  new GroupsAdapter.GroupViewHolder(itemContainerGroupBinding);
+        return new GroupsAdapter.GroupViewHolder(itemContainerGroupBinding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull GroupsAdapter.GroupViewHolder holder, int position) {
         holder.setGroupData(groups.get(position));
+        holder.setListener();
     }
 
     @Override
@@ -54,7 +58,13 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
         void setGroupData(Group group) {
             binding.textName.setText(group.name);
             binding.textId.setText(group.id);
-            binding.groupImg.setImageBitmap(getGroupImage(group.image));
+            if(group.image != null){
+                binding.groupImg.setImageBitmap(getGroupImage(group.image));
+            }
+        }
+
+        public void setListener() {
+            binding.getRoot().setOnClickListener(v -> selectListener.onGroupSelected(groups.get(getAdapterPosition())));
         }
     }
 

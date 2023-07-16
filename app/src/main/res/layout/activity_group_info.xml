@@ -94,5 +94,12 @@
             android:gravity="center"
             android:textSize="@dimen/_12ssp"
             android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Created 26.03.2021 by Max Mustermann"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="@dimen/_6sdp"/>
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

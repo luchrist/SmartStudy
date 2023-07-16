@@ -13,25 +13,25 @@
         android:layout_height="@dimen/_30sdp"
         android:layout_marginStart="@dimen/_16sdp"
         android:layout_marginTop="@dimen/_12sdp"
+        android:background="@drawable/background_icon"
         android:padding="@dimen/_6sdp"
         android:src="@drawable/round_arrow_back_ios_24"
         android:tint="@color/white"
-        android:background="@drawable/background_icon"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/chatBtn"
         android:layout_width="@dimen/_30sdp"
         android:layout_height="@dimen/_30sdp"
-        android:layout_marginEnd="@dimen/_16sdp"
         android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:background="@drawable/background_icon"
         android:padding="@dimen/_6sdp"
         android:src="@drawable/baseline_chat_24"
         android:tint="@color/white"
-        android:background="@drawable/background_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/groupName"
@@ -58,13 +58,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/backNavBtn">
 
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/groupImage"
-            android:contentDescription="@string/groupImage"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/_60sdp"
             android:layout_height="@dimen/_60sdp"
-            android:background="@color/inputBackground"
-            android:scaleType="centerCrop"/>
+            android:layout_gravity="start"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:background="@drawable/background_image"
+            android:contentDescription="@string/groupImage"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/groupId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:text="ID: 1234567890"
+            android:textColor="@color/primaryText"
+            android:textSize="@dimen/_12ssp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/copyId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:background="@drawable/background_icon_light"
+            android:padding="@dimen/_6sdp"
+            android:src="@drawable/baseline_content_copy_24" />
 
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

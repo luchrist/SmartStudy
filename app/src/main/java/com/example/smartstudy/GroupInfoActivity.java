@@ -1,17 +1,30 @@
 package com.example.smartstudy;
 
+import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.smartstudy.adapters.MembersAdapter;
 import com.example.smartstudy.adapters.UsersAdapter;
+import com.example.smartstudy.models.Group;
+import com.example.smartstudy.models.Member;
 import com.example.smartstudy.models.User;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
+import com.example.smartstudy.utilities.SelectListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -21,12 +34,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GroupInfoActivity extends AppCompatActivity {
+public class GroupInfoActivity extends AppCompatActivity implements SelectListener {
 
     ProgressBar progressBar;
+    AppCompatImageView back, chat;
     TextView errorMsg;
     RecyclerView recyclerView;
     PreferenceManager preferenceManager;
+    String currentUserEmail;
+    List<Member> members;
+    MembersAdapter membersAdapter;
 
 
     @Override
@@ -36,48 +53,49 @@ public class GroupInfoActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         recyclerView = findViewById(R.id.usersRecyclerView);
         errorMsg = findViewById(R.id.errorMsg);
+        back = findViewById(R.id.backNavBtn);
+        chat = findViewById(R.id.chatBtn);
         preferenceManager = new PreferenceManager(getApplicationContext());
+        currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
         showUsers();
         setListeners();
     }
 
     private void setListeners() {
-
+        chat.setOnClickListener(v -> {
+            Intent intent = new Intent(this, GroupChatActivity.class);
+            startActivity(intent);
+            this.finish();
+        });
+        back.setOnClickListener(v -> {
+            startActivity(new Intent(this, GroupActivity.class));
+            finish();
+        });
     }
 
     private void showUsers() {
         loading(true);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection(Constants.KEY_COLLECTION_USERS)
-                .whereArrayContains(Constants.KEY_GROUP_ID, "test")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        Stream.Builder<User> groupMember = Stream.builder();
-                        String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            if (currentUserEmail.equals(document.getId())) {
-                                continue;
-                            }
-                            User user = new User();
-                            user.name = document.getString(Constants.KEY_USER_NAME);
-                            user.image = document.getString(Constants.KEY_IMAGE);
-                            user.token = document.getString(Constants.KEY_FCM_TOKEN);
-                            user.email = document.getId();
-                            groupMember.accept(user);
-                        }
-                        List<User> member = groupMember.build().collect(Collectors.toList());
-                        if (member.size() > 0) {
-                            UsersAdapter usersAdapter = new UsersAdapter(member);
-                            loading(false);
-                            recyclerView.setAdapter(usersAdapter);
-                            recyclerView.setVisibility(View.VISIBLE);
-                        } else {
-                            showErrorMsg();
-                        }
-                    } else {
-                        showErrorMsg();
-                    }
+        db.collection(Constants.KEY_COLLECTION_GROUPS)
+                        .document(preferenceManager.getString(Constants.KEY_GROUP_ID))
+                                .get()
+                                        .addOnSuccessListener(doc -> {
+                                            Group group = doc.toObject(Group.class);
+                                            if(group != null) {
+                                                members = group.members;
+                                                if(members.size() > 0) {
+                                                    membersAdapter = new MembersAdapter(members, this, currentUserEmail);
+                                                    recyclerView.setAdapter(membersAdapter);
+                                                    recyclerView.setVisibility(View.VISIBLE);
+                                                } else {
+                                                    showErrorMsg();
+                                                }
+                                            }
+
+                                            loading(false);
+                                        }).addOnFailureListener(doc -> {
+                                            showErrorMsg();
+                                            loading(false);
                 });
     }
 
@@ -92,5 +110,73 @@ public class GroupInfoActivity extends AppCompatActivity {
         }else {
             progressBar.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void onItemClicked(Member member) {
+        if (member.email.equals(currentUserEmail)) {
+            return;
+        }
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.bottom_sheet_layout);
+        if(member.isAdmin){
+            showAdminDialog(member, dialog);
+        } else {
+            showStandartDialog(member, dialog);
+        }
+    }
+
+    private void showStandartDialog(Member member, Dialog dialog) {
+        TextView makeAdmin = dialog.findViewById(R.id.makeGroupAdmin);
+        prepareDialog(member, dialog);
+
+        makeAdmin.setOnClickListener(v -> {
+            dialog.dismiss();
+            int i = members.indexOf(member);
+            member.isAdmin = true;
+            members.set(i, member);
+            membersAdapter.notifyItemChanged(i);
+        });
+        showDialog(dialog);
+    }
+
+    private void showAdminDialog(Member member, Dialog dialog) {
+        TextView dismissAdmin = dialog.findViewById(R.id.makeGroupAdmin);
+        dismissAdmin.setText(R.string.dismiss_as_admin);
+        int removeColor =  ContextCompat.getColor(this, R.color.remove);
+        dismissAdmin.setTextColor(removeColor);
+        prepareDialog(member, dialog);
+
+        dismissAdmin.setOnClickListener(v -> {
+            dialog.dismiss();
+            int i = members.indexOf(member);
+            member.isAdmin = false;
+            members.set(i, member);
+            membersAdapter.notifyItemChanged(i);
+        });
+        showDialog(dialog);
+    }
+
+    private void showDialog(Dialog dialog) {
+        dialog.show();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+    }
+
+    private void prepareDialog(Member member, Dialog dialog) {
+        TextView name = dialog.findViewById(R.id.username);
+        name.setText(member.name);
+        TextView removeMember = dialog.findViewById(R.id.remove);
+        TextView cancel = dialog.findViewById(R.id.cancel);
+        removeMember.setOnClickListener(v -> {
+            dialog.dismiss();
+            int pos = members.indexOf(member);
+            members.remove(member);
+            membersAdapter.notifyItemRemoved(pos);
+        });
+        cancel.setOnClickListener(v -> dialog.dismiss());
     }
 }

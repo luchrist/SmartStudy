@@ -14,4 +14,8 @@ public class Constants {
     public static final String KEY_IMAGE = "image";
     public static final String KEY_FCM_TOKEN = "fcmToken";
     public static final String KEY_GROUP_ID = "groupId";
+    public static final String KEY_MEMBERS = "members";
+    public static final String KEY_JOIN_WITH_GROUP_ID = "joinWithGroupId";
+    public static final String KEY_CREATED_BY = "createdBy";
+    public static final String KEY_CREATED_TIME = "createdTime";
 }

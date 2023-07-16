@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height= "match_parent"
         android:layout_marginBottom="@dimen/_50sdp"
-        android:layout_marginTop="@dimen/_40sdp">
+        android:layout_marginTop="@dimen/_35sdp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/groupsRecyclerView"
@@ -53,7 +53,7 @@
             android:orientation="vertical"
             android:overScrollMode="never"
             android:padding="@dimen/_20sdp"
-            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginBottom="@dimen/_12sdp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     </ScrollView>
 </FrameLayout>

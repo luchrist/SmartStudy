@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.LevelListDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -39,15 +40,23 @@ import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
 import com.example.smartstudy.utilities.SelectListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CreateGroupFragment extends Fragment implements SelectListener {
 
@@ -58,13 +67,20 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
     CheckBox allowJoiningCheck;
     RecyclerView membersRecyclerView;
     Button createGroupButton;
-    PreferenceManager preferenceManager = new PreferenceManager(getContext());
+    PreferenceManager preferenceManager;
 
-    String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
+    String currentUserEmail, currentUserName;
     List<Member> members = new ArrayList<>();
-    MembersAdapter membersAdapter = new MembersAdapter(members, this, currentUserEmail);
+    MembersAdapter membersAdapter;
 
     FirebaseFirestore db;
+
+    public CreateGroupFragment(PreferenceManager preferenceManager) {
+        this.preferenceManager = preferenceManager;
+        currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
+        currentUserName = preferenceManager.getString(Constants.KEY_USER_NAME);
+        membersAdapter = new MembersAdapter(members, this, currentUserEmail);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -117,13 +133,33 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
     }
 
     private void createGroup() {
-        Group group = new Group();
-        group.name = groupNameInput.getText().toString().trim();
-        group.image = encodedImage;
-        group.members = members;
-        group.joinWithId = allowJoiningCheck.isChecked();
-        db.collection(Constants.KEY_COLLECTION_GROUPS).
-                add(group).addOnSuccessListener(documentReference -> startActivity(new Intent(getContext(), GroupActivity.class))).addOnFailureListener(e -> showToast("Failed to create group"));
+        DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+        Calendar c = df.getCalendar();
+        c.setTimeInMillis(System.currentTimeMillis());
+        String date = c.get(Calendar.DAY_OF_MONTH) + "." + (c.get(Calendar.MONTH) + 1) + "." + c.get(Calendar.YEAR);
+        HashMap<String, Object> group = new HashMap<>();
+        group.put(Constants.KEY_GROUP_NAME, groupNameInput.getText().toString().trim());
+        group.put(Constants.KEY_IMAGE, encodedImage);
+        group.put(Constants.KEY_MEMBERS, members);
+        group.put(Constants.KEY_JOIN_WITH_GROUP_ID, allowJoiningCheck.isChecked());
+        group.put(Constants.KEY_CREATED_BY, currentUserName);
+        group.put(Constants.KEY_CREATED_TIME, date);
+
+        DocumentReference document = db.collection(Constants.KEY_COLLECTION_GROUPS).document();
+        document.set(group).addOnSuccessListener(unused -> {
+            preferenceManager.putString(Constants.KEY_GROUP_ID, document.getId());
+            addGroupIdToMembers(document.getId());
+            startActivity(new Intent(getContext(), GroupActivity.class));
+        }).addOnFailureListener(e -> showToast("Failed to create group"));
+    }
+
+
+    private void addGroupIdToMembers(String id) {
+        for (Member member : members){
+            db.collection(Constants.KEY_COLLECTION_USERS).document(member.email).update(Constants.KEY_GROUP_ID, FieldValue.arrayUnion(id))
+                    .addOnSuccessListener(d -> System.out.println("Group id added to user"))
+                    .addOnFailureListener(e -> System.out.println("Failed to add group id to user"));
+        }
     }
 
     private void addMember() {
@@ -268,8 +304,9 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
         TextView cancel = dialog.findViewById(R.id.cancel);
         removeMember.setOnClickListener(v -> {
             dialog.dismiss();
+            int pos = members.indexOf(member);
             members.remove(member);
-            membersAdapter.notifyItemRemoved(members.indexOf(member));
+            membersAdapter.notifyItemRemoved(pos);
         });
         cancel.setOnClickListener(v -> dialog.dismiss());
     }

@@ -89,6 +89,7 @@
     <string name="cancel">Cancel</string>
     <string name="admin">Admin</string>
     <string name="dismiss_as_admin">Dismiss as Admin</string>
+    <string name="groupImage">Group Image</string>
 </resources>
 
     <!---->

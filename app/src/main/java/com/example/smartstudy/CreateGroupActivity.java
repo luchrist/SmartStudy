@@ -1,21 +1,23 @@
 package com.example.smartstudy;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.core.content.ContextCompat;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.FrameLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
+
+import com.example.smartstudy.utilities.PreferenceManager;
 
 public class CreateGroupActivity extends AppCompatActivity {
 
     Button createGroupButton, joinGroupButton;
     AppCompatImageView cancelButton;
     private int selectedColor;
+    PreferenceManager preferenceManager;
 
 
     @Override
@@ -26,9 +28,10 @@ public class CreateGroupActivity extends AppCompatActivity {
         cancelButton = findViewById(R.id.cancelNavBtn);
         joinGroupButton = findViewById(R.id.joinGroupBtn);
         selectedColor = ContextCompat.getColor(getApplicationContext(), R.color.accentBlue);
+        preferenceManager = new PreferenceManager(getApplicationContext());
 
         createGroupButton.setTextColor(selectedColor);
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame, new CreateGroupFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame, new CreateGroupFragment(preferenceManager)).commit();
         setListeners();
     }
 
@@ -41,7 +44,7 @@ public class CreateGroupActivity extends AppCompatActivity {
             finish();
         });
         createGroupButton.setOnClickListener(v -> {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame, new CreateGroupFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame, new CreateGroupFragment(preferenceManager)).commit();
             createGroupButton.setBackground(getDrawable(R.drawable.button_background_selected_left));
             joinGroupButton.setBackground(getDrawable(R.drawable.button_background_not_selected_right));
             createGroupButton.setTextColor(selectedColor);

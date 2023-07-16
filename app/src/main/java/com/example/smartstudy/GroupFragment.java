@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smartstudy.adapters.GroupsAdapter;
 import com.example.smartstudy.models.Group;
 import com.example.smartstudy.utilities.Constants;
+import com.example.smartstudy.utilities.GroupSelectListener;
 import com.example.smartstudy.utilities.PreferenceManager;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -26,11 +27,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GroupFragment extends Fragment {
+public class GroupFragment extends Fragment implements GroupSelectListener {
 
     private SearchView searchView;
     private AppCompatImageView addBtn;
@@ -39,6 +41,8 @@ public class GroupFragment extends Fragment {
     RecyclerView recyclerView;
     FirebaseFirestore db;
     private PreferenceManager preferenceManager;
+    private List<Group> groups = new ArrayList<>();
+    GroupsAdapter groupsAdapter;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -50,6 +54,9 @@ public class GroupFragment extends Fragment {
         recyclerView = view.findViewById(R.id.groupsRecyclerView);
         errorMsg = view.findViewById(R.id.errorMsg);
         addBtn = view.findViewById(R.id.addGroupBtn);
+
+        groupsAdapter = new GroupsAdapter(groups, this);
+        recyclerView.setAdapter(groupsAdapter);
         showGroups();
         setListeners();
         return view;
@@ -86,24 +93,19 @@ public class GroupFragment extends Fragment {
         for (int i = 0; i < groupIds.size(); i++) {
             groupCollection.document(groupIds.get(i))
                     .get().addOnCompleteListener(task -> {
-                        Stream.Builder<Group> groups = Stream.builder();
                         if (task.isSuccessful() && task.getResult() != null) {
                             DocumentSnapshot document = task.getResult();
                                 Group group = new Group();
                                 group.name = document.getString(Constants.KEY_GROUP_NAME);
                                 group.image = document.getString(Constants.KEY_IMAGE);
-                                group.id = document.getString(Constants.KEY_GROUP_ID);
-                                groups.accept(group);
-                            }
-                            List<Group> myGroups = groups.build().collect(Collectors.toList());
-                            if (myGroups.size() > 0) {
-                                GroupsAdapter groupsAdapter = new GroupsAdapter(myGroups);
-                                loading(false);
-                                recyclerView.setAdapter(groupsAdapter);
+                                group.id = document.getId();
+                                groups.add(group);
                                 recyclerView.setVisibility(View.VISIBLE);
-                            } else {
-                                showErrorMsg();
-                            }
+                                groupsAdapter.notifyItemInserted(groups.size() - 1);
+                        } else {
+                            showErrorMsg();
+                        }
+                                loading(false);
                     });
         }
 
@@ -178,5 +180,11 @@ public class GroupFragment extends Fragment {
         documentReference.update(Constants.KEY_FCM_TOKEN, token)
                 .addOnSuccessListener(unused -> showToast("Token updated successfully"))
                 .addOnFailureListener(e -> showToast("Unable to update token"));
+    }
+
+    @Override
+    public void onGroupSelected(Group group) {
+        preferenceManager.putString(Constants.KEY_GROUP_ID, group.id);
+        startActivity(new Intent(getContext(), GroupActivity.class));
     }
 }
