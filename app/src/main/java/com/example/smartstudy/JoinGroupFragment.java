@@ -118,8 +118,8 @@ public class JoinGroupFragment extends Fragment {
     }
 
     private boolean isNotAlreadyMember(Group group) {
-        for (Member member : group.members){
-            if(member.email.equals(currentUserMail)) {
+        for (Member member : group.members) {
+            if (member.email.equals(currentUserMail)) {
                 groupId.setError("You are already a member of this group");
                 return false;
             }

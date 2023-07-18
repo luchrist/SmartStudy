@@ -62,21 +62,21 @@ public class GroupChatActivity extends AppCompatActivity {
 
         db.collection(Constants.KEY_COLLECTION_GROUPS).document(preferenceManager.getString(Constants.KEY_GROUP_ID))
                 .get().addOnSuccessListener(documentSnapshot -> {
-                    Group group = documentSnapshot.toObject(Group.class);
-                    if(group != null){
-                        for (Member member : group.members){
-                            if(!currentUserMail.equals(member.email)) {
-                                receivers.add(member);
+                            Group group = documentSnapshot.toObject(Group.class);
+                            if (group != null) {
+                                for (Member member : group.members) {
+                                    if (!currentUserMail.equals(member.email)) {
+                                        receivers.add(member);
+                                    }
+                                }
+                                chatAdapter = new ChatAdapter(
+                                        chatMessages,
+                                        decodeString(receivers.get(0).image),
+                                        currentUserMail
+                                );
+                            } else {
+                                logger.warning("Group is null");
                             }
-                        }
-                        chatAdapter = new ChatAdapter(
-                                chatMessages,
-                                decodeString(receivers.get(0).image),
-                                currentUserMail
-                        );
-                    }else {
-                        logger.warning("Group is null");
-                    }
                         }
                 ).addOnFailureListener(Throwable::printStackTrace);
         chatMessages = new ArrayList<>();
@@ -94,6 +94,7 @@ public class GroupChatActivity extends AppCompatActivity {
         db.collection(Constants.KEY_COLLECTION_CHATS).add(message);
         inputMsg.setText(null);
     }
+
     private Bitmap decodeString(String encodedImg) {
         byte[] bytes = Base64.decode(encodedImg, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
