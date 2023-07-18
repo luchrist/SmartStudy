@@ -9,6 +9,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,24 +28,30 @@ import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
 import com.example.smartstudy.utilities.SelectListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GroupInfoActivity extends AppCompatActivity implements SelectListener {
-
     ProgressBar progressBar;
     AppCompatImageView back, chat;
-    TextView errorMsg;
+    TextView errorMsg, createdInfo;
+    Button exitGroup;
+    CheckBox checkBox;
     RecyclerView recyclerView;
     PreferenceManager preferenceManager;
-    String currentUserEmail;
+    String currentUserEmail, groupId;
     List<Member> members;
     MembersAdapter membersAdapter;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
     @Override
@@ -55,8 +63,12 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
         errorMsg = findViewById(R.id.errorMsg);
         back = findViewById(R.id.backNavBtn);
         chat = findViewById(R.id.chatBtn);
+        exitGroup = findViewById(R.id.exitGroup);
+        checkBox = findViewById(R.id.addExamsToPlan);
+        createdInfo = findViewById(R.id.createdInfo);
         preferenceManager = new PreferenceManager(getApplicationContext());
         currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
+        groupId = preferenceManager.getString(Constants.KEY_GROUP_ID);
         showUsers();
         setListeners();
     }
@@ -71,31 +83,50 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
             startActivity(new Intent(this, GroupActivity.class));
             finish();
         });
+        exitGroup.setOnClickListener(v -> {
+            removeCurrentMemberFromGroup();
+        });
+    }
+
+    private void removeCurrentMemberFromGroup() {
+        db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserEmail)
+                .update(Constants.KEY_GROUP_ID, FieldValue.arrayRemove(groupId))
+                .addOnSuccessListener(d -> System.out.println("Group id removed from user"))
+                .addOnFailureListener(e -> System.out.println("Failed to remove group id from user"));
+        for (Member member : members) {
+            if (member.email.equals(currentUserEmail)) {
+                db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)
+                        .update(Constants.KEY_MEMBERS, FieldValue.arrayRemove(member))
+                        .addOnSuccessListener(d -> {
+                            startActivity(new Intent(this, MainActivity.class));
+                        });
+            }
+        }
     }
 
     private void showUsers() {
         loading(true);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(Constants.KEY_COLLECTION_GROUPS)
-                        .document(preferenceManager.getString(Constants.KEY_GROUP_ID))
-                                .get()
-                                        .addOnSuccessListener(doc -> {
-                                            Group group = doc.toObject(Group.class);
-                                            if(group != null) {
-                                                members = group.members;
-                                                if(members.size() > 0) {
-                                                    membersAdapter = new MembersAdapter(members, this, currentUserEmail);
-                                                    recyclerView.setAdapter(membersAdapter);
-                                                    recyclerView.setVisibility(View.VISIBLE);
-                                                } else {
-                                                    showErrorMsg();
-                                                }
-                                            }
+                .document(groupId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    Group group = doc.toObject(Group.class);
+                    if (group != null) {
+                        members = group.members;
+                        if (members.size() > 0) {
+                            membersAdapter = new MembersAdapter(members, this, currentUserEmail);
+                            recyclerView.setAdapter(membersAdapter);
+                            recyclerView.setVisibility(View.VISIBLE);
+                            createdInfo.setText(String.format("Created %s by %s", group.createdTime, group.createdBy));
+                        } else {
+                            showErrorMsg();
+                        }
+                    }
 
-                                            loading(false);
-                                        }).addOnFailureListener(doc -> {
-                                            showErrorMsg();
-                                            loading(false);
+                    loading(false);
+                }).addOnFailureListener(doc -> {
+                    showErrorMsg();
+                    loading(false);
                 });
     }
 
@@ -107,7 +138,7 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
     private void loading(boolean isLoading) {
         if (isLoading) {
             progressBar.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             progressBar.setVisibility(View.INVISIBLE);
         }
     }
@@ -120,7 +151,7 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.bottom_sheet_layout);
-        if(member.isAdmin){
+        if (member.isAdmin) {
             showAdminDialog(member, dialog);
         } else {
             showStandartDialog(member, dialog);
@@ -144,7 +175,7 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
     private void showAdminDialog(Member member, Dialog dialog) {
         TextView dismissAdmin = dialog.findViewById(R.id.makeGroupAdmin);
         dismissAdmin.setText(R.string.dismiss_as_admin);
-        int removeColor =  ContextCompat.getColor(this, R.color.remove);
+        int removeColor = ContextCompat.getColor(this, R.color.remove);
         dismissAdmin.setTextColor(removeColor);
         prepareDialog(member, dialog);
 

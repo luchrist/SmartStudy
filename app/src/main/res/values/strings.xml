@@ -90,6 +90,9 @@
     <string name="admin">Admin</string>
     <string name="dismiss_as_admin">Dismiss as Admin</string>
     <string name="groupImage">Group Image</string>
+    <string name="add_group_exams_to_plan">Add Group-Exams to Plan</string>
+    <string name="exit_group">Exit Group</string>
+    <string name="type_a_message">Type a message...</string>
 </resources>
 
     <!---->

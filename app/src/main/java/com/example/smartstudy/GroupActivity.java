@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.ArraySet;
 import android.util.Base64;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
 
 public class GroupActivity extends AppCompatActivity {
 
@@ -58,9 +60,8 @@ public class GroupActivity extends AppCompatActivity {
         db.collection(Constants.KEY_COLLECTION_GROUPS).document(preferenceManager.getString(Constants.KEY_GROUP_ID)).get().addOnSuccessListener(
                 documentSnapshot -> {
                     group =  documentSnapshot.toObject(Group.class);
-                    //group.image = documentSnapshot.getString(Constants.KEY_IMAGE);
-                    group.name = documentSnapshot.getString(Constants.KEY_GROUP_NAME);
-                    group.joinWithId = Boolean.TRUE.equals(documentSnapshot.getBoolean(Constants.KEY_JOIN_WITH_GROUP_ID));
+//                    group.name = documentSnapshot.getString(Constants.KEY_GROUP_NAME);
+//                    group.joinWithId = Boolean.TRUE.equals(documentSnapshot.getBoolean(Constants.KEY_JOIN_WITH_GROUP_ID));
                     group.id = documentSnapshot.getId();
                     if (group.image != null) {
                         groupImage.setImageBitmap(getGroupImage(group.image));

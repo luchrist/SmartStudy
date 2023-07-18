@@ -58,6 +58,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/backNavBtn">
 
+        <CheckBox
+            android:id="@+id/addExamsToPlan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:text="@string/add_group_exams_to_plan"/>
+
         <TextView
             android:id="@+id/member"
             android:layout_width="wrap_content"
@@ -66,17 +76,18 @@
             android:text="@string/member"
             android:textColor="@color/primaryText"
             android:textSize="@dimen/_14ssp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/_60sdp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/usersRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_300sdp"
             android:clipToPadding="false"
             android:orientation="vertical"
             android:overScrollMode="never"
             android:padding="@dimen/_20sdp"
-            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_63sdp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
         <ProgressBar
@@ -95,10 +106,22 @@
             android:textSize="@dimen/_12ssp"
             android:visibility="gone"/>
 
-        <TextView
+        <Button
+            android:id="@+id/exitGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Created 26.03.2021 by Max Mustermann"
+            android:text="@string/exit_group"
+            android:background="@drawable/background_icon"
+            android:textColor="@color/remove"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="@dimen/_35sdp"
+            android:paddingStart="@dimen/_20sdp"
+            android:paddingEnd="@dimen/_20sdp"/>
+
+        <TextView
+            android:id="@+id/createdInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
             android:layout_marginBottom="@dimen/_6sdp"/>
     </FrameLayout>
