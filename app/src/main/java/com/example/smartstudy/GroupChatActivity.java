@@ -25,9 +25,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class GroupChatActivity extends AppCompatActivity {
 
+    Logger logger = Logger.getLogger(GroupChatActivity.class.getName());
     AppCompatImageView backNav;
     RecyclerView chatRecyclerView;
     EditText inputMsg;
@@ -37,7 +39,6 @@ public class GroupChatActivity extends AppCompatActivity {
     private String currentUserMail;
     private List<ChatMessage> chatMessages;
     private ChatAdapter chatAdapter;
-    private PreferenceManager preferenceManager;
     private FirebaseFirestore db;
 
 
@@ -55,26 +56,30 @@ public class GroupChatActivity extends AppCompatActivity {
     }
 
     private void init() {
-        preferenceManager = new PreferenceManager(getApplicationContext());
+        PreferenceManager preferenceManager = new PreferenceManager(getApplicationContext());
         currentUserMail = preferenceManager.getString(Constants.KEY_EMAIL);
         db = FirebaseFirestore.getInstance();
 
         db.collection(Constants.KEY_COLLECTION_GROUPS).document(preferenceManager.getString(Constants.KEY_GROUP_ID))
                 .get().addOnSuccessListener(documentSnapshot -> {
                     Group group = documentSnapshot.toObject(Group.class);
-                    for (Member member : group.members){
-                        if(!currentUserMail.equals(member.email)) {
-                            receivers.add(member);
+                    if(group != null){
+                        for (Member member : group.members){
+                            if(!currentUserMail.equals(member.email)) {
+                                receivers.add(member);
+                            }
                         }
+                        chatAdapter = new ChatAdapter(
+                                chatMessages,
+                                decodeString(receivers.get(0).image),
+                                currentUserMail
+                        );
+                    }else {
+                        logger.warning("Group is null");
                     }
                         }
-                ).addOnFailureListener(e -> e.printStackTrace());
+                ).addOnFailureListener(Throwable::printStackTrace);
         chatMessages = new ArrayList<>();
-        chatAdapter = new ChatAdapter(
-                chatMessages,
-                decodeString(receivers.get(0).image),
-                currentUserMail
-        );
         chatRecyclerView.setAdapter(chatAdapter);
 
     }
