@@ -13,20 +13,20 @@
         android:gravity="center_horizontal"
         tools:ignore="UselessParent">
 
-    <EditText
-        android:id="@+id/groupIdInput"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_45sdp"
-        android:layout_marginTop="@dimen/_40sdp"
-        android:hint="@string/group_id"
-        android:background="@drawable/background_input"
-        android:imeOptions="actionNext"
-        android:importantForAutofill="no"
-        android:inputType="text"
-        android:paddingStart="@dimen/_16sdp"
-        android:paddingEnd="@dimen/_16sdp"
-        android:textColor="@color/primaryText"
-        android:textSize="@dimen/_13ssp"/>
+        <EditText
+            android:id="@+id/groupIdInput"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_marginTop="@dimen/_40sdp"
+            android:background="@drawable/background_input"
+            android:hint="@string/group_id"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:paddingStart="@dimen/_16sdp"
+            android:paddingEnd="@dimen/_16sdp"
+            android:textColor="@color/primaryText"
+            android:textSize="@dimen/_13ssp" />
 
     <Button
         android:id="@+id/joinGroupBtn"
