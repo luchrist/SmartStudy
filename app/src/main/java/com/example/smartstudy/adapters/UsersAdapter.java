@@ -31,7 +31,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
                 parent,
                 false
         );
-        return  new UserViewHolder(itemContainerUserBinding);
+        return new UserViewHolder(itemContainerUserBinding);
     }
 
     @Override
@@ -52,8 +52,9 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             super(itemContainerUserBinding.getRoot());
             binding = itemContainerUserBinding;
         }
+
         void setUserData(User user) {
-            binding.textName.setText(user.name);
+            binding.textName.setText(user.userName);
             binding.textEmail.setText(user.email);
             binding.imageProfile.setImageBitmap(getUserImage(user.image));
         }

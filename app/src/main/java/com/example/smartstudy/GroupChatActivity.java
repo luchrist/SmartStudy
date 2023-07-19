@@ -1,5 +1,9 @@
 package com.example.smartstudy;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -32,9 +36,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.logging.Logger;
 
 public class GroupChatActivity extends AppCompatActivity {
 
+    Logger logger = Logger.getLogger(GroupChatActivity.class.getName());
     AppCompatImageView backNav;
     RecyclerView chatRecyclerView;
     EditText inputMsg;
