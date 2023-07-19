@@ -5,6 +5,16 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/_4sdp">
 
+    <TextView
+        android:id="@+id/msgSenderName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue"
+        android:textSize="@dimen/_10ssp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/textMessage"
+        />
+
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/imageProfile"
         android:layout_width="@dimen/_25sdp"
@@ -19,22 +29,26 @@
         android:id="@+id/textMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_4sdp"
+        android:layout_marginStart="@dimen/_2sdp"
         android:background="@drawable/background_received_message"
-        android:padding="@dimen/_12sdp"
+        android:paddingStart="@dimen/_12sdp"
+        android:paddingTop="@dimen/_6sdp"
+        android:paddingEnd="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_6sdp"
+        app:layout_constraintWidth_max="wrap"
         android:textColor="@color/white"
         android:textSize="@dimen/_13ssp"
         app:layout_constraintStart_toEndOf="@+id/imageProfile"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/msgSenderName"
         app:layout_constraintWidth_percent="0.75" />
 
     <TextView
         android:id="@+id/msgDateTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_1sdp"
         android:textColor="@color/secondaryText"
-        android:textSize="@dimen/_10ssp"
+        android:textSize="@dimen/_8ssp"
         app:layout_constraintStart_toStartOf="@+id/textMessage"
         app:layout_constraintTop_toBottomOf="@+id/textMessage" />
 

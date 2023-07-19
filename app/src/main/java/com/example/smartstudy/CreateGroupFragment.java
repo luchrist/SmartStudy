@@ -148,6 +148,7 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
         DocumentReference document = db.collection(Constants.KEY_COLLECTION_GROUPS).document();
         document.set(group).addOnSuccessListener(unused -> {
             preferenceManager.putString(Constants.KEY_GROUP_ID, document.getId());
+            preferenceManager.putString(Constants.KEY_GROUP_NAME, groupNameInput.getText().toString().trim());
             addGroupIdToMembers(document.getId());
             startActivity(new Intent(getContext(), GroupActivity.class));
         }).addOnFailureListener(e -> showToast("Failed to create group"));
