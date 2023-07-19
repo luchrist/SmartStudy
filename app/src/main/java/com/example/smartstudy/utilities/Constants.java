@@ -25,4 +25,5 @@ public class Constants {
     public static final String KEY_MSG = "message";
     public static final String KEY_TIMESTAMP = "timestamp";
 
+    public static final String KEY_RECEIVER = "receiver";
 }
