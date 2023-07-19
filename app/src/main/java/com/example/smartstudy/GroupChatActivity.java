@@ -90,6 +90,7 @@ public class GroupChatActivity extends AppCompatActivity {
         HashMap<String, Object> message = new HashMap<>();
         message.put(Constants.KEY_SENDER_ID, currentUserMail);
         message.put(Constants.KEY_RECEIVER_IDS, receiver.email);
+        message.put(Constants.KEY_RECEIVER_NAME, receiver.name);
         message.put(Constants.KEY_MSG, inputMsg.getText().toString());
         message.put(Constants.KEY_TIMESTAMP, new Date());
 
@@ -122,6 +123,7 @@ public class GroupChatActivity extends AppCompatActivity {
                     chatMessage.dateTime = getReadableDate(documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP));
                     chatMessage.dateObject = documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP);
                     chatMessage.receiversId = documentChange.getDocument().getString(Constants.KEY_RECEIVER_IDS);
+                    chatMessage.receiverName = documentChange.getDocument().getString(Constants.KEY_RECEIVER_NAME);
                     chatMessages.add(chatMessage);
                 }
             }

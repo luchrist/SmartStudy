@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 public class ChatMessage {
-    public String senderId, message, dateTime;
+    public String senderId, message, dateTime, receiversId, receiverName;
     public Date dateObject;
-    public String receiversId;
 }

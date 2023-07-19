@@ -49,14 +49,16 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        android:overScrollMode="never"
         android:orientation="vertical"
+        android:overScrollMode="never"
         android:padding="@dimen/_20sdp"
-        app:stackFromEnd="true"
         android:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="@+id/viewBackground"
-        app:layout_constraintTop_toTopOf="@+id/viewBackground"/>
+        app:layout_constraintTop_toTopOf="@+id/viewBackground"
+        app:layout_constraintVertical_bias="0.0"
+        app:stackFromEnd="true"
+        tools:layout_editor_absoluteX="0dp" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
