@@ -20,7 +20,7 @@
         android:layout_marginTop="@dimen/_40sdp"
         android:hint="@string/group_id"
         android:background="@drawable/background_input"
-        android:imeOptions="actionNext"
+        android:imeOptions="actionDone"
         android:importantForAutofill="no"
         android:inputType="text"
         android:paddingStart="@dimen/_16sdp"

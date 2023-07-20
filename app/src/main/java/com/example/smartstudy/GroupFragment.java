@@ -185,6 +185,7 @@ public class GroupFragment extends Fragment implements GroupSelectListener {
     @Override
     public void onGroupSelected(Group group) {
         preferenceManager.putString(Constants.KEY_GROUP_ID, group.id);
+        preferenceManager.putString(Constants.KEY_GROUP_NAME, group.name);
         startActivity(new Intent(getContext(), GroupActivity.class));
     }
 }

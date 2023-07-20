@@ -1,6 +1,8 @@
 package com.example.smartstudy.adapters;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -16,15 +18,13 @@ import java.util.List;
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<ChatMessage> chatMessages;
-    private final Bitmap receiverProfileImage;
     private final String senderId;
 
     public static final int VIEW_TYPE_SENT = 1;
     public static final int VIEW_TYPE_RECEIVED = 2;
 
-    public ChatAdapter(List<ChatMessage> chatMessages, Bitmap receiverProfileImage, String senderId) {
+    public ChatAdapter(List<ChatMessage> chatMessages, String senderId) {
         this.chatMessages = chatMessages;
-        this.receiverProfileImage = receiverProfileImage;
         this.senderId = senderId;
     }
 
@@ -51,7 +51,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if(getItemViewType(position) == VIEW_TYPE_SENT) {
             ((SentMessageViewHolder) holder).setData(chatMessages.get(position));
         } else {
-            ((ReceiverMessageViewHolder) holder).setData(chatMessages.get(position), receiverProfileImage);
+            ((ReceiverMessageViewHolder) holder).setData(chatMessages.get(position));
         }
     }
 
@@ -93,10 +93,16 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             binding = itemContainerReceivedMessageBinding;
         }
 
-        void setData(ChatMessage chatMsg, Bitmap receiverProfileImage) {
+        void setData(ChatMessage chatMsg) {
             binding.textMessage.setText(chatMsg.message);
             binding.msgDateTime.setText(chatMsg.dateTime);
-            binding.imageProfile.setImageBitmap(receiverProfileImage);
+            binding.imageProfile.setImageBitmap(decodeString(chatMsg.senderImage));
+            binding.msgSenderName.setText(chatMsg.senderName);
+        }
+
+        Bitmap decodeString(String encodedImg) {
+            byte[] bytes = Base64.decode(encodedImg, Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         }
     }
 }

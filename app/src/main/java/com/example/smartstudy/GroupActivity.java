@@ -29,6 +29,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GroupActivity extends AppCompatActivity {
 
@@ -85,9 +87,16 @@ public class GroupActivity extends AppCompatActivity {
             this.finish();
         });
         chat.setOnClickListener(v -> {
-            Intent intent = new Intent(this, GroupChatActivity.class);
-            startActivity(intent);
-            this.finish();
+            for (Member member : group.members) {
+                if(member.email.equals(preferenceManager.getString(Constants.KEY_EMAIL))) {
+                    Member currentMember = member;
+                    Intent intent = new Intent(this, GroupChatActivity.class);
+                    intent.putExtra(Constants.KEY_SENDER, currentMember);
+                    startActivity(intent);
+                    this.finish();
+                }
+            }
+
         });
         back.setOnClickListener(v -> {
             startActivity(new Intent(GroupActivity.this, MainActivity.class));
