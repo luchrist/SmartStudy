@@ -16,6 +16,7 @@ import com.example.smartstudy.models.Member;
 import com.example.smartstudy.models.User;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -102,7 +103,7 @@ public class JoinGroupFragment extends Fragment {
             groupId.setText("");
             groupId.clearFocus();
             preferenceManager.putString(Constants.KEY_GROUP_ID, groupIdText);
-            db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserMail).update(Constants.KEY_GROUP_ID, groupIdText).addOnFailureListener(Throwable::printStackTrace);
+            db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserMail).update(Constants.KEY_GROUP_ID, FieldValue.arrayUnion(groupIdText)).addOnFailureListener(Throwable::printStackTrace);
             startActivity(new Intent(getContext(), GroupActivity.class));
         }).addOnFailureListener(e -> groupId.setError("Something went wrong"));
     }
