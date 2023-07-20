@@ -102,6 +102,7 @@ public class JoinGroupFragment extends Fragment {
             groupId.setText("");
             groupId.clearFocus();
             preferenceManager.putString(Constants.KEY_GROUP_ID, groupIdText);
+            db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserMail).update(Constants.KEY_GROUP_ID, groupIdText).addOnFailureListener(Throwable::printStackTrace);
             startActivity(new Intent(getContext(), GroupActivity.class));
         }).addOnFailureListener(e -> groupId.setError("Something went wrong"));
     }
