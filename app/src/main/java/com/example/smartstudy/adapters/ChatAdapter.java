@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -51,7 +52,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if(getItemViewType(position) == VIEW_TYPE_SENT) {
             ((SentMessageViewHolder) holder).setData(chatMessages.get(position));
         } else {
-            ((ReceiverMessageViewHolder) holder).setData(chatMessages.get(position));
+            if (position > 0) {
+                ((ReceiverMessageViewHolder) holder).setData(chatMessages.get(position), chatMessages.get(position - 1).senderId);
+            } else {
+                ((ReceiverMessageViewHolder) holder).setData(chatMessages.get(position), "");
+            }
         }
     }
 
@@ -93,11 +98,15 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             binding = itemContainerReceivedMessageBinding;
         }
 
-        void setData(ChatMessage chatMsg) {
+        void setData(ChatMessage chatMsg, String beforeSenderId) {
             binding.textMessage.setText(chatMsg.message);
             binding.msgDateTime.setText(chatMsg.dateTime);
             binding.imageProfile.setImageBitmap(decodeString(chatMsg.senderImage));
-            binding.msgSenderName.setText(chatMsg.senderName);
+            if(!chatMsg.senderId.equals(beforeSenderId)) {
+                binding.msgSenderName.setText(chatMsg.senderName);
+            }else {
+                binding.msgSenderName.setVisibility(View.GONE);
+            }
         }
 
         Bitmap decodeString(String encodedImg) {
