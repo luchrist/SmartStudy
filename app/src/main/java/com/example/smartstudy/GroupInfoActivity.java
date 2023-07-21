@@ -5,14 +5,17 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -20,35 +23,29 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartstudy.adapters.MembersAdapter;
-import com.example.smartstudy.adapters.UsersAdapter;
 import com.example.smartstudy.models.Group;
 import com.example.smartstudy.models.Member;
-import com.example.smartstudy.models.User;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
 import com.example.smartstudy.utilities.SelectListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
 import java.util.List;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class GroupInfoActivity extends AppCompatActivity implements SelectListener {
     ProgressBar progressBar;
-    AppCompatImageView back, chat;
-    TextView errorMsg, createdInfo;
+    AppCompatImageView back, chat, addMember;
+    TextView errorMsg, createdInfo, groupName;
+    EditText memberInput;
     Button exitGroup;
     CheckBox checkBox;
     RecyclerView recyclerView;
     PreferenceManager preferenceManager;
     String currentUserEmail, groupId;
+    boolean currentUserIsAdmin = false;
     List<Member> members;
     MembersAdapter membersAdapter;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -61,14 +58,18 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
         progressBar = findViewById(R.id.progressBar);
         recyclerView = findViewById(R.id.usersRecyclerView);
         errorMsg = findViewById(R.id.errorMsg);
+        memberInput = findViewById(R.id.memberMailInput);
+        addMember = findViewById(R.id.addMemberBtn);
         back = findViewById(R.id.backNavBtn);
         chat = findViewById(R.id.chatBtn);
         exitGroup = findViewById(R.id.exitGroup);
+        groupName = findViewById(R.id.groupName);
         checkBox = findViewById(R.id.addExamsToPlan);
         createdInfo = findViewById(R.id.createdInfo);
         preferenceManager = new PreferenceManager(getApplicationContext());
         currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
         groupId = preferenceManager.getString(Constants.KEY_GROUP_ID);
+        groupName.setText(preferenceManager.getString(Constants.KEY_GROUP_NAME));
         showUsers();
         setListeners();
     }
@@ -84,24 +85,110 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
             finish();
         });
         exitGroup.setOnClickListener(v -> {
-            removeCurrentMemberFromGroup();
+            for (Member member : members) {
+                if (member.email.equals(currentUserEmail)) {
+                    removeMemberFromGroup(member);
+                }
+            }
+        });
+        addMember.setOnClickListener(v -> {
+            if (memberInput.getText().toString().trim().isEmpty()) {
+                showToast("Enter email");
+            } else {
+                addMember();
+            }
         });
     }
 
-    private void removeCurrentMemberFromGroup() {
-        db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserEmail)
+    private void addMember() {
+        String email = memberInput.getText().toString().trim();
+        if (email.equals(currentUserEmail)) {
+            showToast("You can't add yourself");
+        } else if (checkIfMemberAlreadyExists(email)) {
+            showToast("Member is already added");
+        } else if (checkIfInvalidEmail(email)) {
+            showToast("Enter valid email");
+        } else {
+            findMemberByEmail(email);
+        }
+    }
+
+    private boolean checkIfMemberAlreadyExists(String email) {
+        for (Member member : members) {
+            if (member.email.equals(email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkIfInvalidEmail(String email) {
+        return !Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    private void findMemberByEmail(String email) {
+        CollectionReference userCol = db.collection(Constants.KEY_COLLECTION_USERS);
+        userCol.document(email).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DocumentSnapshot result = task.getResult();
+                if (result.getString(Constants.KEY_USER_NAME) == null) {
+                    showToast("No user found with this email");
+                    return;
+                }
+                Member member = new Member();
+                member.email = email;
+                member.name = result.getString(Constants.KEY_USER_NAME);
+                member.image = result.getString(Constants.KEY_IMAGE);
+                member.token = result.getString(Constants.KEY_FCM_TOKEN);
+                member.isAdmin = false;
+                members.add(member);
+                membersAdapter.notifyItemInserted(members.size() - 1);
+                updateMembersInDb(true);
+                updateGroupIdsInUserDb(email);
+            }
+        });
+        memberInput.setText("");
+    }
+
+    private void updateGroupIdsInUserDb(String email) {
+        db.collection(Constants.KEY_COLLECTION_USERS).document(email)
+                .update(Constants.KEY_GROUP_ID, FieldValue.arrayUnion(groupId))
+                .addOnSuccessListener(d -> System.out.println("Group id added to user"))
+                .addOnFailureListener(e -> showToast("Failed to add group id to user"));
+    }
+
+    private void updateMembersInDb(boolean added) {
+        db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)
+                .update(Constants.KEY_MEMBERS, members)
+                .addOnSuccessListener(d -> {
+                    System.out.println("Member changed");
+                })
+                .addOnFailureListener(e -> {
+                    if (added) {
+                        memberInput.setError("Failed to add member in database");
+                    } else {
+                        showToast("Failed to update member in database");
+                    }
+                });
+
+    }
+
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void removeMemberFromGroup(Member member) {
+        db.collection(Constants.KEY_COLLECTION_USERS).document(member.email)
                 .update(Constants.KEY_GROUP_ID, FieldValue.arrayRemove(groupId))
                 .addOnSuccessListener(d -> System.out.println("Group id removed from user"))
                 .addOnFailureListener(e -> System.out.println("Failed to remove group id from user"));
-        for (Member member : members) {
-            if (member.email.equals(currentUserEmail)) {
-                db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)
-                        .update(Constants.KEY_MEMBERS, FieldValue.arrayRemove(member))
-                        .addOnSuccessListener(d -> {
-                            startActivity(new Intent(this, MainActivity.class));
-                        });
-            }
-        }
+
+        db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)
+                .update(Constants.KEY_MEMBERS, FieldValue.arrayRemove(member))
+                .addOnSuccessListener(d -> {
+                    startActivity(new Intent(this, MainActivity.class));
+                });
     }
 
     private void showUsers() {
@@ -118,6 +205,11 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
                             recyclerView.setAdapter(membersAdapter);
                             recyclerView.setVisibility(View.VISIBLE);
                             createdInfo.setText(String.format("Created %s by %s", group.createdTime, group.createdBy));
+                            for (Member member : members) {
+                                if (member.email.equals(currentUserEmail)) {
+                                    currentUserIsAdmin = member.isAdmin;
+                                }
+                            }
                         } else {
                             showErrorMsg();
                         }
@@ -148,13 +240,15 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
         if (member.email.equals(currentUserEmail)) {
             return;
         }
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.bottom_sheet_layout);
-        if (member.isAdmin) {
-            showAdminDialog(member, dialog);
-        } else {
-            showStandartDialog(member, dialog);
+        if (currentUserIsAdmin) {
+            final Dialog dialog = new Dialog(this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.bottom_sheet_layout);
+            if (member.isAdmin) {
+                showAdminDialog(member, dialog);
+            } else {
+                showStandartDialog(member, dialog);
+            }
         }
     }
 
@@ -168,6 +262,7 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
             member.isAdmin = true;
             members.set(i, member);
             membersAdapter.notifyItemChanged(i);
+            updateMembersInDb(false);
         });
         showDialog(dialog);
     }
@@ -185,6 +280,7 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
             member.isAdmin = false;
             members.set(i, member);
             membersAdapter.notifyItemChanged(i);
+            updateMembersInDb(false);
         });
         showDialog(dialog);
     }
@@ -207,6 +303,7 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
             int pos = members.indexOf(member);
             members.remove(member);
             membersAdapter.notifyItemRemoved(pos);
+            removeMemberFromGroup(member);
         });
         cancel.setOnClickListener(v -> dialog.dismiss());
     }
