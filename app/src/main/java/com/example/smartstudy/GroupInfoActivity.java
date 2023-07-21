@@ -85,10 +85,30 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
             finish();
         });
         exitGroup.setOnClickListener(v -> {
+            Member currentMember = new Member();
+            int pos = 0;
             for (Member member : members) {
                 if (member.email.equals(currentUserEmail)) {
                     removeMemberFromGroup(member);
+                    currentMember = member;
+                    break;
                 }
+                pos++;
+            }
+
+            members.remove(currentMember);
+            membersAdapter.notifyItemRemoved(pos);
+            for (Member member : members) {
+                if (member.isAdmin) {
+                    return;
+                }
+            }
+            if (members.size() > 0) {
+                members.get(0).isAdmin = true;
+                membersAdapter.notifyItemChanged(0);
+                updateMembersInDb(false);
+            } else {
+                deleteGroup();
             }
         });
         addMember.setOnClickListener(v -> {
@@ -98,6 +118,10 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
                 addMember();
             }
         });
+    }
+
+    private void deleteGroup() {
+        db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId).delete();
     }
 
     private void addMember() {
@@ -187,7 +211,13 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
         db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)
                 .update(Constants.KEY_MEMBERS, FieldValue.arrayRemove(member))
                 .addOnSuccessListener(d -> {
-                    startActivity(new Intent(this, MainActivity.class));
+                    if(member.email.equals(currentUserEmail)){
+                        showToast("You left the group");
+                        startActivity(new Intent(this, MainActivity.class));
+                        finish();
+                    }else{
+                        showToast("Member removed");
+                    }
                 });
     }
 
