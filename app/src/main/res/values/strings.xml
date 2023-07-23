@@ -93,6 +93,14 @@
     <string name="add_group_exams_to_plan">Add Group-Exams to Plan</string>
     <string name="exit_group">Exit Group</string>
     <string name="type_a_message">Type a message...</string>
+    <string name="most_important_information">Most Important Information</string>
+    <string name="add_most_important_information">add most important information</string>
+    <string name="upcoming_events">Upcoming Events</string>
+    <string name="date">Date</string>
+    <string name="subject">Subject</string>
+    <string name="type">Type</string>
+    <string name="description_focal_points">Description / Focal Points</string>
+    <string name="add_description">Add description...</string>
 </resources>
 
     <!---->

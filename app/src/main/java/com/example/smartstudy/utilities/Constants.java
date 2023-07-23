@@ -27,4 +27,9 @@ public class Constants {
     public static final String KEY_SENDER = "sender";
     public static final String KEY_SENDER_NAME = "senderName";
     public static final String KEY_SENDER_IMG = "senderImage";
+    public static final String KEY_EVENTS = "events";
+    public static final String KEY_TYPE = "type";
+    public static final String KEY_SUBJECT = "subject";
+    public static final String KEY_DATE = "date";
+    public static final String KEY_DESCRIPTION = "description";
 }
