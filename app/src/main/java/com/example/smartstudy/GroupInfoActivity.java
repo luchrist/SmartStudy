@@ -76,13 +76,19 @@ public class GroupInfoActivity extends AppCompatActivity implements SelectListen
 
     private void setListeners() {
         chat.setOnClickListener(v -> {
+            Member currentMember = new Member();
+            for (Member member : members) {
+                if (member.email.equals(currentUserEmail)) {
+                    currentMember = member;
+                    break;
+                }
+            }
             Intent intent = new Intent(this, GroupChatActivity.class);
+            intent.putExtra(Constants.KEY_SENDER, currentMember);
             startActivity(intent);
-            this.finish();
         });
         back.setOnClickListener(v -> {
-            startActivity(new Intent(this, GroupActivity.class));
-            finish();
+            onBackPressed();
         });
         exitGroup.setOnClickListener(v -> {
             Member currentMember = new Member();

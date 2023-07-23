@@ -218,7 +218,6 @@ public class GroupActivity extends AppCompatActivity {
         groupName.setOnClickListener(v -> {
             Intent intent = new Intent(this, GroupInfoActivity.class);
             startActivity(intent);
-            this.finish();
         });
         chat.setOnClickListener(v -> {
             for (Member member : group.members) {
@@ -227,14 +226,13 @@ public class GroupActivity extends AppCompatActivity {
                     Intent intent = new Intent(this, GroupChatActivity.class);
                     intent.putExtra(Constants.KEY_SENDER, currentMember);
                     startActivity(intent);
-                    this.finish();
                 }
             }
 
         });
         back.setOnClickListener(v -> {
             startActivity(new Intent(GroupActivity.this, MainActivity.class));
-            finish();
+            this.finish();
         });
 
         copyId.setOnClickListener(v -> {
