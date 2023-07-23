@@ -32,4 +32,5 @@ public class Constants {
     public static final String KEY_SUBJECT = "subject";
     public static final String KEY_DATE = "date";
     public static final String KEY_DESCRIPTION = "description";
+    public static final String KEY_MOST_IMPORTANT_INFO = "mostImportantInformation";
 }

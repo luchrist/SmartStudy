@@ -7,6 +7,8 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.ArraySet;
 import android.util.Base64;
 import android.view.View;
@@ -48,7 +50,7 @@ public class GroupActivity extends AppCompatActivity {
     private String encodedImage, currentUserEmail, currentGroupId;
     private boolean isCurrentUserAdmin = false;
     TableLayout tableLayout;
-    EditText type, subject, date;
+    EditText type, subject, date, mostImportantInfo;
     AppCompatImageView back, chat, copyId, description, addEvent;
     TextView groupName, groupId;
     RoundedImageView groupImage;
@@ -79,6 +81,7 @@ public class GroupActivity extends AppCompatActivity {
         groupId = findViewById(R.id.groupId);
         groupName = findViewById(R.id.groupName);
         groupImage = findViewById(R.id.groupImage);
+        mostImportantInfo = findViewById(R.id.mIIMultiLine);
 
         db.collection(Constants.KEY_COLLECTION_GROUPS).document(currentGroupId).get().addOnSuccessListener(
                 documentSnapshot -> {
@@ -91,6 +94,7 @@ public class GroupActivity extends AppCompatActivity {
                     }
                     groupName.setText(group.name);
                     groupId.setText(String.format("ID: %s", group.id));
+
                     for (Member member : group.members) {
                         if (member.email.equals(currentUserEmail)) {
                             if (!member.isAdmin) {
@@ -99,12 +103,14 @@ public class GroupActivity extends AppCompatActivity {
                                 type.setVisibility(View.GONE);
                                 subject.setVisibility(View.GONE);
                                 date.setVisibility(View.GONE);
+                                mostImportantInfo.setEnabled(false);
                             }else {
                                 isCurrentUserAdmin = true;
                             }
                             break;
                         }
                     }
+                    mostImportantInfo.setText(group.mostImportantInformation);
                     fillEventTable(group);
 
                     setListeners();
@@ -203,6 +209,21 @@ public class GroupActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
+        mostImportantInfo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                String mII = s.toString().trim();
+                db.collection(Constants.KEY_COLLECTION_GROUPS).document(currentGroupId)
+                        .update(Constants.KEY_MOST_IMPORTANT_INFO, mII).addOnFailureListener(e -> {
+                            showToast("Failed to update most important info");
+                            e.printStackTrace();
+                        });
+            }
+        });
         addEvent.setOnClickListener(v -> {
             Event event = collectEventData();
             addEventToTable(event);
