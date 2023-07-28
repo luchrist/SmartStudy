@@ -9,4 +9,5 @@ public class Group implements Serializable {
     public boolean joinWithId;
     public List<Member> members;
     public List<Event> events;
+    //public List<Category> fileCategories; //Kategorien werden in einem Update hinzugefügt
 }

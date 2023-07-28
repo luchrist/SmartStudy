@@ -1,5 +1,6 @@
 package com.example.smartstudy;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,21 +10,25 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.ArraySet;
 import android.util.Base64;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.example.smartstudy.dialogs.SaveDescription;
@@ -34,29 +39,51 @@ import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class GroupActivity extends AppCompatActivity {
+public class GroupActivity extends AppCompatActivity { //implements SaveFileGroupName.FileGroupNameDialogInterface {
 
     private String encodedImage, currentUserEmail, currentGroupId;
+    private int shownUploadedFiles = 0;
+    HashMap<Integer,Integer> fileLayouts = new HashMap<>();
     private boolean isCurrentUserAdmin = false;
     TableLayout tableLayout;
     EditText type, subject, date, mostImportantInfo;
+    LinearLayout filesLayout;
+    ConstraintLayout uploadFiles;
     AppCompatImageView back, chat, copyId, description, addEvent;
     TextView groupName, groupId;
     RoundedImageView groupImage;
+    ProgressBar uploadProgress;
     private PreferenceManager preferenceManager;
     private FirebaseFirestore db;
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference ref = storage.getReference();
+    StorageReference groupFilesRef;
     private Group group;
+    //private HashMap<String, Integer> categoryLayouts = new HashMap<String, Integer>();
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Intent data = result.getData();
+                        Uri file = data.getData();
+                        uploadFile(file);
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +95,7 @@ public class GroupActivity extends AppCompatActivity {
         group = new Group();
         currentGroupId = preferenceManager.getString(Constants.KEY_GROUP_ID);
         currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
+        groupFilesRef = ref.child("groupFiles").child(currentGroupId);
 
         type = findViewById(R.id.typeInput);
         subject = findViewById(R.id.subjectInput);
@@ -82,10 +110,26 @@ public class GroupActivity extends AppCompatActivity {
         groupName = findViewById(R.id.groupName);
         groupImage = findViewById(R.id.groupImage);
         mostImportantInfo = findViewById(R.id.mIIMultiLine);
+        uploadFiles = findViewById(R.id.uploadFile);
+        uploadProgress = findViewById(R.id.fileUploadProgressBar);
+        filesLayout = findViewById(R.id.eventsAndFilesLayout);
+
+        uploadProgress.setVisibility(View.VISIBLE);
+        groupFilesRef.listAll()
+                        .addOnSuccessListener(listResult -> {
+                            for (StorageReference file : listResult.getItems()) {
+                                    String fileName = file.getName();
+                                    file.getMetadata().addOnSuccessListener(fileMetadata -> {
+                                        String fileSizeInCorrectUnit = getFileSizeInCorrectUnit(fileMetadata.getSizeBytes());
+                                        addFileToView(fileName, fileSizeInCorrectUnit);
+                                        uploadProgress.setVisibility(View.GONE);
+                                    });
+                            }
+                        });
 
         db.collection(Constants.KEY_COLLECTION_GROUPS).document(currentGroupId).get().addOnSuccessListener(
                 documentSnapshot -> {
-                    group =  documentSnapshot.toObject(Group.class);
+                    group = documentSnapshot.toObject(Group.class);
 //                    group.name = documentSnapshot.getString(Constants.KEY_GROUP_NAME);
 //                    group.joinWithId = Boolean.TRUE.equals(documentSnapshot.getBoolean(Constants.KEY_JOIN_WITH_GROUP_ID));
                     group.id = documentSnapshot.getId();
@@ -104,7 +148,8 @@ public class GroupActivity extends AppCompatActivity {
                                 subject.setVisibility(View.GONE);
                                 date.setVisibility(View.GONE);
                                 mostImportantInfo.setEnabled(false);
-                            }else {
+                                uploadFiles.setVisibility(View.GONE);
+                            } else {
                                 isCurrentUserAdmin = true;
                             }
                             break;
@@ -161,7 +206,7 @@ public class GroupActivity extends AppCompatActivity {
         tableRow.addView(dateEntry);
         tableRow.addView(descriptionEntry);
 
-        if(!isCurrentUserAdmin) {
+        if (!isCurrentUserAdmin) {
             descriptionEntry.setOnClickListener(v -> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.description_focal_points);
@@ -209,11 +254,24 @@ public class GroupActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
+
+        uploadFiles.setOnClickListener(v -> {
+            //Create Intent
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("*/*");
+            //intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+            //Launch activity to get result
+            someActivityResultLauncher.launch(intent);
+        });
         mostImportantInfo.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
             @Override
             public void afterTextChanged(Editable s) {
                 String mII = s.toString().trim();
@@ -242,7 +300,7 @@ public class GroupActivity extends AppCompatActivity {
         });
         chat.setOnClickListener(v -> {
             for (Member member : group.members) {
-                if(member.email.equals(currentUserEmail)) {
+                if (member.email.equals(currentUserEmail)) {
                     Member currentMember = member;
                     Intent intent = new Intent(this, GroupChatActivity.class);
                     intent.putExtra(Constants.KEY_SENDER, currentMember);
@@ -274,6 +332,57 @@ public class GroupActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void uploadFile(Uri file) {
+        StorageReference fileRef = groupFilesRef.child(file.getLastPathSegment());
+        UploadTask uploadTask = fileRef.putFile(file);
+        uploadFiles.setVisibility(View.GONE);
+        uploadProgress.setVisibility(View.VISIBLE);
+
+        uploadTask.addOnFailureListener(e -> {
+            showToast("Failed to upload file");
+            e.printStackTrace();
+            uploadFiles.setVisibility(View.VISIBLE);
+            uploadProgress.setVisibility(View.GONE);
+        }).addOnSuccessListener(taskSnapshot -> {
+            uploadFiles.setVisibility(View.VISIBLE);
+            uploadProgress.setVisibility(View.GONE);
+            showToast("File uploaded" + file.getLastPathSegment());
+            addFileToView(file.getLastPathSegment(), getFileSizeInCorrectUnit(taskSnapshot.getMetadata().getSizeBytes()));
+        });
+    }
+
+    private void addFileToView(String fileName, String sizeBytes) {
+
+        if (shownUploadedFiles % 2 == 0) {
+            LinearLayout linearLayout = new LinearLayout(this);
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+            linearLayout.setId(View.generateViewId());
+            fileLayouts.put(shownUploadedFiles/2, linearLayout.getId());
+            filesLayout.addView(linearLayout);
+            showUploadedFileInProvidedLayout(fileName, sizeBytes, linearLayout);
+        } else {
+            LinearLayout linearLayout = findViewById(fileLayouts.get(shownUploadedFiles/2));
+            showUploadedFileInProvidedLayout(fileName, sizeBytes, linearLayout);
+        }
+    }
+
+    private String getFileSizeInCorrectUnit(long sizeBytes) {
+        if(sizeBytes > 1024){
+            if(sizeBytes > 1024 * 1024){
+                if(sizeBytes > 1024 * 1024 * 1024){
+                    return (sizeBytes / (1024 * 1024 * 1024)) + " GB";
+                } else {
+                    return (sizeBytes / (1024 * 1024)) + " MB";
+                }
+            } else {
+                return (sizeBytes / 1024) + " KB";
+            }
+        } else {
+            return sizeBytes + " B";
+        }
     }
 
     private void addEventToDb(Event event) {
@@ -330,5 +439,57 @@ public class GroupActivity extends AppCompatActivity {
         previewBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] bytes = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(bytes, Base64.DEFAULT);
+    }
+
+   /* @Override
+    public void showUploadedFileInCategory(String fileName, String sizeBytes, Category category, boolean newCategory) {
+        if (newCategory) {
+            TextView textView = new TextView(this);
+            textView.setText(category.category);
+            filesLayout.addView(textView);
+            LinearLayout linearLayout = new LinearLayout(this);
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+            linearLayout.setId(View.generateViewId());
+            category.layoutId = linearLayout.getId();*
+            showUploadedFileInProvidedLayout(fileName, sizeBytes, linearLayout);
+        } else {
+            LinearLayout linearLayout = findViewById(category.layoutId);
+            showUploadedFileInProvidedLayout(fileName, sizeBytes, linearLayout);
+        }
+    }
+*/
+    private void showUploadedFileInProvidedLayout(String fileName, String sizeBytes, LinearLayout linearLayout) {
+        ConstraintLayout downloadFileLayout = (ConstraintLayout) getLayoutInflater().inflate(R.layout.download_file, null);
+        linearLayout.addView(downloadFileLayout);
+        TextView fileNameText = downloadFileLayout.findViewById(R.id.file_name);
+        fileNameText.setText(fileName);
+        TextView fileSizeText = downloadFileLayout.findViewById(R.id.file_size);
+        fileSizeText.setText(sizeBytes);
+        shownUploadedFiles++;
+
+        AppCompatImageView deleteFile = downloadFileLayout.findViewById(R.id.delete_file);
+        ConstraintLayout downloadFile = downloadFileLayout.findViewById(R.id.download_file_view);
+
+        deleteFile.setOnClickListener(v -> {
+            linearLayout.removeView(downloadFileLayout);
+            if(linearLayout.getChildCount() == 0){
+                filesLayout.removeView(linearLayout);
+            }
+            shownUploadedFiles--;
+            groupFilesRef.child(fileName).delete().addOnFailureListener(e -> {
+                showToast("Failed to delete file");
+                e.printStackTrace();
+            });
+        });
+        downloadFile.setOnClickListener(v -> {
+            groupFilesRef.child(fileName).getDownloadUrl().addOnSuccessListener(uri -> {
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }).addOnFailureListener(e -> {
+                showToast("Failed to download file");
+                e.printStackTrace();
+            });
+        });
     }
 }

@@ -33,4 +33,6 @@ public class Constants {
     public static final String KEY_DATE = "date";
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_MOST_IMPORTANT_INFO = "mostImportantInformation";
+    public static final String KEY_CATEGORIES = "fileCategories";
+    public static final String KEY_FILES = "files";
 }

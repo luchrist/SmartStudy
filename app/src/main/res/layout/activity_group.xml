@@ -153,66 +153,94 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/blackBoard" />
 
-            <TableLayout
-                android:id="@+id/tableLayout"
-                android:layout_width="wrap_content"
+            <ScrollView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:overScrollMode="never"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/upcomingEvents">
 
+                <LinearLayout
+                    android:id="@+id/eventsAndFilesLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                <TableRow>
+                    <TableLayout
+                        android:id="@+id/tableLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal">
 
-                    <EditText
-                        android:id="@+id/typeInput"
-                        android:hint="@string/type"
-                        android:padding="@dimen/_8sdp"
-                        android:inputType="text"
-                        android:imeOptions="actionNext"
-                        android:textColor="@color/primaryVariant"
-                        android:textColorHint="@color/primaryVariant"
-                        android:textSize="@dimen/_12ssp"
-                        android:textStyle="bold" />
+                        <TableRow>
 
-                    <EditText
-                        android:id="@+id/subjectInput"
-                        android:hint="@string/subject"
-                        android:padding="@dimen/_8sdp"
-                        android:inputType="text"
-                        android:imeOptions="actionNext"
-                        android:textColor="@color/primaryVariant"
-                        android:textColorHint="@color/primaryVariant"
-                        android:textSize="@dimen/_12ssp"
-                        android:textStyle="bold" />
+                            <EditText
+                                android:id="@+id/typeInput"
+                                android:hint="@string/type"
+                                android:imeOptions="actionNext"
+                                android:inputType="text"
+                                android:padding="@dimen/_8sdp"
+                                android:textColor="@color/primaryVariant"
+                                android:textColorHint="@color/primaryVariant"
+                                android:textSize="@dimen/_12ssp"
+                                android:textStyle="bold" />
 
-                    <EditText
-                        android:layout_width="@dimen/_65sdp"
-                        android:id="@+id/dateInput"
-                        android:hint="@string/date"
-                        android:imeOptions="actionDone"
-                        android:padding="@dimen/_8sdp"
-                        android:inputType="date"
-                        android:textColor="@color/primaryVariant"
-                        android:textColorHint="@color/primaryVariant"
-                        android:textSize="@dimen/_12ssp"
-                        android:textStyle="bold" />
+                            <EditText
+                                android:id="@+id/subjectInput"
+                                android:hint="@string/subject"
+                                android:imeOptions="actionNext"
+                                android:inputType="text"
+                                android:padding="@dimen/_8sdp"
+                                android:textColor="@color/primaryVariant"
+                                android:textColorHint="@color/primaryVariant"
+                                android:textSize="@dimen/_12ssp"
+                                android:textStyle="bold" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/description"
-                        android:layout_marginStart="@dimen/_8sdp"
-                        android:layout_marginEnd="@dimen/_8sdp"
-                        android:padding="@dimen/_8sdp"
-                        android:src="@drawable/baseline_description_24" />
-                    />
+                            <EditText
+                                android:id="@+id/dateInput"
+                                android:layout_width="@dimen/_65sdp"
+                                android:hint="@string/date"
+                                android:imeOptions="actionDone"
+                                android:inputType="date"
+                                android:padding="@dimen/_8sdp"
+                                android:textColor="@color/primaryVariant"
+                                android:textColorHint="@color/primaryVariant"
+                                android:textSize="@dimen/_12ssp"
+                                android:textStyle="bold" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/addEvent"
-                        android:background="@drawable/background_icon_light"
-                        android:padding="@dimen/_8sdp"
-                        android:src="@drawable/baseline_done_24" />
-                </TableRow>
-            </TableLayout>
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/description"
+                                android:layout_marginStart="@dimen/_8sdp"
+                                android:layout_marginEnd="@dimen/_8sdp"
+                                android:padding="@dimen/_8sdp"
+                                android:src="@drawable/baseline_description_24" />
+                            />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/addEvent"
+                                android:background="@drawable/background_icon_light"
+                                android:padding="@dimen/_8sdp"
+                                android:src="@drawable/baseline_done_24" />
+                        </TableRow>
+                    </TableLayout>
+
+                    <include
+                        android:id="@+id/uploadFile"
+                        layout="@layout/upload_file_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal" />
+
+                    <ProgressBar
+                        android:id="@+id/fileUploadProgressBar"
+                        android:layout_width="@dimen/_45sdp"
+                        android:layout_height="@dimen/_45sdp"
+                        android:layout_gravity="center_horizontal"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </ScrollView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

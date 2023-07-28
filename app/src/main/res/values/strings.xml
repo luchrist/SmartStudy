@@ -101,6 +101,9 @@
     <string name="type">Type</string>
     <string name="description_focal_points">Description / Focal Points</string>
     <string name="add_description">Add description...</string>
+    <string name="upload_file">Upload any File</string>
+    <string name="add_new_file_group_name">Add New File Group Name</string>
+    <string name="if_file_group_does_not_exist_yet_enter_its_name_here">If file-group does not exist yet, enter its name here</string>
 </resources>
 
     <!---->
