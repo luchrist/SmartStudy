@@ -60,42 +60,50 @@
         app:layout_constraintTop_toBottomOf="@+id/backNavBtn"
         app:layout_constraintVertical_bias="1.0">
 
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/groupImage"
-            android:layout_width="@dimen/_60sdp"
-            android:layout_height="@dimen/_60sdp"
-            android:layout_gravity="start"
-            android:layout_marginStart="@dimen/_16sdp"
-            android:layout_marginTop="@dimen/_16sdp"
-            android:background="@drawable/background_image"
-            android:contentDescription="@string/groupImage"
-            android:scaleType="centerCrop" />
-
-        <TextView
-            android:id="@+id/groupId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/_16sdp"
-            android:text="ID: 1234567890"
-            android:textColor="@color/primaryText"
-            android:textSize="@dimen/_12ssp" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/copyId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="@dimen/_16sdp"
-            android:layout_marginEnd="@dimen/_16sdp"
-            android:background="@drawable/background_icon_light"
-            android:padding="@dimen/_6sdp"
-            android:src="@drawable/baseline_content_copy_24" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_90sdp">
+            android:layout_height="wrap_content">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/groupImage"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_60sdp"
+                android:layout_gravity="start"
+                android:layout_marginStart="@dimen/_16sdp"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:background="@drawable/background_image"
+                android:contentDescription="@string/groupImage"
+                android:scaleType="centerCrop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/groupId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:text="Group-ID: 1234567890"
+                android:textColor="@color/primaryText"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintEnd_toStartOf="@+id/copyId"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/copyId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:layout_marginEnd="@dimen/_16sdp"
+                android:background="@drawable/background_icon_light"
+                android:padding="@dimen/_2sdp"
+                android:src="@drawable/baseline_content_copy_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <View
                 android:id="@+id/blackBoard"
@@ -105,8 +113,10 @@
                 android:layout_marginEnd="@dimen/_12sdp"
                 android:background="@drawable/background_chat_input"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/groupImage"
+                android:layout_marginTop="@dimen/_12sdp"/>
 
             <TextView
                 android:id="@+id/textView44"
@@ -226,19 +236,38 @@
                         </TableRow>
                     </TableLayout>
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/shared_files"
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:textColor="@color/primaryVariant"
+                        android:textSize="@dimen/_18ssp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center_horizontal"/>
+
                     <include
                         android:id="@+id/uploadFile"
                         layout="@layout/upload_file_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal" />
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="@dimen/_16sdp"
+                       />
 
                     <ProgressBar
                         android:id="@+id/fileUploadProgressBar"
-                        android:layout_width="@dimen/_45sdp"
-                        android:layout_height="@dimen/_45sdp"
+                        android:layout_width="@dimen/_25sdp"
+                        android:layout_height="@dimen/_25sdp"
                         android:layout_gravity="center_horizontal"
                         android:visibility="gone" />
+                    <TableLayout
+                        android:id="@+id/uploadedFilesTable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+
+                    </TableLayout>
                 </LinearLayout>
             </ScrollView>
 

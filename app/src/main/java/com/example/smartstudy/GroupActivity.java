@@ -62,6 +62,7 @@ public class GroupActivity extends AppCompatActivity { //implements SaveFileGrou
     ConstraintLayout uploadFiles;
     AppCompatImageView back, chat, copyId, description, addEvent;
     TextView groupName, groupId;
+    TableLayout uploadedFilesTable;
     RoundedImageView groupImage;
     ProgressBar uploadProgress;
     private PreferenceManager preferenceManager;
@@ -113,6 +114,7 @@ public class GroupActivity extends AppCompatActivity { //implements SaveFileGrou
         uploadFiles = findViewById(R.id.uploadFile);
         uploadProgress = findViewById(R.id.fileUploadProgressBar);
         filesLayout = findViewById(R.id.eventsAndFilesLayout);
+        uploadedFilesTable = findViewById(R.id.uploadedFilesTable);
 
         uploadProgress.setVisibility(View.VISIBLE);
         groupFilesRef.listAll()
@@ -122,9 +124,9 @@ public class GroupActivity extends AppCompatActivity { //implements SaveFileGrou
                                     file.getMetadata().addOnSuccessListener(fileMetadata -> {
                                         String fileSizeInCorrectUnit = getFileSizeInCorrectUnit(fileMetadata.getSizeBytes());
                                         addFileToView(fileName, fileSizeInCorrectUnit);
-                                        uploadProgress.setVisibility(View.GONE);
                                     });
                             }
+                            uploadProgress.setVisibility(View.GONE);
                         });
 
         db.collection(Constants.KEY_COLLECTION_GROUPS).document(currentGroupId).get().addOnSuccessListener(
@@ -137,7 +139,7 @@ public class GroupActivity extends AppCompatActivity { //implements SaveFileGrou
                         groupImage.setImageBitmap(getGroupImage(group.image));
                     }
                     groupName.setText(group.name);
-                    groupId.setText(String.format("ID: %s", group.id));
+                    groupId.setText(String.format("Group-ID: %s", group.id));
 
                     for (Member member : group.members) {
                         if (member.email.equals(currentUserEmail)) {
@@ -460,22 +462,19 @@ public class GroupActivity extends AppCompatActivity { //implements SaveFileGrou
     }
 */
     private void showUploadedFileInProvidedLayout(String fileName, String sizeBytes, LinearLayout linearLayout) {
-        ConstraintLayout downloadFileLayout = (ConstraintLayout) getLayoutInflater().inflate(R.layout.download_file, null);
-        linearLayout.addView(downloadFileLayout);
-        TextView fileNameText = downloadFileLayout.findViewById(R.id.file_name);
+        TableRow downloadFileRow = (TableRow) getLayoutInflater().inflate(R.layout.download_file, null);
+        uploadedFilesTable.addView(downloadFileRow);
+        TextView fileNameText = downloadFileRow.findViewById(R.id.file_name);
         fileNameText.setText(fileName);
-        TextView fileSizeText = downloadFileLayout.findViewById(R.id.file_size);
+        TextView fileSizeText = downloadFileRow.findViewById(R.id.file_size);
         fileSizeText.setText(sizeBytes);
         shownUploadedFiles++;
 
-        AppCompatImageView deleteFile = downloadFileLayout.findViewById(R.id.delete_file);
-        ConstraintLayout downloadFile = downloadFileLayout.findViewById(R.id.download_file_view);
+        AppCompatImageView deleteFile = downloadFileRow.findViewById(R.id.delete_file);
+        AppCompatImageView downloadFile = downloadFileRow.findViewById(R.id.downloadBtn);
 
         deleteFile.setOnClickListener(v -> {
-            linearLayout.removeView(downloadFileLayout);
-            if(linearLayout.getChildCount() == 0){
-                filesLayout.removeView(linearLayout);
-            }
+            uploadedFilesTable.removeView(downloadFileRow);
             shownUploadedFiles--;
             groupFilesRef.child(fileName).delete().addOnFailureListener(e -> {
                 showToast("Failed to delete file");
