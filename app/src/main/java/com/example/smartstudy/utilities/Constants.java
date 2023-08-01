@@ -35,4 +35,11 @@ public class Constants {
     public static final String KEY_MOST_IMPORTANT_INFO = "mostImportantInformation";
     public static final String KEY_CATEGORIES = "fileCategories";
     public static final String KEY_FILES = "files";
+    public static final String KEY_QUESTIONS = "questions";
+    public static final String KEY_ANSWERSA = "answersA";
+    public static final String KEY_ANSWERSB = "answersB";
+    public static final String KEY_ANSWERSC = "answersC";
+    public static final String KEY_ANSWERSD = "answersD";
+    public static final String KEY_CORRECT_ANSWERS = "correctAnswers";
+    public static final String KEY_PROMPT = "message";
 }

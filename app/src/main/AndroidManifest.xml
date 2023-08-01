@@ -11,6 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".AiExam"
+            android:exported="false" />
+        <activity
+            android:name=".AiGenerateExam"
+            android:exported="false" />
+        <activity
             android:name=".CreateGroupActivity"
             android:exported="false" />
         <activity

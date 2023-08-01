@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import org.jetbrains.annotations.NotNull;
 
 public class StudyFragment extends Fragment {
-    Button languages,math, informatic;
+    Button languages,math, informatic, aiGenerateExam;
 
 
     @Nullable
@@ -25,6 +25,11 @@ public class StudyFragment extends Fragment {
         languages= view.findViewById(R.id.languages);
         math = view.findViewById(R.id.math);
         informatic = view.findViewById(R.id.informatic);
+        aiGenerateExam = view.findViewById(R.id.aiGenerateExam);
+
+        aiGenerateExam.setOnClickListener(v -> {
+            startActivity(new Intent(getActivity(), AiGenerateExam.class));
+        });
 
 
         languages.setOnClickListener(new View.OnClickListener() {

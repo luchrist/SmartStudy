@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AiExam">
+
+    <TextView
+        android:id="@+id/question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Was ist 1*1?"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:textColor="@color/primaryVariant"
+        android:textSize="@dimen/_14ssp"/>
+
+    <Button
+        android:id="@+id/answer_a"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_icon"
+        android:padding="@dimen/_8sdp"
+        android:text="A: 3"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/question"
+        android:layout_marginTop="@dimen/_12sdp"/>
+    <Button
+        android:id="@+id/answer_b"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_icon"
+        android:padding="@dimen/_8sdp"
+        android:text="A: 2"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/answer_a"
+        android:layout_marginTop="@dimen/_8sdp"/>
+    <Button
+        android:id="@+id/answer_c"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_icon"
+        android:padding="@dimen/_8sdp"
+        android:text="A: 1"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/answer_b"
+        android:layout_marginTop="@dimen/_8sdp"/>
+    <Button
+        android:id="@+id/answer_d"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_icon"
+        android:padding="@dimen/_8sdp"
+        android:text="A: 10"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/answer_c"
+        android:layout_marginTop="@dimen/_8sdp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
