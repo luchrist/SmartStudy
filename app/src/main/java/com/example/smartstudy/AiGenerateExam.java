@@ -112,7 +112,7 @@ public class AiGenerateExam extends AppCompatActivity {
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
-
+                        System.out.println(e);
                 }
 
                 @Override
@@ -138,6 +138,8 @@ public class AiGenerateExam extends AppCompatActivity {
                             }catch (JSONException e) {
                                 throw new RuntimeException(e);
                             }
+                        } else {
+                            System.out.println("Unsuccesful");
                         }
                 }
             });
