@@ -1,5 +1,7 @@
 package com.example.smartstudy.utilities;
 
+import java.util.HashMap;
+
 public class Constants {
 
     public static final String KEY_COLLECTION_USERS = "users";
@@ -42,4 +44,19 @@ public class Constants {
     public static final String KEY_ANSWERSD = "answersD";
     public static final String KEY_CORRECT_ANSWERS = "correctAnswers";
     public static final String KEY_PROMPT = "message";
+    public static final String KEY_AVAILABILITY = "availability";
+    public static final String REMOTE_MSG_AUTHORIZATION = "Authorization";
+    public static final String REMOTE_MSG_CONTENT_TYPE = "Content-Type";
+    public static final String REMOTE_MSG_DATA = "data";
+    public static final String REMOTE_MSG_REGISTRATION_IDS = "registration_ids";
+    public static HashMap<String, String> remoteMsgHeaders = null;
+    public static HashMap<String, String> getRemoteMsgHeaders() {
+        if (remoteMsgHeaders == null) {
+            remoteMsgHeaders = new HashMap<>();
+            remoteMsgHeaders.put(REMOTE_MSG_AUTHORIZATION,
+                    "key=AAAA79cKFF0:APA91bEYzsycGl0njG5-g2d18hOXXGKqYPxTeS5ZLPZtiOAHZEB_-hD_AzZ0ErIRUPdwbaYmPKSbvRf1iWGzUojZFQF9ivHApCyAN2NE-xHZAEM43T0SfFF16IHF6Ro16-BCI3QR0omf");
+            remoteMsgHeaders.put(REMOTE_MSG_CONTENT_TYPE, "application/json");
+        }
+        return remoteMsgHeaders;
+    }
 }
