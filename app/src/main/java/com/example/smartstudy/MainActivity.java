@@ -10,11 +10,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.smartstudy.models.Group;
+import com.example.smartstudy.models.Member;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -31,12 +33,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-   private static final Logger logger = Logger.getLogger(MainActivity.class.getName());
+    private static final Logger logger = Logger.getLogger(MainActivity.class.getName());
     //Variables
     FirebaseAuth auth;
     FirebaseUser user;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     PreferenceManager preferenceManager;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -56,9 +59,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        preferenceManager = new PreferenceManager(getApplicationContext());
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
 
@@ -66,7 +69,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(MainActivity.this, Login.class);
             startActivity(intent);
             this.finish();
-        }else {
+        } else {
+            preferenceManager.putString(Constants.KEY_EMAIL, user.getEmail());
+            super.onCreate(savedInstanceState);
+            if(getIntent() != null && getIntent().getExtras() != null) {
+            String notificationType = getIntent().getExtras().getString("notificationType");
+            switch (notificationType) {
+                case "flashcards":
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, new StudyFragment()).commit();
+                    title.setText("Study");
+                    navigationView.setCheckedItem(R.id.nav_study);
+                    break;
+                case "testExam":
+                    startActivity(new Intent(MainActivity.this, AiGenerateExam.class));
+                    break;
+                case "chatMessage":
+                    Intent intent = new Intent(MainActivity.this, GroupChatActivity.class);
+                    String groupId = getIntent().getExtras().getString(Constants.KEY_GROUP_ID);
+                    preferenceManager.putString(Constants.KEY_GROUP_NAME, getIntent().getExtras().getString(Constants.KEY_GROUP_NAME));
+                    preferenceManager.putString(Constants.KEY_GROUP_ID, groupId);
+                    FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_GROUPS).document(groupId).get()
+                            .addOnSuccessListener(document -> {
+                                Group group = document.toObject(Group.class);
+                                for(Member member : group.members) {
+                                    if (member.email.equals(user.getEmail())) {
+                                        intent.putExtra(Constants.KEY_SENDER, member);
+                                        break;
+                                    }
+                                }
+                                startActivity(intent);
+                            });
+                    break;
+                case "newExamAdded":
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, new Plan()).commit();
+                    title.setText("Plan");
+                    navigationView.setCheckedItem(R.id.nav_plan);
+                    break;
+                default:
+                    break;
+            }
+        }
             sp = this.getSharedPreferences("SP", 0);
 
             drawerLayout = findViewById(R.id.drawer);
@@ -104,25 +146,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             navigationView.setNavigationItemSelectedListener(this);
 
-            FirebaseMessaging.getInstance().getToken()
-                    .addOnCompleteListener(new OnCompleteListener<String>() {
-                        @Override
-                        public void onComplete(@NonNull Task<String> task) {
-                            if (!task.isSuccessful()) {
-                                logger.log(Level.WARNING, "Fetching FCM registration token failed", task.getException());
-                                return;
-                            }
-
-                            // Get new FCM registration token
-                            String token = task.getResult();
-
-                            // Log and toast
-                           logger.log(Level.INFO, token);
-                           Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+            getFCMToken();
+            FirebaseMessaging.getInstance().subscribeToTopic("News")
+                    .addOnCompleteListener(task -> {
+                        String message = "Successful";
+                        if (!task.isSuccessful()) {
+                            message = "Failed";
                         }
+                        logger.log(Level.INFO, message);
                     });
-            preferenceManager = new PreferenceManager(getApplicationContext());
         }
+    }
+
+    private void getFCMToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            logger.log(Level.WARNING, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        updateToken(token);
+
+                        // Log and toast
+                        logger.log(Level.INFO, token);
+                    }
+                });
+    }
+
+    private void updateToken(String token) {
+        preferenceManager.putString(Constants.KEY_FCM_TOKEN, token);
+        DocumentReference documentReference = db.collection(Constants.KEY_COLLECTION_USERS)
+                .document(user.getEmail());
+        documentReference.update(Constants.KEY_FCM_TOKEN, token)
+                .addOnSuccessListener(unused -> showToast("Token updated successfully"))
+                .addOnFailureListener(e -> showToast("Unable to update token"));
     }
 
     private void setHeaderText(String username) {
@@ -185,20 +247,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 navigationView.setCheckedItem(R.id.nav_settings);
                 break;
             case R.id.nav_logout:
-                FirebaseFirestore.getInstance()
-                        .collection(Constants.KEY_COLLECTION_USERS)
-                        .document(user.getEmail())
-                        .update(Constants.KEY_FCM_TOKEN, FieldValue.delete())
-                        .addOnSuccessListener(unused -> {
-                            preferenceManager.clearPreferences();
-                            auth.signOut();
-                            Intent intent = new Intent(this, Login.class);
-                            startActivity(intent);
-                            this.finish();
-                        })
-                        .addOnFailureListener(e -> {
-                            showToast("Unable to sign out");
-                        });
+                FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseFirestore.getInstance()
+                                .collection(Constants.KEY_COLLECTION_USERS)
+                                .document(user.getEmail())
+                                .update(Constants.KEY_FCM_TOKEN, FieldValue.delete())
+                                .addOnSuccessListener(unused -> {
+                                    preferenceManager.clearPreferences();
+                                    auth.signOut();
+                                    Intent intent = new Intent(this, Login.class);
+                                    startActivity(intent);
+                                    this.finish();
+                                })
+                                .addOnFailureListener(e -> {
+                                    showToast("Unable to sign out");
+                                });
+                    }
+                });
                 break;
         }
 
