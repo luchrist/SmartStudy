@@ -1,7 +1,5 @@
 package com.example.smartstudy;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -9,7 +7,7 @@ import com.example.smartstudy.utilities.Constants;
 
 import java.util.ArrayList;
 
-public class AiExam extends AppCompatActivity {
+public class AiExam extends BaseActivity {
 
     private int questionNumber = 0;
     private ArrayList<String> questions, answersA, answersB, answersC, answersD;

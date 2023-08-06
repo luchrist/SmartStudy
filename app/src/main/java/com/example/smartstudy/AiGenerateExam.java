@@ -1,12 +1,11 @@
 package com.example.smartstudy;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
 
 import com.example.smartstudy.utilities.Constants;
 
@@ -25,7 +24,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class AiGenerateExam extends AppCompatActivity {
+public class AiGenerateExam extends BaseActivity {
 
     private static final String OPENAI_API_KEY = "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";
     EditText topicInput, languageInput;
