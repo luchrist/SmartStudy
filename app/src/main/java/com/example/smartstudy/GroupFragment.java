@@ -117,7 +117,6 @@ public class GroupFragment extends Fragment implements GroupSelectListener {
         super.onCreate(savedInstanceState);
         preferenceManager = new PreferenceManager(requireContext());
         db = FirebaseFirestore.getInstance();
-        getToken();
     }
 
     private void showErrorMsg() {
@@ -168,18 +167,6 @@ public class GroupFragment extends Fragment implements GroupSelectListener {
 
     private void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    private void getToken() {
-        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(this::updateToken);
-    }
-
-    private void updateToken(String token) {
-        DocumentReference documentReference = db.collection(Constants.KEY_COLLECTION_USERS)
-                .document(preferenceManager.getString(Constants.KEY_EMAIL));
-        documentReference.update(Constants.KEY_FCM_TOKEN, token)
-                .addOnSuccessListener(unused -> showToast("Token updated successfully"))
-                .addOnFailureListener(e -> showToast("Unable to update token"));
     }
 
     @Override

@@ -204,12 +204,7 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
                             showToast("No user found with this email");
                             return;
                         }
-                        Member member = new Member();
-                        member.email = email;
-                        member.name = result.getString(Constants.KEY_USER_NAME);
-                        member.image = result.getString(Constants.KEY_IMAGE);
-                        member.token = result.getString(Constants.KEY_FCM_TOKEN);
-                        member.isAdmin = isAdmin;
+                        Member member = new Member(result.getString(Constants.KEY_USER_NAME), email, result.getString(Constants.KEY_IMAGE), result.getString(Constants.KEY_FCM_TOKEN), isAdmin, false);
                         members.add(member);
                         membersAdapter.notifyItemInserted(members.size() - 1);
                     }

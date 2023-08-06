@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,7 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
-public class GroupInfoActivity extends AppCompatActivity implements SelectListener {
+public class GroupInfoActivity extends BaseActivity implements SelectListener {
     ProgressBar progressBar;
     AppCompatImageView back, chat, addMember;
     TextView errorMsg, createdInfo, groupName;
