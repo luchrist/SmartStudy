@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +61,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
+        navigationView = findViewById(R.id.nav_view);
+        View header = navigationView.getHeaderView(0);
+        headertext = header.findViewById(R.id.headertext);
 
         preferenceManager = new PreferenceManager(getApplicationContext());
         auth = FirebaseAuth.getInstance();
@@ -112,7 +116,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             sp = this.getSharedPreferences("SP", 0);
 
             drawerLayout = findViewById(R.id.drawer);
-            navigationView = findViewById(R.id.nav_view);
             toolbar = findViewById(R.id.toolbar);
             title = findViewById(R.id.variabel_text);
 
@@ -120,7 +123,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS).document(user.getEmail()).get()
                     .addOnSuccessListener(document -> {
                         username[0] = document.getString(Constants.KEY_USER_NAME);
-                        headertext = navigationView.findViewById(R.id.headertext);
                         setHeaderText(username[0]);
 
                         navigationView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -188,10 +190,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void setHeaderText(String username) {
-        if (!sp.getBoolean("studyNeed", false)) {
-            headertext.setText("Hello " + username + ", no need to study anymore today");
-        } else {
-            headertext.setText("Let's get to study, " + username);
+        if(headertext!=null) {
+            if (!sp.getBoolean("studyNeed", false)) {
+                headertext.setText("Hello " + username + ", no need to study anymore today");
+            } else {
+                headertext.setText("Let's get to study, " + username);
+            }
         }
     }
 

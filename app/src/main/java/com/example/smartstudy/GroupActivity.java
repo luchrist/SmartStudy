@@ -26,7 +26,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -50,7 +49,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 
-public class GroupActivity extends AppCompatActivity { //implements SaveFileGroupName.FileGroupNameDialogInterface {
+public class GroupActivity extends BaseActivity { //implements SaveFileGroupName.FileGroupNameDialogInterface {
 
     private String encodedImage, currentUserEmail, currentGroupId;
     private int shownUploadedFiles = 0;

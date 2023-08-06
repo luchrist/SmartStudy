@@ -6,13 +6,12 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 
 import com.example.smartstudy.utilities.PreferenceManager;
 
-public class CreateGroupActivity extends AppCompatActivity {
+public class CreateGroupActivity extends BaseActivity {
 
     Button createGroupButton, joinGroupButton;
     AppCompatImageView cancelButton;
