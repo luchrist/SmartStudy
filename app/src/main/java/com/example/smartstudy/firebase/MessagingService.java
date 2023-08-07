@@ -75,11 +75,15 @@ public class MessagingService extends FirebaseMessagingService {
                         PreferenceManager preferenceManager = new PreferenceManager(this);
                         preferenceManager.putString(Constants.KEY_GROUP_NAME, message.getData().get(Constants.KEY_GROUP_NAME));
                         preferenceManager.putString(Constants.KEY_GROUP_ID, message.getData().get(Constants.KEY_GROUP_ID));
+                        sendNotification(intent, channelId, user, message, notificationId);
                     });
         }else {
             intent = new Intent(this, Login.class);
+            sendNotification(intent, channelId, user, message, notificationId);
         }
 
+    }
+    private void sendNotification(Intent intent, String channelId, User user, RemoteMessage message, int notificationId) {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);

@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.UUID;
 
 public class TimeFragment extends Fragment implements View.OnClickListener {
 
@@ -49,13 +50,27 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
         satTimePicker = view.findViewById(R.id.satTimePicker);
         sunTimePicker = view.findViewById(R.id.sunTimePicker);
         storeDatainObjects();
-        monTimePicker.setText(minutesToString(mon.getTime()));
-        tueTimePicker.setText(minutesToString(tue.getTime()));
-        wedTimePicker.setText(minutesToString(wed.getTime()));
-        thuTimePicker.setText(minutesToString(thu.getTime()));
-        friTimePicker.setText(minutesToString(fri.getTime()));
-        satTimePicker.setText(minutesToString(sat.getTime()));
-        sunTimePicker.setText(minutesToString(sun.getTime()));
+        if(mon != null){
+            monTimePicker.setText(minutesToString(mon.getTime()));
+        }
+        if(tue != null){
+            tueTimePicker.setText(minutesToString(tue.getTime()));
+        }
+        if(wed != null){
+            wedTimePicker.setText(minutesToString(wed.getTime()));
+        }
+        if(thu != null){
+            thuTimePicker.setText(minutesToString(thu.getTime()));
+        }
+        if(fri != null){
+            friTimePicker.setText(minutesToString(fri.getTime()));
+        }
+        if(sat != null){
+            satTimePicker.setText(minutesToString(sat.getTime()));
+        }
+        if(sun != null){
+            sunTimePicker.setText(minutesToString(sun.getTime()));
+        }
 
         //calendarView.s
 
@@ -182,28 +197,53 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
                         minute = selectedMinute;
                         if (monTimePicker.equals(view)) {
                             monTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                            dbTimeHelper.updateTimeObject(mon.getId(), mon.getDay(), stringToMinutes(monTimePicker.getText().toString()));
-                            editor.putInt(mon.getDay(),stringToMinutes(monTimePicker.getText().toString()) );
+                            if(mon == null){
+                                dbTimeHelper.addTimeObject("Monday", stringToMinutes(monTimePicker.getText().toString()));
+                            } else {
+                                dbTimeHelper.updateTimeObject(mon.getId(), mon.getDay(), stringToMinutes(monTimePicker.getText().toString()));
+                            }
                         } else if (tueTimePicker.equals(view)) {
                             tueTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                            editor.putInt(tue.getDay(),stringToMinutes(tueTimePicker.getText().toString()) );
-                            dbTimeHelper.updateTimeObject(tue.getId(), tue.getDay(), stringToMinutes(tueTimePicker.getText().toString()));
+                            if (tue == null) {
+                                dbTimeHelper.addTimeObject("Tuesday", stringToMinutes(tueTimePicker.getText().toString()));
+                            } else {
+                                dbTimeHelper.updateTimeObject(tue.getId(), tue.getDay(), stringToMinutes(tueTimePicker.getText().toString()));
+                            }
                         } else if (view == wedTimePicker) {
                             wedTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                            dbTimeHelper.updateTimeObject(wed.getId(), wed.getDay(), stringToMinutes(wedTimePicker.getText().toString()));
+                            if (wed == null) {
+                                dbTimeHelper.addTimeObject("Wednesday", stringToMinutes(wedTimePicker.getText().toString()));
+                            } else {
+                                dbTimeHelper.updateTimeObject(wed.getId(), wed.getDay(), stringToMinutes(wedTimePicker.getText().toString()));
+                            }
                         } else if (view == thuTimePicker) {
                             thuTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                            dbTimeHelper.updateTimeObject(thu.getId(), thu.getDay(), stringToMinutes(thuTimePicker.getText().toString()));
+                            if (thu == null) {
+                                dbTimeHelper.addTimeObject("Thursday", stringToMinutes(thuTimePicker.getText().toString()));
+                            } else {
+                                dbTimeHelper.updateTimeObject(thu.getId(), thu.getDay(), stringToMinutes(thuTimePicker.getText().toString()));
+                            }
                         } else if (view == friTimePicker) {
                             friTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                            dbTimeHelper.updateTimeObject(fri.getId(), fri.getDay(), stringToMinutes(friTimePicker.getText().toString()));
+                            if (fri == null) {
+                                dbTimeHelper.addTimeObject("Friday", stringToMinutes(friTimePicker.getText().toString()));
+                            } else {
+                                dbTimeHelper.updateTimeObject(fri.getId(), fri.getDay(), stringToMinutes(friTimePicker.getText().toString()));
+                            }
                         } else if (view == satTimePicker) {
                             satTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                            dbTimeHelper.updateTimeObject(sat.getId(), sat.getDay(), stringToMinutes(satTimePicker.getText().toString()));
+                            if (sat == null) {
+                                dbTimeHelper.addTimeObject("Saturday", stringToMinutes(satTimePicker.getText().toString()));
+                            }else {
+                                dbTimeHelper.updateTimeObject(sat.getId(), sat.getDay(), stringToMinutes(satTimePicker.getText().toString()));
+                            }
                         } else if (view == sunTimePicker) {
                             sunTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
-                            dbTimeHelper.updateTimeObject(sun.getId(), sun.getDay(), stringToMinutes(sunTimePicker.getText().toString()));
-                            editor.putInt(sun.getDay(),stringToMinutes(sunTimePicker.getText().toString()) );
+                            if (sun == null) {
+                                dbTimeHelper.addTimeObject("Sunday", stringToMinutes(sunTimePicker.getText().toString()));
+                            } else {
+                                dbTimeHelper.updateTimeObject(sun.getId(), sun.getDay(), stringToMinutes(sunTimePicker.getText().toString()));
+                            }
                         }else if (view == exeptionTime) {
                             exeptionTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
                         }
