@@ -53,7 +53,7 @@ public class MessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
-        Log.d("FCM", "Message: " + message.getNotification().getBody());
+        //Log.d("FCM", "Message: " + Objects.requireNonNull(message.getNotification()).getBody());
         User user = new User();
         user.email = message.getData().get(Constants.KEY_EMAIL);
         user.userName = message.getData().get(Constants.KEY_USER_NAME);
@@ -82,7 +82,7 @@ public class MessagingService extends FirebaseMessagingService {
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.drawable.round_notifications_24)
                 .setContentTitle(user.userName)

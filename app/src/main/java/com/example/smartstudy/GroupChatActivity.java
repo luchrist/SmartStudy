@@ -71,7 +71,7 @@ public class GroupChatActivity extends BaseActivity {
         progressBar = findViewById(R.id.progress_bar);
         groupName = findViewById(R.id.groupName);
 
-        loadReceiverId();
+        loadReceiver();
         setListeners();
         init();
         listenMessages();
@@ -98,7 +98,7 @@ public class GroupChatActivity extends BaseActivity {
                 });
     }
 
-    private void loadReceiverId() {
+    private void loadReceiver() {
         currentSender = (Member) getIntent().getSerializableExtra(Constants.KEY_SENDER);
     }
 
