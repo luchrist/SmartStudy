@@ -245,6 +245,10 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
                                     currentUserIsAdmin = member.isAdmin;
                                 }
                             }
+                            if (!currentUserIsAdmin) {
+                                memberInput.setVisibility(View.GONE);
+                                addMember.setVisibility(View.GONE);
+                            }
                         } else {
                             showErrorMsg();
                         }
