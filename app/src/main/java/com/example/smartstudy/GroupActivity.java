@@ -11,7 +11,6 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -122,7 +121,7 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
                                     String fileName = file.getName();
                                     file.getMetadata().addOnSuccessListener(fileMetadata -> {
                                         String fileSizeInCorrectUnit = getFileSizeInCorrectUnit(fileMetadata.getSizeBytes());
-                                        addFileToView(fileName, fileSizeInCorrectUnit);
+                                        addFileToTable(fileName, fileSizeInCorrectUnit);
                                     });
                             }
                             uploadProgress.setVisibility(View.GONE);
@@ -149,7 +148,6 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
                                 subject.setVisibility(View.GONE);
                                 date.setVisibility(View.GONE);
                                 mostImportantInfo.setEnabled(false);
-                                uploadFiles.setVisibility(View.GONE);
                             } else {
                                 isCurrentUserAdmin = true;
                             }
@@ -350,24 +348,44 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
             uploadFiles.setVisibility(View.VISIBLE);
             uploadProgress.setVisibility(View.GONE);
             showToast("File uploaded" + file.getLastPathSegment());
-            addFileToView(file.getLastPathSegment(), getFileSizeInCorrectUnit(taskSnapshot.getMetadata().getSizeBytes()));
+            addFileToTable(file.getLastPathSegment(), getFileSizeInCorrectUnit(taskSnapshot.getMetadata().getSizeBytes()));
         });
     }
 
-    private void addFileToView(String fileName, String sizeBytes) {
+    private void addFileToTable(String fileName, String sizeBytes) {
+        TableRow downloadFileRow = (TableRow) getLayoutInflater().inflate(R.layout.download_file, null);
+        uploadedFilesTable.addView(downloadFileRow);
+        TextView fileNameText = downloadFileRow.findViewById(R.id.file_name);
+        fileNameText.setText(fileName);
+        TextView fileSizeText = downloadFileRow.findViewById(R.id.file_size);
+        fileSizeText.setText(sizeBytes);
+        shownUploadedFiles++;
 
-        if (shownUploadedFiles % 2 == 0) {
-            LinearLayout linearLayout = new LinearLayout(this);
-            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-            linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-            linearLayout.setId(View.generateViewId());
-            fileLayouts.put(shownUploadedFiles/2, linearLayout.getId());
-            filesLayout.addView(linearLayout);
-            showUploadedFileInProvidedLayout(fileName, sizeBytes, linearLayout);
+        AppCompatImageView deleteFile = downloadFileRow.findViewById(R.id.delete_file);
+        AppCompatImageView downloadFile = downloadFileRow.findViewById(R.id.downloadBtn);
+
+        if (isCurrentUserAdmin) {
+            deleteFile.setOnClickListener(v -> {
+                uploadedFilesTable.removeView(downloadFileRow);
+                shownUploadedFiles--;
+                groupFilesRef.child(fileName).delete().addOnFailureListener(e -> {
+                    showToast("Failed to delete file");
+                    e.printStackTrace();
+                });
+            });
         } else {
-            LinearLayout linearLayout = findViewById(fileLayouts.get(shownUploadedFiles/2));
-            showUploadedFileInProvidedLayout(fileName, sizeBytes, linearLayout);
+            deleteFile.setVisibility(View.GONE);
         }
+
+        downloadFile.setOnClickListener(v -> {
+            groupFilesRef.child(fileName).getDownloadUrl().addOnSuccessListener(uri -> {
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }).addOnFailureListener(e -> {
+                showToast("Failed to download file");
+                e.printStackTrace();
+            });
+        });
     }
 
     private String getFileSizeInCorrectUnit(long sizeBytes) {
@@ -460,34 +478,4 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
         }
     }
 */
-    private void showUploadedFileInProvidedLayout(String fileName, String sizeBytes, LinearLayout linearLayout) {
-        TableRow downloadFileRow = (TableRow) getLayoutInflater().inflate(R.layout.download_file, null);
-        uploadedFilesTable.addView(downloadFileRow);
-        TextView fileNameText = downloadFileRow.findViewById(R.id.file_name);
-        fileNameText.setText(fileName);
-        TextView fileSizeText = downloadFileRow.findViewById(R.id.file_size);
-        fileSizeText.setText(sizeBytes);
-        shownUploadedFiles++;
-
-        AppCompatImageView deleteFile = downloadFileRow.findViewById(R.id.delete_file);
-        AppCompatImageView downloadFile = downloadFileRow.findViewById(R.id.downloadBtn);
-
-        deleteFile.setOnClickListener(v -> {
-            uploadedFilesTable.removeView(downloadFileRow);
-            shownUploadedFiles--;
-            groupFilesRef.child(fileName).delete().addOnFailureListener(e -> {
-                showToast("Failed to delete file");
-                e.printStackTrace();
-            });
-        });
-        downloadFile.setOnClickListener(v -> {
-            groupFilesRef.child(fileName).getDownloadUrl().addOnSuccessListener(uri -> {
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
-            }).addOnFailureListener(e -> {
-                showToast("Failed to download file");
-                e.printStackTrace();
-            });
-        });
-    }
 }
