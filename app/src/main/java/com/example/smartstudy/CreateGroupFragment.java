@@ -156,8 +156,11 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
 
 
     private void addGroupIdToMembers(String id) {
+        HashMap<String, Boolean> group = new HashMap<>();
+        group.put(Constants.KEY_ADD_EXAMS_TO_PLAN, false);
         for (Member member : members){
-            db.collection(Constants.KEY_COLLECTION_USERS).document(member.email).update(Constants.KEY_GROUP_ID, FieldValue.arrayUnion(id))
+            db.collection(Constants.KEY_COLLECTION_USERS).document(member.email).collection(Constants.KEY_COLLECTION_GROUPS)
+                    .document(id).set(group)
                     .addOnSuccessListener(d -> System.out.println("Group id added to user"))
                     .addOnFailureListener(e -> System.out.println("Failed to add group id to user"));
         }

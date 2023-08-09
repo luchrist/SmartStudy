@@ -32,6 +32,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class GroupInfoActivity extends BaseActivity implements SelectListener {
@@ -180,8 +181,10 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
     }
 
     private void updateGroupIdsInUserDb(String email) {
-        db.collection(Constants.KEY_COLLECTION_USERS).document(email)
-                .update(Constants.KEY_GROUP_ID, FieldValue.arrayUnion(groupId))
+        HashMap<String, Boolean> addExamsToPlan = new HashMap<>();
+        addExamsToPlan.put(Constants.KEY_ADD_EXAMS_TO_PLAN, false);
+        db.collection(Constants.KEY_COLLECTION_USERS).document(email).collection(Constants.KEY_COLLECTION_GROUPS)
+                .document(groupId).set(addExamsToPlan)
                 .addOnSuccessListener(d -> System.out.println("Group id added to user"))
                 .addOnFailureListener(e -> showToast("Failed to add group id to user"));
     }
@@ -208,8 +211,8 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
     }
 
     private void removeMemberFromGroup(Member member) {
-        db.collection(Constants.KEY_COLLECTION_USERS).document(member.email)
-                .update(Constants.KEY_GROUP_ID, FieldValue.arrayRemove(groupId))
+        db.collection(Constants.KEY_COLLECTION_USERS).document(member.email).collection(Constants.KEY_COLLECTION_GROUPS)
+                .document(groupId).delete()
                 .addOnSuccessListener(d -> System.out.println("Group id removed from user"))
                 .addOnFailureListener(e -> System.out.println("Failed to remove group id from user"));
 

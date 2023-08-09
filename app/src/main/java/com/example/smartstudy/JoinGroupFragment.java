@@ -19,6 +19,7 @@ import com.example.smartstudy.utilities.PreferenceManager;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class JoinGroupFragment extends Fragment {
@@ -103,7 +104,10 @@ public class JoinGroupFragment extends Fragment {
             groupId.setText("");
             groupId.clearFocus();
             preferenceManager.putString(Constants.KEY_GROUP_ID, groupIdText);
-            db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserMail).update(Constants.KEY_GROUP_ID, FieldValue.arrayUnion(groupIdText)).addOnFailureListener(Throwable::printStackTrace);
+            HashMap<String, Boolean> group = new HashMap<>();
+            group.put(Constants.KEY_ADD_EXAMS_TO_PLAN, false);
+            db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserMail).collection(Constants.KEY_COLLECTION_GROUPS)
+                    .document(groupIdText).set(group).addOnFailureListener(Throwable::printStackTrace);
             startActivity(new Intent(getContext(), GroupActivity.class));
         }).addOnFailureListener(e -> groupId.setError("Something went wrong"));
     }

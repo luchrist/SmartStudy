@@ -137,6 +137,7 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
                         groupImage.setImageBitmap(getGroupImage(group.image));
                     }
                     groupName.setText(group.name);
+                    preferenceManager.putString(Constants.KEY_GROUP_NAME, group.name);
                     groupId.setText(String.format("Group-ID: %s", group.id));
 
                     for (Member member : group.members) {

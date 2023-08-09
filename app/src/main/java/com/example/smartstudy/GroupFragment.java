@@ -25,6 +25,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
@@ -71,13 +72,13 @@ public class GroupFragment extends Fragment implements GroupSelectListener {
     private void showGroups() {
         loading(true);
         db.collection(Constants.KEY_COLLECTION_USERS).document(preferenceManager.getString(Constants.KEY_EMAIL))
-                .get()
+                .collection(Constants.KEY_COLLECTION_GROUPS).get()
                 .addOnCompleteListener(task -> {
                     List<String> groupIds;
                     if (task.isSuccessful() && task.getResult() != null) {
-                        DocumentSnapshot document = task.getResult();
-                        groupIds = (List<String>) document.get(Constants.KEY_GROUP_ID);
-                        if (groupIds != null && groupIds.size() > 0) {
+                        QuerySnapshot documents = task.getResult();
+                        groupIds = (List<String>) documents.getDocuments().stream().map(DocumentSnapshot::getId).collect(Collectors.toList());
+                        if (groupIds.size() > 0) {
                             getGroupInfos(groupIds);
                         } else {
                             showErrorMsg();
