@@ -21,7 +21,9 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.smartstudy.Builder.ExamBuilder;
 import com.example.smartstudy.adapters.MembersAdapter;
+import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.Group;
 import com.example.smartstudy.models.Member;
 import com.example.smartstudy.utilities.Constants;
@@ -75,6 +77,14 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
     }
 
     private void setListeners() {
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                addExamsToPlan();
+            } else {
+                removeExamsFromPlan();
+            }
+        });
+
         chat.setOnClickListener(v -> {
             Member currentMember = new Member();
             for (Member member : members) {
@@ -124,6 +134,57 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
                 addMember();
             }
         });
+    }
+
+    private void removeExamsFromPlan() {
+        db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserEmail)
+                .collection(Constants.KEY_COLLECTION_GROUPS).document(groupId).update(Constants.KEY_ADD_EXAMS_TO_PLAN, false)
+                .addOnSuccessListener(unused -> {
+                    showToast("Exams will not be added to your plan");
+                    try (DBExamHelper dbExamHelper = new DBExamHelper(getApplicationContext())) {
+                        db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)
+                                .get().addOnSuccessListener(documentSnapshot -> {
+                                    Group group = documentSnapshot.toObject(Group.class);
+                                    for (Event event : group.events) {
+                                        dbExamHelper.deleteExamObject(new ExamBuilder().setId(event.id).build());
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    showToast("Failed to remove exams from plan");
+                                });
+                    }
+                }).addOnFailureListener(e -> {
+                    showToast("Failed to remove exams from plan");
+                });
+    }
+
+    private void addExamsToPlan() {
+        db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserEmail)
+                .collection(Constants.KEY_COLLECTION_GROUPS).document(groupId).update(Constants.KEY_ADD_EXAMS_TO_PLAN, true)
+                .addOnSuccessListener(unused -> {
+                    showToast("Exams will be added to your plan");
+                    try (DBExamHelper dbExamHelper = new DBExamHelper(getApplicationContext())) {
+                        db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)
+                                .get().addOnSuccessListener(documentSnapshot -> {
+                                    Group group = documentSnapshot.toObject(Group.class);
+                                    for (Event event : group.events) {
+                                        dbExamHelper.addExamObject(
+                                                new ExamBuilder()
+                                                        .setId(event.id)
+                                                        .setEnddate(event.date)
+                                                        .setType(event.type)
+                                                        .setSubject(event.subject)
+                                                        .build());
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    showToast("Failed to add exams to plan");
+                                });
+                    }
+                }).addOnFailureListener(e -> {
+                    showToast("Failed to add exams to plan");
+                });
+
     }
 
     private void deleteGroup() {

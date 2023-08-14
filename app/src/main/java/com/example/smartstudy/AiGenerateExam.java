@@ -26,7 +26,7 @@ import okhttp3.Response;
 
 public class AiGenerateExam extends BaseActivity {
 
-    private static final String OPENAI_API_KEY = "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";
+    private static final String OPENAI_API_KEY = "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";
     EditText topicInput, languageInput;
     Button startExam;
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
