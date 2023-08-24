@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     NavigationView navigationView;
     Toolbar toolbar;
     TextView title, headertext;
+    LinearLayout points;
     SharedPreferences sp;
     private boolean studyneed = false;
 
@@ -118,6 +120,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             drawerLayout = findViewById(R.id.drawer);
             toolbar = findViewById(R.id.toolbar);
             title = findViewById(R.id.variabel_text);
+            points = findViewById(R.id.pointsContainer);
+
+            points.setOnClickListener(view -> {
+                startActivity(new Intent(this, PointsActivity.class));
+            });
 
             final String[] username = {""};
             FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS).document(user.getEmail()).get()

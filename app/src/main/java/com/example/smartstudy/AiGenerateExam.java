@@ -26,7 +26,7 @@ import okhttp3.Response;
 
 public class AiGenerateExam extends BaseActivity {
 
-    private static final String OPENAI_API_KEY = "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";
+    private static final String OPENAI_API_KEY = "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";
     EditText topicInput, languageInput;
     Button startExam;
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
@@ -59,44 +59,6 @@ public class AiGenerateExam extends BaseActivity {
                 obj.put("content", prompt);
                 promptArray.put(obj);
                 jsonObject.put(Constants.KEY_PROMPT ,promptArray);
-                JSONArray functionArray = new JSONArray();
-                JSONObject functionObj = new JSONObject();
-                functionObj.put("name", "getExamQuestionsAndAnswers");
-                functionObj.put("description", "Get the exam questions, the 4 possible anwers a,b,c,d and which of them are the correct ones");
-                JSONObject parameters = new JSONObject();
-                parameters.put("type", "object");
-                JSONObject properties = new JSONObject();
-                JSONObject questions = new JSONObject();
-                questions.put("type", "string[]");
-                questions.put("description", "A List of the exam questions");
-                properties.put("questions", questions);
-                JSONObject answersA = new JSONObject();
-                answersA.put("type", "string[]");
-                answersA.put("description", "A List of the A answer possibilities");
-                properties.put("answersA", answersA);
-                JSONObject answersB = new JSONObject();
-                answersB.put("type", "string[]");
-                answersB.put("description", "A List of the B answer possibilities");
-                properties.put("answersB", answersB);
-                JSONObject answersC = new JSONObject();
-                answersC.put("type", "string[]");
-                answersC.put("description", "A List of the C answer possibilities");
-                properties.put("answersC", answersC);
-                JSONObject answersD = new JSONObject();
-                answersD.put("type", "string[]");
-                answersD.put("description", "A List of the D answer possibilities");
-                properties.put("answersD", answersD);
-                JSONObject correctAnswers = new JSONObject();
-                correctAnswers.put("type", "char[]");
-                correctAnswers.put("description", "A List of the correct Answers. Select a char a or b or c or d");
-                properties.put("correctAnswers", correctAnswers);
-                parameters.put("properties", properties);
-                functionObj.put("parameters", parameters);
-                functionArray.put(functionObj);
-                jsonObject.put("functions", functionArray);
-                JSONObject function_name = new JSONObject();
-                function_name.put("name", "getExamQuestionsAndAnswers");
-                jsonObject.put("function_call", function_name);
             }catch (JSONException e){
                 throw new RuntimeException(e);
             }

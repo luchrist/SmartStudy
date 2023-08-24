@@ -73,6 +73,30 @@ public class ExamBuilder {
     }
 
     public Exam build() {
+        if(id == null) {
+            id = UUID.randomUUID().toString();
+        }
+        if (subject == null) {
+            subject = "any Subject";
+        }
+        if (type == null) {
+            type = "Exam";
+        }
+        if (enddate == null) {
+            // Get the current date
+            LocalDate currentDate = LocalDate.now();
+            // Format the current date as a string
+            enddate = currentDate.plusWeeks(2).format(formatter);
+        }
+        if (startdate == null) {
+            // Get the current date
+            LocalDate currentDate = LocalDate.now();
+            // Format the current date as a string
+            startdate = currentDate.format(formatter);
+        }
+        if (colour == null) {
+            colour = "blue";
+        }
         return new Exam(id, subject, type, enddate, startdate, colour, volume, progres);
     }
 }

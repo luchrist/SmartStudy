@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".PointsActivity"
+            android:exported="false" />
+        <activity
             android:name=".AiExam"
             android:exported="false" />
         <activity
