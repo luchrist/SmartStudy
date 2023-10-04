@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.smartstudy.models.Todo;
+
 public class DBTodoHelper extends SQLiteOpenHelper {
     private static final String LOG_TAG = DBTodoHelper.class.getSimpleName();
     private Context context;

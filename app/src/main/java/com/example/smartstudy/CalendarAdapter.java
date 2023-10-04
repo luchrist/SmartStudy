@@ -18,7 +18,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
     private final ArrayList<String> daysOfMonth;
     public final OnItemListener onItemListener;
-    private DBExamHelper dbExamHelper;
+    private DBEventHelper dbEventHelper;
     private ArrayList<String> col, end;
     private final Month month;
 
@@ -34,7 +34,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     public CalendarViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.calendar_cell, parent, false);
-        dbExamHelper = new DBExamHelper(parent.getContext());
+        dbEventHelper = new DBEventHelper(parent.getContext());
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         layoutParams.height = (int) (parent.getHeight() * 0.166666666);
         return new CalendarViewHolder(view, onItemListener);
@@ -153,7 +153,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
         col = new ArrayList<>();
         end = new ArrayList<>();
 
-        Cursor cursor1 = dbExamHelper.readAllData();
+        Cursor cursor1 = dbEventHelper.readAllData();
         if (cursor1.getCount() == 0){
         }else {
             while (cursor1.moveToNext()) {

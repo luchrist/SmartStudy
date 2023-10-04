@@ -8,26 +8,34 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
-public class DBExamHelper extends SQLiteOpenHelper {
+import com.example.smartstudy.models.Event;
 
-    private static final String LOG_TAG = DBExamHelper.class.getSimpleName();
+public class DBEventHelper extends SQLiteOpenHelper {
+
+    private static final String LOG_TAG = DBEventHelper.class.getSimpleName();
     private Context context;
-    public static final String DB_NAME = "ExamStudy.db";
+    public static final String DB_NAME = "EventStudy.db";
     public static final int DB_VERSION = 1;
-    public static final String TABLE = "exam";
+    public static final String TABLE = "event";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_SUBJECT = "subject";
     public static final String COLUMN_TYPE = "type";
     public static final String COLUMN_VOLUME = "volume";
     public static final String COLUMN_BEGIN = "starttime";
     public static final String COLUMN_END = "endtime";
-    public static final String COLUMN_COLOUR = "colour";
+    public static final String COLUMN_COLOR = "color";
     public static final String COLUMN_PROGRESS = "progress";
+    public static final String COLOMN_DESCRIPTION = "description";
+    public static final String COLUMN_REMAININGDAYS = "remainingdays";
+    public static final String COLUMN_REMAININGMINUTES = "remainingminutes";
+    public static final String COLUMN_ABSOLUTMINUTES = "absolutminutes";
 
 
 
 
-    public DBExamHelper(Context context) {
+
+
+    public DBEventHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         Log.d(LOG_TAG, "DbHelper hat die Datenbank: " + getDatabaseName() + " erzeugt.");
         this.context = context;
@@ -42,9 +50,12 @@ public class DBExamHelper extends SQLiteOpenHelper {
                     COLUMN_VOLUME + " INTEGER NOT NULL, " +
                     COLUMN_BEGIN + " TEXT NOT NULL, " +
                     COLUMN_END + " TEXT NOT NULL, " +
-                    COLUMN_COLOUR + " TEXT NOT NULL, " +
-                    COLUMN_PROGRESS + " INTEGER);";
-
+                    COLUMN_COLOR + " TEXT NOT NULL, " +
+                    COLUMN_PROGRESS + " INTEGER, " +
+                    COLOMN_DESCRIPTION + " TEXT, " +
+                    COLUMN_REMAININGDAYS + " INTEGER, " +
+                    COLUMN_REMAININGMINUTES + " INTEGER, " +
+                    COLUMN_ABSOLUTMINUTES + " INTEGER);";
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -58,16 +69,20 @@ public class DBExamHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    void addExamObject(Exam exam){
+    void addEventObject(Event event){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_SUBJECT, exam.getSubject());
-        contentValues.put(COLUMN_TYPE, exam.getType());
-        contentValues.put(COLUMN_VOLUME, exam.getVolume());
-        contentValues.put(COLUMN_BEGIN, exam.getStartdate());
-        contentValues.put(COLUMN_END, exam.getEnddate());
-        contentValues.put(COLUMN_COLOUR, exam.getColour());
-        contentValues.put(COLUMN_PROGRESS, exam.getProgres());
+        contentValues.put(COLUMN_SUBJECT, event.getSubject());
+        contentValues.put(COLUMN_TYPE, event.getType());
+        contentValues.put(COLUMN_VOLUME, event.getVolume());
+        contentValues.put(COLUMN_BEGIN, event.getStartDate());
+        contentValues.put(COLUMN_END, event.getEndDate());
+        contentValues.put(COLUMN_COLOR, event.getColor());
+        contentValues.put(COLUMN_PROGRESS, event.getProgress());
+        contentValues.put(COLOMN_DESCRIPTION, event.getDescription());
+        contentValues.put(COLUMN_REMAININGDAYS, event.getRemainingDays());
+        contentValues.put(COLUMN_REMAININGMINUTES, event.getRemainingMinutes());
+        contentValues.put(COLUMN_ABSOLUTMINUTES, event.getAbsolutMinutes());
 
         long result = db.insert(TABLE, null, contentValues);
         if (result == -1) {
@@ -82,19 +97,23 @@ public class DBExamHelper extends SQLiteOpenHelper {
 
 
     }
-    void updateExamObject(Exam exam){
+    void updateEventObject(Event event){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_SUBJECT, exam.getSubject());
-        contentValues.put(COLUMN_TYPE, exam.getType());
-        contentValues.put(COLUMN_VOLUME, exam.getVolume());
-        contentValues.put(COLUMN_BEGIN, exam.getStartdate());
-        contentValues.put(COLUMN_END, exam.getEnddate());
-        contentValues.put(COLUMN_COLOUR, exam.getColour());
-        contentValues.put(COLUMN_PROGRESS, exam.getProgres());
+        contentValues.put(COLUMN_SUBJECT, event.getSubject());
+        contentValues.put(COLUMN_TYPE, event.getType());
+        contentValues.put(COLUMN_VOLUME, event.getVolume());
+        contentValues.put(COLUMN_BEGIN, event.getStartDate());
+        contentValues.put(COLUMN_END, event.getEndDate());
+        contentValues.put(COLUMN_COLOR, event.getColor());
+        contentValues.put(COLUMN_PROGRESS, event.getProgress());
+        contentValues.put(COLOMN_DESCRIPTION, event.getDescription());
+        contentValues.put(COLUMN_REMAININGDAYS, event.getRemainingDays());
+        contentValues.put(COLUMN_REMAININGMINUTES, event.getRemainingMinutes());
+        contentValues.put(COLUMN_ABSOLUTMINUTES, event.getAbsolutMinutes());
 
 
-            long result = db.update(TABLE,contentValues, "id=?", new String[]{exam.getId()});
+            long result = db.update(TABLE,contentValues, "id=?", new String[]{event.getId()});
             if(result == -1){
                 Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
             }else{
@@ -104,9 +123,9 @@ public class DBExamHelper extends SQLiteOpenHelper {
 
 
     }
-    void deleteExamObject(Exam exam){
+    void deleteEventObject(Event event){
         SQLiteDatabase db = this.getWritableDatabase();
-        long result = db.delete(TABLE, "id=?", new String[]{exam.getId()});
+        long result = db.delete(TABLE, "id=?", new String[]{event.getId()});
         if(result == -1){
             Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
         }else{

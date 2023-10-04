@@ -2,24 +2,14 @@ package com.example.smartstudy;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RatingBar;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
+import com.example.smartstudy.models.Todo;
 
 public class DeleteTodoDialog extends DialogFragment {
     Todo todo;

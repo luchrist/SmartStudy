@@ -1,6 +1,5 @@
 package com.example.smartstudy;
 
-import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -20,7 +19,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class Plan extends Fragment implements CalendarAdapter.OnItemListener, View.OnClickListener {
+public class PlanFragment extends Fragment implements CalendarAdapter.OnItemListener, View.OnClickListener {
 
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;

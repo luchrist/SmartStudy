@@ -3,7 +3,6 @@ package com.example.smartstudy;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,28 +17,37 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.smartstudy.adapters.TodosAdapter;
+import com.example.smartstudy.models.Event;
+import com.example.smartstudy.models.Todo;
+import com.example.smartstudy.utilities.TodoSelectListener;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
-public class EditExam extends DialogFragment implements View.OnClickListener {
-    Button addTodo;
-    LinearLayout todos, times;
-    EditText inputTodo, subject, type, dueDay, startDate;
+public class EditExam extends DialogFragment implements TodoSelectListener {
+    AppCompatImageButton addTodo;
+    RecyclerView todosForEventView;
+    AppCompatImageView prevEvent, nextEvent;
+    Button newEmptyEvent;
+    EditText inputTodo, inputTime, subject, type, dueDay, startDate;
     RatingBar volume;
-    Spinner colour, inputTime;
-    ArrayList<String> todoList = new ArrayList<>();
-    ArrayList<String> timeList = new ArrayList<>();
+    Spinner colour;
     LocalDate selectedDate;
-    DBExamHelper dbHelper;
+    DBEventHelper dbHelper;
     DBTodoHelper dbTodoHelper;
-    ArrayList<String> PlanId, PlanSub, PlanType, PlanBeg, PlanEnd, PlanCol, TodoId, TodoDo, TodoTi, TodoColec;
-    ArrayList<Integer>  TodoCheck, PlanVol;
-    ArrayList<Integer> PlanProg;
-    String id;
+    List<Event> events, todaysEvents;
+    List<Todo> allTodos, todosForEvent;
+    Event shownEvent;
     ProgressBar progressBar; // zeigt prozentual den Progress an der aber absolut in STunden abgespeichert wird
-    int progre;
+    int progress;
+    private TodosAdapter todosAdapter;
 
     public EditExam(LocalDate selectedDate) {
         this.selectedDate = selectedDate;
@@ -54,8 +62,10 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         addTodo = view.findViewById(R.id.addToDoEdit);
-        todos = view.findViewById(R.id.todosEdit);
-        times = view.findViewById(R.id.timesEdit);
+        prevEvent = view.findViewById(R.id.prevEvent);
+        prevEvent.setVisibility(View.GONE);
+        nextEvent = view.findViewById(R.id.nextEvent);
+        newEmptyEvent = view.findViewById(R.id.newEvent);
         inputTodo = view.findViewById(R.id.inputTodoEdit);
         inputTime = view.findViewById(R.id.inputTimeEdit);
         colour = view.findViewById(R.id.colourEdit);
@@ -64,24 +74,16 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
         dueDay = view.findViewById(R.id.dueDay_edit);
         startDate = view.findViewById(R.id.startDateEdit);
         volume = view.findViewById(R.id.volume_edit);
-        addTodo.setOnClickListener(this);
         progressBar = view.findViewById(R.id.progressEdit);
+        todosForEventView = view.findViewById(R.id.todosRecyclerView);
+        todosAdapter = new TodosAdapter(todosForEvent, this);
+        todosForEventView.setAdapter(todosAdapter);
 
-        PlanId = new ArrayList<>();
-        PlanSub = new ArrayList<>();
-        PlanType= new ArrayList<>();
-        PlanVol= new ArrayList<>();
-        PlanBeg= new ArrayList<>();
-        PlanEnd= new ArrayList<>();
-        PlanCol= new ArrayList<>();
-        PlanProg= new ArrayList<>();
-        TodoId= new ArrayList<>();
-        TodoDo= new ArrayList<>();
-        TodoTi= new ArrayList<>();
-        TodoColec= new ArrayList<>();
-        TodoCheck = new ArrayList<>();
+        events = new ArrayList<>();
+        todaysEvents = new ArrayList<>();
+        allTodos = new ArrayList<>();
 
-        dbHelper = new DBExamHelper(EditExam.this.getContext());
+        dbHelper = new DBEventHelper(EditExam.this.getContext());
         dbTodoHelper = new DBTodoHelper(EditExam.this.getContext());
 
 
@@ -92,19 +94,9 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
         colour.setAdapter(adapter);
-
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapterTimes = ArrayAdapter.createFromResource(this.getContext(),
-                R.array.times, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
-        adapterTimes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
-        inputTime.setAdapter(adapterTimes);
         loadData();
         showDayData();
-
-
-
+        setListeners();
 
         builder.setTitle("Edit Exam")
                 // Pass null as the parent view because its going in the dialog layout
@@ -115,36 +107,27 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                         int vol;
                         float vols, prog;
 
-                        sub = subject.getText().toString();
-                        typ = type.getText().toString();
-                        enddate = dueDay.getText().toString();
-                        startdate = startDate.getText().toString();
-                        col = colour.getSelectedItem().toString();
-                        key = sub+typ;
-                        vols = volume.getRating();
-                        vol = (int) (vols * 2);
+                        shownEvent.setSubject(subject.getText().toString());
+                        shownEvent.setType(type.getText().toString());
+                        shownEvent.setEndDate(dueDay.getText().toString());
+                        shownEvent.setStartDate(startDate.getText().toString());
+                        shownEvent.setColor(colour.getSelectedItem().toString());
+                        shownEvent.setVolume((int)volume.getRating()*2);
 
-                        if (startdate.equals("")){
+                        if (shownEvent.getStartDate().equals("")){
                             startdate = LocalDate.now().toString();
                         }
-                        if(enddate.equals("")){
-                            Toast.makeText(getContext(), "Set an Date!", Toast.LENGTH_SHORT).show();
+                        if(shownEvent.getEndDate().equals("")){
+                            Toast.makeText(getContext(), "Set an Due Day!", Toast.LENGTH_SHORT).show();
                         }else{
-                            Exam exam = new Exam("",sub, typ,enddate,startdate,col,vol, progre);
-
-
-                            for (int i  = 0; i < todoList.size(); i++){
-                                Todo tod = new Todo(key, "", todoList.get(i), stringToMinutes(timeList.get(i)), 0);
-                                dbTodoHelper.addTodoObject(tod);
+                            for (int i = 0; i < todosForEvent.size(); i++){
+                                Todo tod = new Todo(todosForEvent.get(i).getId(), shownEvent.getId(), todosForEvent.get(i).getTodo(), todosForEvent.get(i).getTime(), 0);
+                                dbTodoHelper.updateTodoObject(tod);
                             }
-
-                            dbHelper.addExamObject(exam);
+                            dbHelper.updateEventObject(shownEvent);
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                                    new PlanFragment()).commit();
                         }
-
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                                new Plan()).commit();
-
-
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -152,23 +135,8 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
                         // User cancelled the dialog
                     }
                 });
-
-
-
         // Create the AlertDialog object and return it
         return builder.create();
-    }
-
-
-    private int stringToMinutes(String time) {
-        String[] timeSplittet = time.split("\\.");
-        int hours = Integer.parseInt(timeSplittet[0]);
-        int mins = Integer.parseInt(timeSplittet[1]);
-        return  hours*60 + mins;
-
-
-
-
     }
 
     private ArrayList<String> splitString(String text, char splitSymbol){
@@ -191,133 +159,36 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
     }
 
     private void showDayData() {
-        for(int i = 0; i < PlanId.size(); i++){
-            if(PlanEnd.get(i).equals(selectedDate.toString())){
-
-                subject.setText(PlanSub.get(i));
-                id = PlanId.get(i);
-                type.setText(PlanType.get(i));
-                String key = PlanSub.get(i)+PlanType.get(i);
-                volume.setRating(PlanVol.get(i)/2);
-                startDate.setText(PlanBeg.get(i));
-                dueDay.setText(PlanEnd.get(i));
-                int progr = PlanProg.get(i); //bereits gelernte Stunden
-                float gesStd;
-                switch(PlanVol.get(i)){
-                    case 0:
-                        gesStd = 5;
-                        break;
-                    case 1:
-                        gesStd = 10;
-                        break;
-                    case 2:
-                        gesStd = 15;
-                        break;
-                    case 3:
-                        gesStd = 20;
-                        break;
-                    case 4:
-                        gesStd = 25;
-                        break;
-                    case 5:
-                        gesStd = 30;
-                        break;
-                    case 6:
-                        gesStd = 35;
-                        break;
-                    default:
-                        gesStd = 35;
-                        break;
-                }
-
-                String col = PlanCol.get(i);
-                int co = 0;
-                switch (col){
-                    case "red":
-                        co = 0;
-                        break;
-                    case "blue":
-                        co = 1;
-                        break;
-                    case "green":
-                        co = 2;
-                        break;
-                    case "yellow":
-                        co = 3;
-                        break;
-                    case "brown":
-                        co = 4;
-                        break;
-                    case "orange":
-                        co = 5;
-                        break;
-                    case "pink":
-                        co = 6;
-                        break;
-                    case "purple":
-                        co = 7;
-                        break;
-                    default:
-                        co = 1;
-                        break;
-
-                }
-
-                colour.setSelection(co);
-                float toDoTime = 0;
-                for(int j = 0; j < TodoColec.size(); j++){
-                    if (TodoColec.get(j).equals(key)){
-                        TextView newTodo = new TextView(todos.getContext());
-                        newTodo.setText(TodoDo.get(j));
-                        if (TodoCheck.get(j) == 1){
-                            newTodo.setPaintFlags(newTodo.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                        }
-                        todos.addView(newTodo);
-                        Todo delTodo = new Todo(key,TodoId.get(j),TodoDo.get(j), TodoTi.get(j), TodoCheck.get(j));
-
-
-                        TextView newEstimated = new TextView(times.getContext());
-                        newEstimated.setText(minutesToString(TodoTi.get(j)));
-                        toDoTime += Float.parseFloat(TodoTi.get(j));
-                        times.addView(newEstimated);
-                        int p = j;
-                        newTodo.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                dbTodoHelper.deleteTodoObject(delTodo);
-                                todos.removeView(newTodo);
-                                times.removeView(newEstimated);
-                                TodoDo.remove(p);
-                                TodoTi.remove(p);
-                                TodoCheck.remove(p);
-                            }
-                        });
-                        newEstimated.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                                dbTodoHelper.deleteTodoObject(delTodo);
-                                todos.removeView(newTodo);
-                                times.removeView(newEstimated);
-                                TodoDo.remove(p);
-                                TodoTi.remove(p);
-                                TodoCheck.remove(p);
-                            }
-                        });
-                    }
-                }
-                float faktor;
-                if(toDoTime < gesStd){
-                    faktor = 100 / gesStd;
-                    progressBar.setProgress((int) (progr*faktor));
-                }else{
-                    faktor = 100 / toDoTime;
-                    progressBar.setProgress((int) (progr*faktor));
-                }
-                progre = progr;
-
+        for(int i = 0; i < events.size(); i++){
+            if(events.get(i).getEndDate().equals(selectedDate.toString())){
+                todaysEvents.add(events.get(i));
             }
         }
+        if(!todaysEvents.isEmpty()) {
+            shownEvent = todaysEvents.get(0);
+            showEvent();
+        }
+    }
+
+    private void showEvent() {
+        subject.setText(shownEvent.getSubject());
+        type.setText(shownEvent.getType());
+
+        volume.setRating(shownEvent.getVolume()/2);
+        startDate.setText(shownEvent.getStartDate());
+        dueDay.setText(shownEvent.getEndDate());
+        progress = shownEvent.getProgress(); //bereits gelernte Stunden
+        float gesStd = shownEvent.getAbsolutMinutes();
+        String col = shownEvent.getColor();
+        setColor(col);
+        for(int j = 0; j < allTodos.size(); j++) {
+            if(allTodos.get(j).getCollection().equals(shownEvent.getId())) {
+                todosForEvent.add(allTodos.get(j));
+                todosAdapter.notifyItemInserted(todosForEvent.size()-1);
+            }
+        }
+        float faktor = 100 / gesStd;
+        progressBar.setProgress((int) (progress *faktor));
     }
 
     private String minutesToString(String s) {
@@ -333,15 +204,8 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
             Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
         }else {
             while (cursor.moveToNext()) {
-                PlanId.add(cursor.getString(0));
-                PlanSub.add(cursor.getString(1));
-                PlanType.add(cursor.getString(2));
-                PlanVol.add(cursor.getInt(3));
-                PlanBeg.add(cursor.getString(4));
-                PlanEnd.add(cursor.getString(5));
-                PlanCol.add(cursor.getString(6));
-                PlanProg.add(cursor.getInt(7));
-
+                Event event = new Event(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(4),cursor.getString(5), cursor.getString(6), cursor.getInt(3), cursor.getInt(7));
+                events.add(event);
             }
         }
         cursor = dbTodoHelper.readAllData();
@@ -349,33 +213,105 @@ public class EditExam extends DialogFragment implements View.OnClickListener {
             Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
         }else {
             while (cursor.moveToNext()) {
-                TodoId.add(cursor.getString(0));
-                TodoDo.add(cursor.getString(1));
-                TodoTi.add(cursor.getString(2));
-                TodoColec.add(cursor.getString(3));
-                TodoCheck.add(cursor.getInt(4));
-
-
+                Todo todo = new Todo(cursor.getString(3), cursor.getString(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(4));
+                allTodos.add(todo);
             }
         }
     }
 
+    private void setListeners() {
+        addTodo.setOnClickListener(v -> {
+            try {
+                int minutesEst = Integer.parseInt(inputTime.getText().toString());
+                Todo todo = new Todo(shownEvent.getId(), inputTodo.getText().toString(), minutesEst,0);
+                todosForEvent.add(todo);
+                todosAdapter.notifyItemInserted(todosForEvent.size()-1);
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), "Please enter the estimated minutes only as a number", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        prevEvent.setOnClickListener(v -> {
+            if (shownEvent != null) {
+                int currentIndex = todaysEvents.indexOf(shownEvent);
+                if(currentIndex > 0) {
+                    shownEvent = todaysEvents.get(currentIndex - 1);
+                    showEvent();
+                    if(currentIndex == 1) {
+                        prevEvent.setVisibility(View.INVISIBLE);
+                    }
+                    nextEvent.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        nextEvent.setOnClickListener(v -> {
+            if(shownEvent != null) {
+                int currentIndex = todaysEvents.indexOf(shownEvent);
+                if(currentIndex < todaysEvents.size()-1) {
+                    shownEvent = todaysEvents.get(currentIndex + 1);
+                    showEvent();
+                    if(currentIndex == todaysEvents.size()-2) {
+                        nextEvent.setVisibility(View.INVISIBLE);
+                    }
+                    prevEvent.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        newEmptyEvent.setOnClickListener(v -> {
+            //Todo: add new empty event
+        });
+    }
+
+    private void setColor(String col) {
+        int co;
+        switch (col){
+            case "red":
+                co = 0;
+                break;
+            case "blue":
+                co = 1;
+                break;
+            case "green":
+                co = 2;
+                break;
+            case "yellow":
+                co = 3;
+                break;
+            case "brown":
+                co = 4;
+                break;
+            case "orange":
+                co = 5;
+                break;
+            case "pink":
+                co = 6;
+                break;
+            case "purple":
+                co = 7;
+                break;
+            default:
+                co = 1;
+                break;
+
+        }
+        colour.setSelection(co);
+    }
+
     @Override
-    public void onClick(View view) {
-        TextView newTodo = new TextView(todos.getContext());
-        newTodo.setText(inputTodo.getText());
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(8,0,0 ,0 );
-        newTodo.setLayoutParams(lp);
-        todos.addView(newTodo);
-
-        TextView newEstimated = new TextView(times.getContext());
-        newEstimated.setText(inputTime.getSelectedItem().toString());
-        times.addView(newEstimated);
-
-        todoList.add(inputTodo.getText().toString());
-        timeList.add(inputTime.getSelectedItem().toString());
-
+    public void onTodoSelected(Todo todo) {
+        if (todo.getChecked() == 0) {
+            todo.setChecked(1);
+            int index = todosForEvent.indexOf(todo);
+            todosAdapter.notifyItemChanged(index);
+            double faktor = shownEvent.getAbsolutMinutes() / 100.00;
+            int progress = (int) (todo.getTime() / faktor);
+            progressBar.setProgress(progressBar.getProgress() + progress);
+            shownEvent.setProgress(shownEvent.getProgress() + progress);
+            shownEvent.setTodos(todosForEvent);
+            shownEvent.setRemainingMinutes(shownEvent.getRemainingMinutes() - todo.getTime());
+            dbTodoHelper.updateTodoObject(todo);
+            dbHelper.updateEventObject(shownEvent);
+        }
     }
 }
 

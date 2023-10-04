@@ -180,19 +180,19 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
         AppCompatImageView descriptionEntry = new AppCompatImageView(this);
         AppCompatImageView delete = new AppCompatImageView(this);
 
-        typeEntry.setText(event.type);
+        typeEntry.setText(event.getType());
         typeEntry.setTextColor(ContextCompat.getColor(this, R.color.primaryVariant));
         typeEntry.setTextSize(getResources().getDimension(R.dimen.tableTextSize));
         typeEntry.setPadding((int) getResources().getDimension(R.dimen.tablePadding), (int) getResources().getDimension(R.dimen.tablePadding), (int) getResources().getDimension(R.dimen.tablePadding), (int) getResources().getDimension(R.dimen.tablePadding));
         typeEntry.setTypeface(Typeface.DEFAULT_BOLD);
 
-        subjectEntry.setText(event.subject);
+        subjectEntry.setText(event.getSubject());
         subjectEntry.setTextColor(ContextCompat.getColor(this, R.color.primaryVariant));
         subjectEntry.setTextSize(getResources().getDimension(R.dimen.tableTextSize));
         subjectEntry.setPadding((int) getResources().getDimension(R.dimen.tablePadding), (int) getResources().getDimension(R.dimen.tablePadding), (int) getResources().getDimension(R.dimen.tablePadding), (int) getResources().getDimension(R.dimen.tablePadding));
         subjectEntry.setTypeface(Typeface.DEFAULT_BOLD);
 
-        dateEntry.setText(event.date);
+        dateEntry.setText(event.getEndDate());
         dateEntry.setTextColor(ContextCompat.getColor(this, R.color.primaryVariant));
         dateEntry.setTextSize(getResources().getDimension(R.dimen.tableTextSize));
         dateEntry.setPadding((int) getResources().getDimension(R.dimen.tablePadding), (int) getResources().getDimension(R.dimen.tablePadding), (int) getResources().getDimension(R.dimen.tablePadding), (int) getResources().getDimension(R.dimen.tablePadding));
@@ -210,15 +210,15 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
             descriptionEntry.setOnClickListener(v -> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.description_focal_points);
-                builder.setMessage(event.description);
+                builder.setMessage(event.getDescription());
                 builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
                 builder.show();
             });
         } else {
             descriptionEntry.setOnClickListener(v -> {
-                SaveDescription alert = new SaveDescription(event.description);
+                SaveDescription alert = new SaveDescription(event.getDescription());
                 alert.show(getSupportFragmentManager(), "test");
-                event.description = preferenceManager.getString(Constants.KEY_DESCRIPTION);
+                event.setDescription(preferenceManager.getString(Constants.KEY_DESCRIPTION));
                 db.collection(Constants.KEY_COLLECTION_GROUPS).document(currentGroupId)
                         .update(Constants.KEY_EVENTS, FieldValue.arrayRemove(event)).addOnSuccessListener(unused -> {
                             db.collection(Constants.KEY_COLLECTION_GROUPS).document(currentGroupId)

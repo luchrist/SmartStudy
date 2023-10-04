@@ -1,27 +1,27 @@
-package com.example.smartstudy;
+package com.example.smartstudy.models;
 
 public class Todo {
 
-    private String key,id, todo;
+    private String id, todo, collection;
     private int checked, time;
 
-    public Todo(String key, String id, String todo, int time, int checked) {
-        this.key = key;
-        this.id = id;
+    public Todo(String collection, String todo, int time, int checked) {
+        id = java.util.UUID.randomUUID().toString();
+        this.collection = collection;
         this.todo = todo;
         this.time = time;
         this.checked = checked;
     }
 
-    public Todo(String key, String id, String todo, String s, int checked) {
+    public Todo(String id, String collection, String todo, int time, int checked) {
+        this.id = id;
+        this.todo = todo;
+        this.collection = collection;
+        this.checked = checked;
+        this.time = time;
     }
 
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
+    public Todo() {
     }
 
     public String getId() {
@@ -54,5 +54,12 @@ public class Todo {
 
     public void setChecked(int checked) {
         this.checked = checked;
+    }
+    public String getCollection() {
+        return collection;
+    }
+
+    public void setCollection(String collection) {
+        this.collection = collection;
     }
 }

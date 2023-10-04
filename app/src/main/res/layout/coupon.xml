@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="@dimen/_8sdp"
+    android:layout_marginEnd="@dimen/_22sdp"
+    android:layout_marginStart="@dimen/_22sdp"
+    android:padding="@dimen/_8sdp"
+    android:background="@drawable/background_input">
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/companyLogo"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/background_image"
+        android:src="@drawable/amazonlogo"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_12sdp"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnRedeem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Redeem"
+        android:textColor="@color/white"
+        android:background="@drawable/background_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <TextView
+        android:id="@+id/couponValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="20% OFF"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/_14ssp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/companyLogo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="@dimen/_6sdp"/>
+    <TextView
+        android:id="@+id/couponPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1500"
+        android:textColor="@color/primaryText"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/coinIcon"/>
+    <ImageView
+        android:id="@+id/coinIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_currency_bitcoin_24"
+        android:layout_marginEnd="@dimen/_8sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnRedeem"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

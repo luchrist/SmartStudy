@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -26,9 +28,10 @@ import okhttp3.Response;
 
 public class AiGenerateExam extends BaseActivity {
 
-    private static final String OPENAI_API_KEY = "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";
+    private static final String OPENAI_API_KEY = "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";
     EditText topicInput, languageInput;
     Button startExam;
+    ProgressBar progressBar;
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client = new OkHttpClient();
 
@@ -40,11 +43,13 @@ public class AiGenerateExam extends BaseActivity {
         topicInput = findViewById(R.id.topicInput);
         languageInput = findViewById(R.id.languageInput);
         startExam = findViewById(R.id.startExamBtn);
+        progressBar = findViewById(R.id.apiProgress);
         setListeners();
     }
 
     private void setListeners() {
         startExam.setOnClickListener(v -> {
+            progressBar.setVisibility(ProgressBar.VISIBLE);
             String topic = topicInput.getText().toString().trim();
             String language = languageInput.getText().toString().trim();
             String prompt = String.format("Create an multiple choice Exam about %s with 4 possible answers a,b,c,d per question and provide the right answer." +
@@ -73,13 +78,16 @@ public class AiGenerateExam extends BaseActivity {
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        System.out.println(e);
+                    progressBar.setVisibility(ProgressBar.GONE);
+                    Toast.makeText(AiGenerateExam.this, "Connection failed", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    progressBar.setVisibility(ProgressBar.GONE);
                         if (response.isSuccessful()) {
                             try {
+                                Toast.makeText(AiGenerateExam.this, "Successful", Toast.LENGTH_SHORT).show();
                                 JSONObject jsonObject = new JSONObject(response.body().toString());
                                 JSONArray jsonArray = null;
                                 jsonArray = jsonObject.getJSONArray("choices");
@@ -100,7 +108,7 @@ public class AiGenerateExam extends BaseActivity {
                                 throw new RuntimeException(e);
                             }
                         } else {
-                            System.out.println("Unsuccesful");
+                            Toast.makeText(AiGenerateExam.this, "Response is unsuccessful", Toast.LENGTH_SHORT).show();
                         }
                 }
             });

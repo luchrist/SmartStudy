@@ -107,7 +107,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                             });
                     break;
                 case "newExamAdded":
-                    getSupportFragmentManager().beginTransaction().replace(R.id.container, new Plan()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, new PlanFragment()).commit();
                     title.setText("Plan");
                     navigationView.setCheckedItem(R.id.nav_plan);
                     break;
@@ -248,7 +248,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 navigationView.setCheckedItem(R.id.nav_study);
                 break;
             case R.id.nav_plan:
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, new Plan()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, new PlanFragment()).commit();
                 title.setText("Plan");
                 navigationView.setCheckedItem(R.id.nav_plan);
                 break;

@@ -17,6 +17,7 @@
         android:layout_marginTop="@dimen/_8sdp"/>
 
     <ProgressBar
+        android:id="@+id/apiProgress"
         android:layout_width="@dimen/_45sdp"
         android:layout_height="@dimen/_45sdp"
         app:layout_constraintStart_toStartOf="parent"

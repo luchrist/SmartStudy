@@ -1,59 +1,52 @@
 package com.example.smartstudy;
 
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.smartstudy.adapters.TodosAdapter;
+import com.example.smartstudy.models.Event;
+import com.example.smartstudy.models.Todo;
+import com.example.smartstudy.utilities.TodoSelectListener;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-public class LearnFragment extends Fragment implements View.OnClickListener {
-    private String sub, type,id, end , start, col;
-    private int progress, absolut, taskCount, neededTime, sessionTime, taskTime, taskNeededTime, vol, timeSpendSeconds;
-    ArrayList<Integer> todoIndex, TodoCheck, TodoTi;
-    ArrayList<String> TodoId, TodoDo, TodoColec;
+public class LearnFragment extends Fragment implements View.OnClickListener, TodoSelectListener {
+    private final Event event;
+    private List<Todo> todos;
+    private final int neededTime;
+    private int sessionTime;
+    private int timeSpendSeconds;
     private long timerInMillis;
-    private DBExamHelper dbExamHelper;
+    private DBEventHelper dbEventHelper;
     private DBTodoHelper dbTodoHelper;
-    private TextView countdown, subj, titleLearn, totalTimeLeft, taskTimeLeft, todayTimeLeft, todayTimeSpend;
+    private TextView countdown, titleLearn, totalTimeLeft, todayTimeLeft, todayTimeSpend;
     private Button pause_resume, giveUp;
-    private CheckBox task;
     private CountDownTimer countDownTimer;
     private boolean timerRunning, isBreak, isDone;
     private long timerLeftInMillis;
+    private TodosAdapter todosAdapter;
+    private Todo runningTodo;
     SharedPreferences.Editor editor;
     SharedPreferences sp;
 
-
-
-
-    public LearnFragment(String sub, String type, int progress, int absolut, int neededTime,
-                         ArrayList<Integer> todoIndex, String id,String end, String start,
-                         String color, int vol) {
-        this.sub = sub;
-        this.type = type;
-        this.progress = progress;
-        this.absolut = absolut;
+    public LearnFragment(Event event, int neededTime, List<Todo> todos) {
+        this.event = event;
         this.neededTime = neededTime;
-        this.todoIndex = todoIndex;
-        this.id = id;
-        this.end = end;
-        this.start = start;
-        this.col = color;
-        this.vol = vol;
+        this.todos = todos;
     }
 
     @Override
@@ -61,80 +54,52 @@ public class LearnFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_learn, container, false);
-        subj = view.findViewById(R.id.subj);
+        TextView subj = view.findViewById(R.id.subj);
         countdown = view.findViewById(R.id.countdown);
         pause_resume = view.findViewById(R.id.btn_pause_resume);
         pause_resume.setOnClickListener(this);
         titleLearn = view.findViewById(R.id.titleLearn);
         totalTimeLeft = view.findViewById(R.id.totalTimeLeft);
         todayTimeLeft = view.findViewById(R.id.todayTimeLeft);
-        taskTimeLeft = view.findViewById(R.id.taskTimeLeft);
         todayTimeSpend = view.findViewById(R.id.todayTimeSpend);
         giveUp = view.findViewById(R.id.giveUpBtn);
-        task = view.findViewById(R.id.taskBox);
         giveUp.setOnClickListener(this);
-        task.setOnClickListener(this);
+        RecyclerView todosRecyclerView = view.findViewById(R.id.todosRecyclerView);
+        todosAdapter = new TodosAdapter(todos, this);
+        todosRecyclerView.setAdapter(todosAdapter);
 
-        dbExamHelper = new DBExamHelper(getActivity());
+        dbEventHelper = new DBEventHelper(getActivity());
         dbTodoHelper = new DBTodoHelper(getActivity());
 
-        TodoId= new ArrayList<>();
-        TodoDo= new ArrayList<>();
-        TodoTi= new ArrayList<>();
-        TodoColec= new ArrayList<>();
-        TodoCheck = new ArrayList<>();
+        todos = new ArrayList<>();
 
-        taskCount = 0;
         sp = getActivity().getSharedPreferences("SP", 0);
-        loadData();
-        getTask(taskCount);
         timerInMillis= (sp.getInt("timer", 2) * 60) *1000;
         sessionTime = sp.getInt("sessionTime", 0);
-        taskTime = sp.getInt("taskTime", 0);
         timerLeftInMillis = timerInMillis;
         timerRunning = true;
         updateCountdownText();
         isBreak = false;
         isDone = false;
         timeSpendSeconds = 0;
-        subj.setText(sub);
-        totalTimeLeft.setText(String.valueOf(absolut- progress));
-        todayTimeLeft.setText(String.valueOf(neededTime -sessionTime));
+        subj.setText(event.getSubject());
+        totalTimeLeft.setText(String.valueOf(event.getRemainingMinutes()));
+        todayTimeLeft.setText(String.valueOf(neededTime - sessionTime));
         todayTimeSpend.setText(String.valueOf(sessionTime));
         editor = sp.edit();
+        findCurrentTodo();
         resumeTimer();
 
         return view;
     }
 
-    private void getTask(int taskCount) {
-        try {
-            task.setText(TodoDo.get(todoIndex.get(taskCount)));
-            taskNeededTime = TodoTi.get(todoIndex.get(taskCount));
-            taskTimeLeft.setText(String.valueOf(taskNeededTime - taskTime));
-            this.taskCount++;
-        }catch (Exception e){
-            System.out.println("kein Task verfügbar");
-        }
-
-    }
-
-    private void loadData() {
-        Cursor cursor1 = dbTodoHelper.readAllData();
-        if (cursor1.getCount() == 0){
-            Toast.makeText(getActivity(), "NO TODO", Toast.LENGTH_SHORT).show();
-        }else {
-            while (cursor1.moveToNext()) {
-                TodoId.add(cursor1.getString(0));
-                TodoDo.add(cursor1.getString(1));
-                TodoTi.add(cursor1.getInt(2));
-                TodoColec.add(cursor1.getString(3));
-                TodoCheck.add(cursor1.getInt(4));
-
-
+    private void findCurrentTodo() {
+        for (Todo runningTodo : todos) {
+            if (runningTodo.getChecked() == 0) {
+                this.runningTodo = runningTodo;
+                break;
             }
         }
-
     }
 
     @Override
@@ -154,20 +119,24 @@ public class LearnFragment extends Fragment implements View.OnClickListener {
             }
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                     new MainFragment()).commit();
-        }else if(v.equals(task)){
-            try {
-                Todo updateDo = new Todo(TodoColec.get(todoIndex.get(taskCount-1)), TodoId.get(todoIndex.get(taskCount-1)),
-                        TodoDo.get(todoIndex.get(taskCount-1)), TodoTi.get(todoIndex.get(taskCount-1)), 1 );
-                dbTodoHelper.updateTodoObject(updateDo);
-                taskTime = 0;
-                editor.putInt("taskTime", taskTime);
-                getTask(taskCount);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-
         }
+    }
 
+    @Override
+    public void onTodoSelected(Todo todo) {
+        if (todo.getChecked() == 0) {
+            todo.setChecked(1);
+            int index = todos.indexOf(todo);
+            todosAdapter.notifyItemChanged(index);
+            double faktor = event.getAbsolutMinutes() / 100.00;
+            int progress = (int) (todo.getTime() / faktor);
+            event.setProgress(event.getProgress() + progress);
+            event.setTodos(todos);
+            event.setRemainingMinutes(event.getRemainingMinutes() - todo.getTime());
+            dbTodoHelper.updateTodoObject(todo);
+            dbEventHelper.updateEventObject(event);
+            findCurrentTodo();
+        }
     }
 
     private void pauseTimer() {
@@ -187,15 +156,12 @@ public class LearnFragment extends Fragment implements View.OnClickListener {
                     if (!isBreak){
                         updateProgress();
                     }
-
                 }
 
                 @Override
                 public void onFinish() {
                     timerRunning = false;
                     continueTimer();
-
-
                 }
             }.start();
             timerRunning = true;
@@ -218,8 +184,6 @@ public class LearnFragment extends Fragment implements View.OnClickListener {
                 public void onFinish() {
                     timerRunning = false;
                     continueTimer();
-
-
                 }
             }.start();
             timerRunning = true;
@@ -252,38 +216,23 @@ public class LearnFragment extends Fragment implements View.OnClickListener {
     }
 
     private void updateProgress() {
-        //long timeSpend = timerInMillis -timerLeftInMillis;
-        //int timeSpendInMinutes = (int) ((timeSpend/1000)/60);
         if (timeSpendSeconds == 60){
-            progress += 1;
+            event.setProgress(event.getProgress()+1);
             sessionTime +=1;
-            taskTime += 1;
             timeSpendSeconds = 0;
-            if (taskNeededTime > 0){
-                if (taskNeededTime <= taskTime){
-                    Todo updateDo = new Todo(TodoColec.get(todoIndex.get(taskCount-1)), TodoId.get(todoIndex.get(taskCount-1)),
-                            TodoDo.get(todoIndex.get(taskCount-1)), TodoTi.get(todoIndex.get(taskCount-1)), 1 );
-                    dbTodoHelper.updateTodoObject(updateDo);
-                    taskTime = 0;
-                    getTask(taskCount);
-                }
-                taskTimeLeft.setText(String.valueOf(taskNeededTime-taskTime));
-                Todo updateDo = new Todo(TodoColec.get(todoIndex.get(taskCount-1)), TodoId.get(todoIndex.get(taskCount-1)),
-                        TodoDo.get(todoIndex.get(taskCount-1)), taskNeededTime -taskTime, 0 );
-                dbTodoHelper.updateTodoObject(updateDo);
+            runningTodo.setTime(runningTodo.getTime()-1);
+            if (runningTodo.getTime() < 0){
+                runningTodo.setTime(0);
             }
-
-            totalTimeLeft.setText(String.valueOf(absolut- progress));
+            dbTodoHelper.updateTodoObject(runningTodo);
+            todosAdapter.notifyItemChanged(todos.indexOf(runningTodo));
+            totalTimeLeft.setText(String.valueOf(event.getRemainingMinutes()));
             todayTimeLeft.setText(String.valueOf(neededTime -sessionTime));
             todayTimeSpend.setText(String.valueOf(sessionTime));
             editor.putInt("sessionTime", sessionTime );
-            editor.putInt("taskTime", taskTime);
             editor.commit();
-            Exam updateExam = new Exam(id,sub,type,end, start, col, vol, progress);
-            dbExamHelper.updateExamObject(updateExam);
+            dbEventHelper.updateEventObject(event);
         }
-
-
     }
 
     private void updateCountdownText() {
