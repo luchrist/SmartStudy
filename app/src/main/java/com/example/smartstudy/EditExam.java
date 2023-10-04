@@ -30,6 +30,7 @@ import com.example.smartstudy.utilities.TodoSelectListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class EditExam extends DialogFragment implements TodoSelectListener {
     AppCompatImageButton addTodo;
@@ -47,6 +48,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
     Event shownEvent;
     ProgressBar progressBar; // zeigt prozentual den Progress an der aber absolut in STunden abgespeichert wird
     int progress;
+    private boolean emptyEvent;
     private TodosAdapter todosAdapter;
 
     public EditExam(LocalDate selectedDate) {
@@ -103,10 +105,6 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
                 .setView(view)
                 .setPositiveButton("Save Changes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        String sub, typ, enddate, startdate, col,key;
-                        int vol;
-                        float vols, prog;
-
                         shownEvent.setSubject(subject.getText().toString());
                         shownEvent.setType(type.getText().toString());
                         shownEvent.setEndDate(dueDay.getText().toString());
@@ -115,16 +113,29 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
                         shownEvent.setVolume((int)volume.getRating()*2);
 
                         if (shownEvent.getStartDate().equals("")){
-                            startdate = LocalDate.now().toString();
+                            shownEvent.setStartDate(LocalDate.now().toString());
                         }
                         if(shownEvent.getEndDate().equals("")){
                             Toast.makeText(getContext(), "Set an Due Day!", Toast.LENGTH_SHORT).show();
                         }else{
                             for (int i = 0; i < todosForEvent.size(); i++){
-                                Todo tod = new Todo(todosForEvent.get(i).getId(), shownEvent.getId(), todosForEvent.get(i).getTodo(), todosForEvent.get(i).getTime(), 0);
-                                dbTodoHelper.updateTodoObject(tod);
+                                boolean newTodo = true;
+                                for (int j = 0; j < allTodos.size(); j++){
+                                    if (Objects.equals(todosForEvent.get(i).getId(), allTodos.get(j).getId())){
+                                        dbTodoHelper.updateTodoObject(todosForEvent.get(i));
+                                        newTodo = false;
+                                        break;
+                                    }
+                                }
+                                if(newTodo){
+                                    dbTodoHelper.addTodoObject(todosForEvent.get(i));
+                                }
                             }
-                            dbHelper.updateEventObject(shownEvent);
+                            if(emptyEvent) {
+                                dbHelper.addEventObject(shownEvent);
+                            } else {
+                                dbHelper.updateEventObject(shownEvent);
+                            }
                             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                                     new PlanFragment()).commit();
                         }
@@ -258,8 +269,16 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
             }
         });
         newEmptyEvent.setOnClickListener(v -> {
-            //Todo: add new empty event
+            prevEvent.setVisibility(View.INVISIBLE);
+            nextEvent.setVisibility(View.INVISIBLE);
+            shownEvent = new Event();
+            emptyEvent = true;
+            emptyFormular();
         });
+    }
+
+    private void emptyFormular() {
+
     }
 
     private void setColor(String col) {

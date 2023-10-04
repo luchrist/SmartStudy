@@ -55,6 +55,7 @@ public class Event {
     }
 
     public Event() {
+        this.id = UUID.randomUUID().toString();
     }
 
     public String getId() {
