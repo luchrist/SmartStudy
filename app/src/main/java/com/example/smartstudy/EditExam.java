@@ -178,6 +178,9 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
         if(!todaysEvents.isEmpty()) {
             shownEvent = todaysEvents.get(0);
             showEvent();
+        } else {
+            shownEvent = new Event();
+            emptyEvent = true;
         }
     }
 

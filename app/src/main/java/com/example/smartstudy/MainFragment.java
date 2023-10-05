@@ -194,13 +194,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         int toDoTime = Util.getTimeNeededForTodos(event, todos);
         event.setAbsolutMinutes(Math.max(gesStd, toDoTime));
 
+        List<Todo> currentTodos = event.getTodos();
         for (Todo todo : todos) {
             if (todo.getCollection().equals(event.getId())) {
-                List<Todo> currentTodos = event.getTodos();
                 currentTodos.add(todo);
-                event.setTodos(currentTodos);
             }
         }
+        event.setTodos(currentTodos);
         return event;
     }
 

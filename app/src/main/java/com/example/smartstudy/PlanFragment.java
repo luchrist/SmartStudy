@@ -25,16 +25,13 @@ public class PlanFragment extends Fragment implements CalendarAdapter.OnItemList
     private RecyclerView calendarRecyclerView;
     private LocalDate selectedDate;
     Button prev, nex;
-    ImageButton editBtn, detailBtn;
-    private boolean editable;
-
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_plan, container, false);
+        View view = inflater.inflate(R.layout.fragment_plan, container, false);
         initWidgets(view);
         selectedDate = LocalDate.now();
         setMonthView();
@@ -42,11 +39,6 @@ public class PlanFragment extends Fragment implements CalendarAdapter.OnItemList
         prev.setOnClickListener(this);
         nex = view.findViewById(R.id.nextbtn);
         nex.setOnClickListener(this);
-        editBtn = view.findViewById(R.id.editbtn);
-        editBtn.setOnClickListener(this);
-        detailBtn = view.findViewById(R.id.detailbtn);
-        detailBtn.setOnClickListener(this);
-        editable = true;
 
         return view;
     }
@@ -68,17 +60,17 @@ public class PlanFragment extends Fragment implements CalendarAdapter.OnItemList
         LocalDate firstOfMonth = selectedDate.withDayOfMonth(1);
         int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
 
-        for(int i = 1; i <= 42; i++){
-            if(i <= dayOfWeek || i > daysInMonth + dayOfWeek){
+        for (int i = 1; i <= 42; i++) {
+            if (i <= dayOfWeek || i > daysInMonth + dayOfWeek) {
                 daysInMonthArray.add("");
-            }else{
+            } else {
                 daysInMonthArray.add(String.valueOf(i - dayOfWeek));
             }
         }
         return daysInMonthArray;
     }
 
-    private String monthYearFromDate(LocalDate date){
+    private String monthYearFromDate(LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
         return date.format(formatter);
     }
@@ -100,42 +92,24 @@ public class PlanFragment extends Fragment implements CalendarAdapter.OnItemList
 
     @Override
     public void onItemClick(int position, String dayText) {
-
-
-        if(!dayText.equals("")){
+        if (!dayText.equals("")) {
             String message = "Selected Date " + dayText + " " + monthYearFromDate(selectedDate);
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-            long daysToAdd = Integer.parseInt(dayText)-selectedDate.getDayOfMonth();
+            long daysToAdd = Integer.parseInt(dayText) - selectedDate.getDayOfMonth();
             selectedDate = selectedDate.plusDays(daysToAdd);
-            if (editable){
 
-                AddExam alert = new AddExam(selectedDate);
-                alert.show(getParentFragmentManager(), "test");
-            }else{
-                EditExam editExam = new EditExam((selectedDate));
-                editExam.show(getParentFragmentManager(), "");
-            }
-
+            EditExam editExam = new EditExam((selectedDate));
+            editExam.show(getParentFragmentManager(), "");
         }
     }
 
     @Override
     public void onClick(View view) {
-
-        if(view.equals(prev)){
-
+        if (view.equals(prev)) {
             previousMonthAction(prev);
         } else if (view.equals(nex)) {
 
             nextMonthAction(nex);
-        }else if (view.equals(editBtn)){
-            editable = true;
-            Toast.makeText(getContext(), "Plan is now in edit mode!", Toast.LENGTH_SHORT).show();
-        }else if(view.equals(detailBtn)){
-            editable = false;
-            Toast.makeText(getContext(), "Plan is now in view mode!", Toast.LENGTH_SHORT).show();
         }
-
     }
-
 }

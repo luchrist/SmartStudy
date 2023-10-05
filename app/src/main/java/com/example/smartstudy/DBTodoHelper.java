@@ -59,7 +59,7 @@ public class DBTodoHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_TODO, todo.getTodo());
         contentValues.put(COLUMN_TIME, todo.getTime());
-        contentValues.put(COLUMN_COLLECTION, todo.getKey());
+        contentValues.put(COLUMN_COLLECTION, todo.getCollection());
         contentValues.put(COLUMN_CHECKED, todo.getChecked());
 
 
@@ -83,7 +83,7 @@ public class DBTodoHelper extends SQLiteOpenHelper {
     void updateTodoObject(Todo todo){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_COLLECTION, todo.getKey());
+        contentValues.put(COLUMN_COLLECTION, todo.getCollection());
         contentValues.put(COLUMN_TODO, todo.getTodo());
         contentValues.put(COLUMN_TIME, todo.getTime());
         contentValues.put(COLUMN_CHECKED, todo.getChecked());
