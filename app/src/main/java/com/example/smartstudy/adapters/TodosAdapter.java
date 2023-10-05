@@ -42,6 +42,9 @@ public class TodosAdapter extends RecyclerView.Adapter<TodosAdapter.TodoViewHold
 
     @Override
     public int getItemCount() {
+        if(todos == null) {
+            return 0;
+        }
         return todos.size();
     }
 

@@ -21,8 +21,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:textColor="@color/white"
-        android:text="New Empty Sheet"
-        android:padding="@dimen/_4sdp"
+        android:text="+ new event"
+        android:padding="@dimen/_8sdp"
         android:background="@drawable/background_icon"/>
 
 
@@ -106,7 +106,6 @@
         android:id="@+id/textView32"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_marginEnd="8dp"
         android:text="startdate"
         app:layout_constraintBottom_toBottomOf="@+id/startDateEdit"
@@ -131,18 +130,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView28" />
-
-    <TextView
-        android:id="@+id/textView28"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Colour"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/startDateEdit" />
-
 
     <EditText
                     android:id="@+id/inputTodoEdit"
@@ -201,7 +189,7 @@
     <ScrollView
         android:id="@+id/todosView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/_80sdp"
         android:layout_margin="@dimen/_8sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

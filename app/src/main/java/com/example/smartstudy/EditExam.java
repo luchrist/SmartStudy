@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class EditExam extends DialogFragment implements TodoSelectListener {
-    AppCompatImageButton addTodo;
+    AppCompatImageView addTodo;
     RecyclerView todosForEventView;
     AppCompatImageView prevEvent, nextEvent;
     Button newEmptyEvent;
@@ -84,6 +84,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
         events = new ArrayList<>();
         todaysEvents = new ArrayList<>();
         allTodos = new ArrayList<>();
+        todosForEvent = new ArrayList<>();
 
         dbHelper = new DBEventHelper(EditExam.this.getContext());
         dbTodoHelper = new DBTodoHelper(EditExam.this.getContext());
@@ -96,11 +97,12 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
         colour.setAdapter(adapter);
+        setPreDates();
         loadData();
         showDayData();
         setListeners();
 
-        builder.setTitle("Edit Exam")
+        builder.setTitle("Edit Event")
                 // Pass null as the parent view because its going in the dialog layout
                 .setView(view)
                 .setPositiveButton("Save Changes", new DialogInterface.OnClickListener() {
@@ -150,6 +152,11 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
         return builder.create();
     }
 
+    private void setPreDates() {
+        startDate.setText(LocalDate.now().toString());
+        dueDay.setText(selectedDate.toString());
+    }
+
     private ArrayList<String> splitString(String text, char splitSymbol){
         ArrayList<String> ziffern = new ArrayList<>();
         int c = 0;
@@ -177,10 +184,14 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
         }
         if(!todaysEvents.isEmpty()) {
             shownEvent = todaysEvents.get(0);
+            if(todaysEvents.size() < 2) {
+                nextEvent.setVisibility(View.INVISIBLE);
+            }
             showEvent();
         } else {
             shownEvent = new Event();
             emptyEvent = true;
+            nextEvent.setVisibility(View.GONE);
         }
     }
 
@@ -198,6 +209,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
         for(int j = 0; j < allTodos.size(); j++) {
             if(allTodos.get(j).getCollection().equals(shownEvent.getId())) {
                 todosForEvent.add(allTodos.get(j));
+
                 todosAdapter.notifyItemInserted(todosForEvent.size()-1);
             }
         }
@@ -239,7 +251,10 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
                 int minutesEst = Integer.parseInt(inputTime.getText().toString());
                 Todo todo = new Todo(shownEvent.getId(), inputTodo.getText().toString(), minutesEst,0);
                 todosForEvent.add(todo);
+                todosAdapter.notifyDataSetChanged();
                 todosAdapter.notifyItemInserted(todosForEvent.size()-1);
+                inputTodo.setText("");
+                inputTime.setText("");
             } catch (NumberFormatException e) {
                 Toast.makeText(getContext(), "Please enter the estimated minutes only as a number", Toast.LENGTH_SHORT).show();
             }
@@ -263,6 +278,9 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
                 int currentIndex = todaysEvents.indexOf(shownEvent);
                 if(currentIndex < todaysEvents.size()-1) {
                     shownEvent = todaysEvents.get(currentIndex + 1);
+                    int oldSize = todosForEvent.size();
+                    todosForEvent.clear();
+                    todosAdapter.notifyItemRangeRemoved(0, oldSize);
                     showEvent();
                     if(currentIndex == todaysEvents.size()-2) {
                         nextEvent.setVisibility(View.INVISIBLE);
@@ -281,7 +299,17 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
     }
 
     private void emptyFormular() {
-
+        subject.setText("");
+        type.setText("");
+        volume.setRating(0);
+        setPreDates();
+        progressBar.setProgress(0);
+        int oldSize = todosForEvent.size();
+        todosForEvent.clear();
+        todosAdapter.notifyItemRangeRemoved(0, oldSize);
+        setColor("red");
+        inputTodo.setText("");
+        inputTime.setText("");
     }
 
     private void setColor(String col) {
