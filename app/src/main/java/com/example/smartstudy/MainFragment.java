@@ -44,7 +44,7 @@ import java.util.stream.Stream;
 
 public class MainFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, TodoSelectListener {
 
-    private TextView title, sub, ty, tim, shownDate, homeTitle;
+    private TextView title, sub, ty, tim, dueDate, homeTitle;
     private NavigationView navigationView;
     private Spinner spinner;
     private LinearLayout lessonsList;
@@ -65,6 +65,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     private Event currentEvent;
     private PreferenceManager preferenceManager;
     private TodosAdapter todosAdapter;
+    private int remainingTimeToday, remTimeBeforeEvent;
 
     @Nullable
     @org.jetbrains.annotations.Nullable
@@ -74,12 +75,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         preferenceManager = new PreferenceManager(getActivity());
         connectViews(view);
         initialiseVars();
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
-        String dateString = today.format(formatter);
-        shownDate.setText(dateString);
-
-        preferenceManager.putString("today", today.toString());
         loadData();
         plan();
 
@@ -91,26 +86,31 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     private void plan() {
-        int remainingTimeToday;
         String lastPlannedDay = preferenceManager.getString("today");
-        if(lastPlannedDay.equals(today.toString())){
-            remainingTimeToday = preferenceManager.getInt("remainingTimeToday");
-        } else {
+        if(lastPlannedDay == null){
             remainingTimeToday = maxTimeToday();
+        } else {
+            if(lastPlannedDay.equals(today.toString())){
+                remainingTimeToday = preferenceManager.getInt("remainingTimeToday");
+            } else {
+                remainingTimeToday = maxTimeToday();
+            }
         }
+        preferenceManager.putInt("remainingTimeToday", remainingTimeToday);
+        remTimeBeforeEvent = remainingTimeToday;
         if (remainingTimeToday > 0) {
             beforeEvents = getAllLearnableEvents();
             beforeEvents.replaceAll(this::updateEvent);
             beforeEvents.sort(Comparator.comparingInt(Event::getRemainingDays));
-            boolean tomorrow = showBiggestEventInDays(1, beforeEvents, remainingTimeToday);
+            boolean tomorrow = showBiggestEventInDays(1, beforeEvents);
             if (!tomorrow) {
-                boolean isInThreeDays = showBiggestEventInDays(3, beforeEvents, remainingTimeToday);
+                boolean isInThreeDays = showBiggestEventInDays(3, beforeEvents);
                 if (!isInThreeDays) {
-                    boolean isInOneWeek = showBiggestEventInDays(7, beforeEvents, remainingTimeToday);
+                    boolean isInOneWeek = showBiggestEventInDays(7, beforeEvents);
                     if (!isInOneWeek) {
-                        boolean isIn2Weeks = showBiggestEventInDays(14, beforeEvents, remainingTimeToday);
+                        boolean isIn2Weeks = showBiggestEventInDays(14, beforeEvents);
                         if (!isIn2Weeks) {
-                            showBiggestEventInDays(30, beforeEvents, remainingTimeToday);
+                            showBiggestEventInDays(30, beforeEvents);
                         }
                     }
                 }
@@ -118,7 +118,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         }
     }
 
-    private boolean showBiggestEventInDays(int inDays, List<Event> beforeEvents, int remTimeToday) {
+    private boolean showBiggestEventInDays(int inDays, List<Event> beforeEvents) {
         Stream.Builder<Event> builder = Stream.builder();
         for (Event event : beforeEvents) {
             if (event.getRemainingDays() < inDays && event.getRemainingDays() >= 0) {
@@ -130,16 +130,20 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         Optional<Event> eventWithMostHoursLeft = builder.build().max(Comparator.comparingInt(Event::getRemainingMinutes));
         if(eventWithMostHoursLeft.isPresent()) {
             currentEvent = eventWithMostHoursLeft.get();
-            showCurrentEvent(remTimeToday);
+            showCurrentEvent();
             return true;
         }
         return false;
     }
 
-    private void showCurrentEvent(int remTimeToday) {
+    private void showCurrentEvent() {
         preferenceManager.putBoolean("studyNeed", true);
         sub.setText(currentEvent.getSubject());
         ty.setText(currentEvent.getType());
+        DateTimeFormatter finalFormatter = DateTimeFormatter.ofPattern("dd.MM.yy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate endDate = LocalDate.parse(currentEvent.getEndDate(), formatter);
+        dueDate.setText(endDate.format(finalFormatter));
         int absolut = currentEvent.getAbsolutMinutes();
         int faktor;
         if (absolut != 0) {
@@ -149,7 +153,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         }
         progressBar.setProgress(currentEvent.getProgress() * faktor);
         int remainingMins = currentEvent.getRemainingMinutes();
-        int time = remTimeToday;
+        int time = remainingTimeToday;
         for (Todo todo : currentEvent.getTodos()) {
             if (todo.getChecked() == 0) {
                 if (time >= 0) {
@@ -162,33 +166,32 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         todosAdapter = new TodosAdapter(todosToday, this);
         todosList.setAdapter(todosAdapter);
         if(time <= 0){
-            tim.setText(remTimeToday);
-            currentEvent.setRemainingMinutes(currentEvent.getRemainingMinutes()-remTimeToday);
-            remTimeToday = 0;
+            tim.setText(String.valueOf(remainingTimeToday));
+            currentEvent.setRemainingMinutes(currentEvent.getRemainingMinutes()-remainingTimeToday);
+            remainingTimeToday = 0;
         }else {
             if(remainingMins > time) {
-                tim.setText(remTimeToday);
-                currentEvent.setRemainingMinutes(currentEvent.getRemainingMinutes()-remTimeToday);
-                remTimeToday = 0;
+                tim.setText(String.valueOf(remainingTimeToday));
+                currentEvent.setRemainingMinutes(currentEvent.getRemainingMinutes()-remainingTimeToday);
+                remainingTimeToday = 0;
             } else {
                 if (remainingMins > 0) {
                     tim.setText(currentEvent.getRemainingMinutes());
-                    remTimeToday = time-remainingMins;
+                    remainingTimeToday = time-remainingMins;
                     currentEvent.setRemainingMinutes(0);
                 } else {
-                    tim.setText(remTimeToday-time);
-                    remTimeToday = time;
+                    tim.setText(String.valueOf(remainingTimeToday - time));
+                    remainingTimeToday = time;
                     currentEvent.setRemainingMinutes(0);
                 }
             }
         }
-        preferenceManager.putInt("remainingTimeToday", remTimeToday);
     }
 
     private Event updateEvent(Event event) {
         String end = event.getEndDate();
         LocalDate endDate = LocalDate.parse(end);
-        event.setRemainingDays((int) ChronoUnit.DAYS.between(endDate, today));
+        event.setRemainingDays((int) ChronoUnit.DAYS.between(today, endDate));
 
         int gesStd = getNeededTime(event);
         int toDoTime = Util.getTimeNeededForTodos(event, todos);
@@ -364,7 +367,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         sub = view.findViewById(R.id.subStudyPlan);
         ty = view.findViewById(R.id.typeStudyPlan);
         tim = view.findViewById(R.id.timeNeeded);
-        shownDate = view.findViewById(R.id.shownDate);
+        dueDate = view.findViewById(R.id.dueDate);
 
         startTimer = view.findViewById(R.id.start);
         startTimer.setOnClickListener(this);
@@ -506,7 +509,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
             if (sub.getText().toString() != "") {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                         new LearnFragment(currentEvent, Integer.parseInt(tim.getText().toString()),
-                                todosToday)).commit();
+                                todosToday, remTimeBeforeEvent)).commit();
                 title.setText("Learn");
             } else {
                 Toast.makeText(getContext(), "There is nothing to learn today!", Toast.LENGTH_SHORT).show();
@@ -517,6 +520,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
             int progresMins = currentEvent.getAbsolutMinutes() - currentEvent.getRemainingMinutes();
             currentEvent.setProgress(progresMins/ faktor);
             dbEventHelper.updateEventObject(currentEvent);
+            preferenceManager.putString("today", today.toString());
+            preferenceManager.putInt("remainingTimeToday", remainingTimeToday);
+            plan();
         }
     }
     @Override

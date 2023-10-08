@@ -18,8 +18,10 @@ import android.widget.Toast;
 import com.example.smartstudy.adapters.TodosAdapter;
 import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.Todo;
+import com.example.smartstudy.utilities.PreferenceManager;
 import com.example.smartstudy.utilities.TodoSelectListener;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -28,7 +30,7 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
     private final Event event;
     private List<Todo> todos;
     private final int neededTime;
-    private int sessionTime;
+    private int sessionTime, remTimeBeforeEvent;
     private int timeSpendSeconds;
     private long timerInMillis;
     private DBEventHelper dbEventHelper;
@@ -43,10 +45,11 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
     SharedPreferences.Editor editor;
     SharedPreferences sp;
 
-    public LearnFragment(Event event, int neededTime, List<Todo> todos) {
+    public LearnFragment(Event event, int neededTime, List<Todo> todos, int remTimeBeforeEvent) {
         this.event = event;
         this.neededTime = neededTime;
         this.todos = todos;
+        this.remTimeBeforeEvent = remTimeBeforeEvent;
     }
 
     @Override
@@ -117,6 +120,9 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
                 String name = sp.getString("username", "");
                 Toast.makeText(getContext(),"Well done"+name + "!", Toast.LENGTH_SHORT).show();
             }
+            PreferenceManager preferenceManager = new PreferenceManager(getActivity());
+            preferenceManager.putInt("remainingTimeToday", remTimeBeforeEvent - sessionTime);
+            preferenceManager.putString("today", LocalDate.now().toString());
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                     new MainFragment()).commit();
         }

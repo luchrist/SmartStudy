@@ -62,6 +62,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         navigationView = findViewById(R.id.nav_view);
         View header = navigationView.getHeaderView(0);
@@ -77,7 +78,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             this.finish();
         } else {
             preferenceManager.putString(Constants.KEY_EMAIL, user.getEmail());
-            super.onCreate(savedInstanceState);
+            //super.onCreate(savedInstanceState);
             if(getIntent() != null && getIntent().getExtras() != null) {
             String notificationType = getIntent().getExtras().getString("notificationType");
             switch (notificationType) {
