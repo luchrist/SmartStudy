@@ -109,28 +109,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
-    <ScrollView
-        android:id="@+id/todosView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/todosRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_80sdp"
-        android:layout_margin="@dimen/_8sdp"
-        app:layout_constraintBottom_toTopOf="@+id/textView39"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="@dimen/_150sdp"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:overScrollMode="never"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@+id/textView38"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/todosRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:overScrollMode="never"
-            android:padding="@dimen/_20sdp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-    </ScrollView>
     <TextView
         android:id="@+id/textView39"
         android:layout_width="wrap_content"
@@ -139,7 +129,7 @@
         android:text="time needed:"
         android:textSize="@dimen/_16ssp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/todosView" />
+        app:layout_constraintTop_toBottomOf="@+id/todosRecyclerView" />
 
     <TextView
         android:id="@+id/timeNeeded"
@@ -148,29 +138,29 @@
         android:layout_marginEnd="150dp"
         android:textSize="@dimen/_16ssp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/todosView" />
+        app:layout_constraintTop_toBottomOf="@+id/todosRecyclerView" />
 
-        <Button
-            android:id="@+id/start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:text="Start Timer"
-            android:textColor="@color/blue"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@id/completed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView39"/>
+    <Button
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:text="Start Timer"
+        android:textColor="@color/blue"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@id/completed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView39" />
 
-        <Button
-            android:id="@+id/completed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:text="Completed"
-            android:textColor="@color/blue"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/start"
-            app:layout_constraintTop_toBottomOf="@+id/textView39" />
+    <Button
+        android:id="@+id/completed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:text="Completed"
+        android:textColor="@color/blue"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/start"
+        app:layout_constraintTop_toBottomOf="@+id/textView39" />
 </androidx.constraintlayout.widget.ConstraintLayout>

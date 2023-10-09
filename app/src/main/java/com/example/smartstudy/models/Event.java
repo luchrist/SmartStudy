@@ -120,7 +120,7 @@ public class Event {
 
     public List<Todo> getTodos() {
         if(todos == null) {
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
         return todos;
     }

@@ -31,10 +31,6 @@ public class DBEventHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ABSOLUTMINUTES = "absolutminutes";
 
 
-
-
-
-
     public DBEventHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         Log.d(LOG_TAG, "DbHelper hat die Datenbank: " + getDatabaseName() + " erzeugt.");
@@ -43,8 +39,8 @@ public class DBEventHelper extends SQLiteOpenHelper {
     }
 
     public static final String SQL_CREATE =
-            "create table if not exists "+ TABLE +"(" +
-                    COLUMN_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "create table if not exists " + TABLE + "(" +
+                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_SUBJECT + " TEXT NOT NULL, " +
                     COLUMN_TYPE + " TEXT NOT NULL, " +
                     COLUMN_VOLUME + " INTEGER NOT NULL, " +
@@ -69,7 +65,7 @@ public class DBEventHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    void addEventObject(Event event){
+    long addEventObject(Event event) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_SUBJECT, event.getSubject());
@@ -88,16 +84,11 @@ public class DBEventHelper extends SQLiteOpenHelper {
         if (result == -1) {
             Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show();
             System.out.println("Hier läuft was falsch");
-        } else {
-            //Toast.makeText(context, "Added succesfully!", Toast.LENGTH_SHORT).show();
         }
-
-
-
-
-
+        return result;
     }
-    void updateEventObject(Event event){
+
+    long updateEventObject(Event event) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_SUBJECT, event.getSubject());
@@ -113,31 +104,31 @@ public class DBEventHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_ABSOLUTMINUTES, event.getAbsolutMinutes());
 
 
-            long result = db.update(TABLE,contentValues, "id=?", new String[]{event.getId()});
-            if(result == -1){
-                Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(context , "Saved succesfully!", Toast.LENGTH_SHORT).show();
-            }
-
-
-
+        long result = db.update(TABLE, contentValues, "id=?", new String[]{event.getId()});
+        if (result == -1) {
+            Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Saved succesfully!", Toast.LENGTH_SHORT).show();
+        }
+        return result;
     }
-    void deleteEventObject(Event event){
+
+    void deleteEventObject(Event event) {
         SQLiteDatabase db = this.getWritableDatabase();
         long result = db.delete(TABLE, "id=?", new String[]{event.getId()});
-        if(result == -1){
-            Toast.makeText(context , "Failed!", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(context , "Removed succesfully!", Toast.LENGTH_SHORT).show();
+        if (result == -1) {
+            Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Removed succesfully!", Toast.LENGTH_SHORT).show();
         }
     }
-    Cursor readAllData(){
+
+    Cursor readAllData() {
         String query = "SELECT * FROM " + TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
-        if(db != null){
+        if (db != null) {
             cursor = db.rawQuery(query, null);
         }
 

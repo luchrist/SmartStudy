@@ -121,23 +121,28 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
                         if(shownEvent.getEndDate().equals("")){
                             Toast.makeText(getContext(), "Set an Due Day!", Toast.LENGTH_SHORT).show();
                         }else{
+                            long currentEventId;
+                            if(emptyEvent) {
+                                currentEventId = dbHelper.addEventObject(shownEvent);
+                            } else {
+                                currentEventId = dbHelper.updateEventObject(shownEvent);
+                            }
                             for (int i = 0; i < todosForEvent.size(); i++){
                                 boolean newTodo = true;
                                 for (int j = 0; j < allTodos.size(); j++){
                                     if (Objects.equals(todosForEvent.get(i).getId(), allTodos.get(j).getId())){
-                                        dbTodoHelper.updateTodoObject(todosForEvent.get(i));
+                                        Todo todo = todosForEvent.get(i);
+                                        todo.setCollection(String.valueOf(currentEventId));
+                                        dbTodoHelper.updateTodoObject(todo);
                                         newTodo = false;
                                         break;
                                     }
                                 }
                                 if(newTodo){
-                                    dbTodoHelper.addTodoObject(todosForEvent.get(i));
+                                    Todo todo = todosForEvent.get(i);
+                                    todo.setCollection(String.valueOf(currentEventId));
+                                    dbTodoHelper.addTodoObject(todo);
                                 }
-                            }
-                            if(emptyEvent) {
-                                dbHelper.addEventObject(shownEvent);
-                            } else {
-                                dbHelper.updateEventObject(shownEvent);
                             }
                             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                                     new PlanFragment()).commit();

@@ -2,10 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/_8sdp"
+    android:layout_marginTop="@dimen/_1sdp"
     android:layout_marginEnd="@dimen/_22sdp"
     android:layout_marginStart="@dimen/_22sdp"
-    android:padding="@dimen/_8sdp"
+    android:paddingStart="@dimen/_8sdp"
+    android:paddingEnd="@dimen/_8sdp"
+    android:paddingTop="@dimen/_2sdp"
+    android:paddingBottom="@dimen/_2sdp"
     android:background="@drawable/background_input"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -25,7 +28,7 @@
         android:text="@string/time_left"
         android:textColor="@color/primaryText"
         android:textSize="@dimen/_12ssp"
-        app:layout_constraintStart_toEndOf="@+id/todoName"
+        android:layout_marginEnd="@dimen/_2sdp"
         app:layout_constraintEnd_toStartOf="@+id/todoRemainingTime"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -36,8 +39,8 @@
         android:layout_height="wrap_content"
         android:textColor="@color/primaryText"
         android:textSize="@dimen/_12ssp"
+        android:layout_marginEnd="@dimen/_8sdp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/todoTimeLeft"
         app:layout_constraintEnd_toStartOf="@+id/todoDone"
         app:layout_constraintTop_toTopOf="parent" />
 

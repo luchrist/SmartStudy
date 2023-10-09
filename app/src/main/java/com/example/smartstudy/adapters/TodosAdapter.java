@@ -59,7 +59,7 @@ public class TodosAdapter extends RecyclerView.Adapter<TodosAdapter.TodoViewHold
 
         void setTodoData(Todo todo) {
             binding.todoName.setText(todo.getTodo());
-            binding.todoRemainingTime.setText(String.valueOf(todo.getTime()));
+            binding.todoRemainingTime.setText(String.format("%s min", todo.getTime()));
         }
 
         public void setListener() {
