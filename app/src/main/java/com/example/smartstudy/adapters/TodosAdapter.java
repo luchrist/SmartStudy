@@ -42,7 +42,7 @@ public class TodosAdapter extends RecyclerView.Adapter<TodosAdapter.TodoViewHold
 
     @Override
     public int getItemCount() {
-        if(todos == null) {
+        if (todos == null) {
             return 0;
         }
         return todos.size();
@@ -50,7 +50,7 @@ public class TodosAdapter extends RecyclerView.Adapter<TodosAdapter.TodoViewHold
 
     class TodoViewHolder extends RecyclerView.ViewHolder {
 
-    ItemContainerTodoBinding binding;
+        ItemContainerTodoBinding binding;
 
         public TodoViewHolder(ItemContainerTodoBinding itemContainerTodoBinding) {
             super(itemContainerTodoBinding.getRoot());
@@ -59,13 +59,13 @@ public class TodosAdapter extends RecyclerView.Adapter<TodosAdapter.TodoViewHold
 
         void setTodoData(Todo todo) {
             binding.todoName.setText(todo.getTodo());
-            binding.todoRemainingTime.setText(todo.getTime());
+            binding.todoRemainingTime.setText(String.valueOf(todo.getTime()));
         }
 
         public void setListener() {
             binding.todoDone.setOnClickListener(v -> {
                 selectListener.onTodoSelected(todos.get(getAdapterPosition()));
-                if(todos.get(getAdapterPosition()).getChecked() == 0) {
+                if (todos.get(getAdapterPosition()).getChecked() == 0) {
                     binding.todoName.setTextColor(binding.todoDone.getContext().getResources().getColor(R.color.secondaryText));
                     binding.todoTimeLeft.setTextColor(binding.todoDone.getContext().getResources().getColor(R.color.secondaryText));
                     binding.todoRemainingTime.setTextColor(binding.todoDone.getContext().getResources().getColor(R.color.secondaryText));

@@ -78,13 +78,14 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
         volume = view.findViewById(R.id.volume_edit);
         progressBar = view.findViewById(R.id.progressEdit);
         todosForEventView = view.findViewById(R.id.todosRecyclerView);
-        todosAdapter = new TodosAdapter(todosForEvent, this);
-        todosForEventView.setAdapter(todosAdapter);
 
         events = new ArrayList<>();
         todaysEvents = new ArrayList<>();
         allTodos = new ArrayList<>();
         todosForEvent = new ArrayList<>();
+
+        todosAdapter = new TodosAdapter(todosForEvent, this);
+        todosForEventView.setAdapter(todosAdapter);
 
         dbHelper = new DBEventHelper(EditExam.this.getContext());
         dbTodoHelper = new DBTodoHelper(EditExam.this.getContext());
@@ -251,7 +252,6 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
                 int minutesEst = Integer.parseInt(inputTime.getText().toString());
                 Todo todo = new Todo(shownEvent.getId(), inputTodo.getText().toString(), minutesEst,0);
                 todosForEvent.add(todo);
-                todosAdapter.notifyDataSetChanged();
                 todosAdapter.notifyItemInserted(todosForEvent.size()-1);
                 inputTodo.setText("");
                 inputTime.setText("");
