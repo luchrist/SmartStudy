@@ -6,7 +6,6 @@ public class Todo {
     private int checked, time;
 
     public Todo(String collection, String todo, int time, int checked) {
-        id = java.util.UUID.randomUUID().toString();
         this.collection = collection;
         this.todo = todo;
         this.time = time;

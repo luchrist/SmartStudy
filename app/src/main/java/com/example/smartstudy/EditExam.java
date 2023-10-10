@@ -198,6 +198,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
             shownEvent = new Event();
             emptyEvent = true;
             nextEvent.setVisibility(View.GONE);
+            newEmptyEvent.setVisibility(View.GONE);
         }
     }
 
@@ -215,7 +216,6 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
         for(int j = 0; j < allTodos.size(); j++) {
             if(allTodos.get(j).getCollection().equals(shownEvent.getId())) {
                 todosForEvent.add(allTodos.get(j));
-
                 todosAdapter.notifyItemInserted(todosForEvent.size()-1);
             }
         }
@@ -245,7 +245,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
             Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
         }else {
             while (cursor.moveToNext()) {
-                Todo todo = new Todo(cursor.getString(3), cursor.getString(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(4));
+                Todo todo = new Todo(cursor.getString(0), cursor.getString(3),cursor.getString(1),cursor.getInt(2),cursor.getInt(4));
                 allTodos.add(todo);
             }
         }
