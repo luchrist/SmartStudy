@@ -60,11 +60,16 @@ public class TodosAdapter extends RecyclerView.Adapter<TodosAdapter.TodoViewHold
         void setTodoData(Todo todo) {
             binding.todoName.setText(todo.getTodo());
             binding.todoRemainingTime.setText(String.format("%s min", todo.getTime()));
+            if(todo.getChecked() == 1) {
+                binding.todoName.setTextColor(binding.todoDone.getContext().getResources().getColor(R.color.secondaryText));
+                binding.todoTimeLeft.setTextColor(binding.todoDone.getContext().getResources().getColor(R.color.secondaryText));
+                binding.todoRemainingTime.setTextColor(binding.todoDone.getContext().getResources().getColor(R.color.secondaryText));
+                binding.todoDone.setImageResource(R.drawable.baseline_done_24);
+            }
         }
 
         public void setListener() {
             binding.todoDone.setOnClickListener(v -> {
-                selectListener.onTodoSelected(todos.get(getAdapterPosition()));
                 if (todos.get(getAdapterPosition()).getChecked() == 0) {
                     binding.todoName.setTextColor(binding.todoDone.getContext().getResources().getColor(R.color.secondaryText));
                     binding.todoTimeLeft.setTextColor(binding.todoDone.getContext().getResources().getColor(R.color.secondaryText));
@@ -76,6 +81,7 @@ public class TodosAdapter extends RecyclerView.Adapter<TodosAdapter.TodoViewHold
                     binding.todoRemainingTime.setTextColor(binding.todoDone.getContext().getResources().getColor(R.color.primaryText));
                     binding.todoDone.setImageResource(R.drawable.baseline_check_box_outline_blank_24);
                 }
+                selectListener.onTodoSelected(todos.get(getAdapterPosition()));
             });
         }
     }

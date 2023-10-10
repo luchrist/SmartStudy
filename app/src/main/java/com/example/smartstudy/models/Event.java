@@ -1,11 +1,8 @@
 package com.example.smartstudy.models;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
-import kotlin.collections.EmptyList;
 
 public class Event {
     private String id, subject, type, startDate, endDate, description, color;
