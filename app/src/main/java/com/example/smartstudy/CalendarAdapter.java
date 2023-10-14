@@ -48,7 +48,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
             String endDate = end.get(i);
             String[] endDateSplittet = endDate.split("-");
-            String month = endDateSplittet[1];
+
+           String month = endDateSplittet[1];
             month = getMonat(month);
             String showingMonth = String.valueOf(this.month);
             showingMonth = monthShorted(showingMonth);

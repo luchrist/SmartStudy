@@ -146,7 +146,7 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
                                 .get().addOnSuccessListener(documentSnapshot -> {
                                     Group group = documentSnapshot.toObject(Group.class);
                                     for (Event event : group.events) {
-                                        dbEventHelper.deleteEventObject(new EventBuilder().setId(event.getId()).build());
+                                        dbEventHelper.deleteEventObject(new EventBuilder().setId(String.valueOf(event.getDbId())).build());
                                     }
                                 })
                                 .addOnFailureListener(e -> {
@@ -168,7 +168,15 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
                                 .get().addOnSuccessListener(documentSnapshot -> {
                                     Group group = documentSnapshot.toObject(Group.class);
                                     for (Event event : group.events) {
-                                        dbEventHelper.addEventObject(event);
+                                        if(event.isWanted()) {
+                                            db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)
+                                                    .update(Constants.KEY_EVENTS, FieldValue.arrayRemove(event));
+                                            event.setNecessaryMissingAttributes();
+                                            long eventID = dbEventHelper.addEventObject(event);
+                                            event.setDbId(eventID);
+                                            db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)
+                                                    .update(Constants.KEY_EVENTS, FieldValue.arrayUnion(event));
+                                        }
                                     }
                                 })
                                 .addOnFailureListener(e -> {

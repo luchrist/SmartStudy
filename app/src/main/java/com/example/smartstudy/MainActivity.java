@@ -1,5 +1,7 @@
 package com.example.smartstudy;
 
+import static com.google.firebase.firestore.Filter.equalTo;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.Group;
 import com.example.smartstudy.models.Member;
 import com.example.smartstudy.utilities.Constants;
@@ -26,14 +29,18 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -114,8 +121,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     break;
                 default:
                     break;
+               }
             }
-        }
             sp = this.getSharedPreferences("SP", 0);
 
             drawerLayout = findViewById(R.id.drawer);
@@ -165,7 +172,51 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         }
                         logger.log(Level.INFO, message);
                     });
+            updateEventsFromGroups();
         }
+    }
+
+    private void updateEventsFromGroups() {
+        db.collection(Constants.KEY_COLLECTION_USERS).document(user.getEmail())
+                .collection(Constants.KEY_COLLECTION_GROUPS)
+                .where(equalTo(Constants.KEY_ADD_EXAMS_TO_PLAN, true)).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    Stream.Builder<String> groupIdsBuilder = Stream.builder();
+                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                        groupIdsBuilder.add(document.getId());
+                    }
+                    List<String> groupIds = groupIdsBuilder.build().collect(Collectors.toList());
+                    try (DBEventHelper dbEventHelper = new DBEventHelper(getApplicationContext())) {
+                        for (String id : groupIds) {
+                            db.collection(Constants.KEY_COLLECTION_GROUPS).document(id)
+                                    .get().addOnSuccessListener(doc -> {
+                                        Group group = doc.toObject(Group.class);
+                                        for (Event event : group.events) {
+                                            if (event.isWanted()) {
+                                                if(event.getDbId() != 0) {
+                                                    dbEventHelper.deleteEventObject(event);
+                                                }
+                                                db.collection(Constants.KEY_COLLECTION_GROUPS).document(id)
+                                                        .update(Constants.KEY_EVENTS, FieldValue.arrayRemove(event));
+                                                event.setNecessaryMissingAttributes();
+                                                long eventID = dbEventHelper.addEventObject(event);
+                                                event.setDbId(eventID);
+                                                db.collection(Constants.KEY_COLLECTION_GROUPS).document(id)
+                                                        .update(Constants.KEY_EVENTS, FieldValue.arrayUnion(event));
+                                            }
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        showToast("Failed to update events");
+                                        logger.log(Level.WARNING, "Failed to update events", e);
+                                    });
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    showToast("Failed to update events");
+                    logger.log(Level.WARNING, "Failed to update events", e);
+                });
     }
 
     private void getFCMToken() {

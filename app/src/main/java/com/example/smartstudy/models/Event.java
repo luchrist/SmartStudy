@@ -1,12 +1,45 @@
 package com.example.smartstudy.models;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class Event {
+    public long getDbId() {
+        return dbId;
+    }
+
+    public void setDbId(long dbId) {
+        this.dbId = dbId;
+    }
+
+    long dbId;
     private String id, subject, type, startDate, endDate, description, color;
-    private int volume, progress, remainingDays, absolutMinutes, remainingMinutes;
+    private int volume;
+    private int progress;
+    private int remainingDays;
+    private int absolutMinutes;
+    private int remainingMinutes;
+    private boolean wanted;
+
+    public boolean isWanted() {
+        return wanted;
+    }
+
+    public void setWanted(boolean wanted) {
+        this.wanted = wanted;
+    }
+
+    public int getFromGroup() {
+        return fromGroup;
+    }
+
+    public void setFromGroup(int fromGroup) {
+        this.fromGroup = fromGroup;
+    }
+
+    private int fromGroup;
     private List<Todo> todos;
 
     public int getVolume() {
@@ -57,6 +90,19 @@ public class Event {
 
     public Event() {
         this.id = UUID.randomUUID().toString();
+    }
+
+    public void setNecessaryMissingAttributes() {
+        if(startDate == null) {
+            setStartDate(LocalDate.now().toString());
+        }
+        if(endDate == null) {
+            setEndDate(LocalDate.now().plusMonths(1).toString());
+        }
+        if(color == null) {
+            setColor("red");
+        }
+        setFromGroup(1);
     }
 
     public String getId() {

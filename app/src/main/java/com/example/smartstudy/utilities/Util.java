@@ -1,5 +1,8 @@
 package com.example.smartstudy.utilities;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.Todo;
 
@@ -11,5 +14,9 @@ public class Util {
         return todos.stream()
                 .filter(todo -> todo.getCollection().equals(event.getId()))
                 .mapToInt(Todo::getTime).sum();
+    }
+
+    public static void showToast(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 }

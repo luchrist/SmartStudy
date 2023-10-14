@@ -52,7 +52,7 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
 
     private String encodedImage, currentUserEmail, currentGroupId;
     private int shownUploadedFiles = 0;
-    HashMap<Integer,Integer> fileLayouts = new HashMap<>();
+    HashMap<Integer, Integer> fileLayouts = new HashMap<>();
     private boolean isCurrentUserAdmin = false;
     TableLayout tableLayout;
     EditText type, subject, date, mostImportantInfo;
@@ -116,23 +116,27 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
 
         uploadProgress.setVisibility(View.VISIBLE);
         groupFilesRef.listAll()
-                        .addOnSuccessListener(listResult -> {
-                            for (StorageReference file : listResult.getItems()) {
-                                    String fileName = file.getName();
-                                    file.getMetadata().addOnSuccessListener(fileMetadata -> {
-                                        String fileSizeInCorrectUnit = getFileSizeInCorrectUnit(fileMetadata.getSizeBytes());
-                                        addFileToTable(fileName, fileSizeInCorrectUnit);
-                                    });
-                            }
-                            uploadProgress.setVisibility(View.GONE);
+                .addOnSuccessListener(listResult -> {
+                    for (StorageReference file : listResult.getItems()) {
+                        String fileName = file.getName();
+                        file.getMetadata().addOnSuccessListener(fileMetadata -> {
+                            String fileSizeInCorrectUnit = getFileSizeInCorrectUnit(fileMetadata.getSizeBytes());
+                            addFileToTable(fileName, fileSizeInCorrectUnit);
                         });
+                    }
+                    uploadProgress.setVisibility(View.GONE);
+                })
+                .addOnFailureListener(e -> {
+                    uploadProgress.setVisibility(View.GONE);
+                    showToast("Failed to load files");
+                });
 
         db.collection(Constants.KEY_COLLECTION_GROUPS).document(currentGroupId).get().addOnSuccessListener(
                 documentSnapshot -> {
                     group = documentSnapshot.toObject(Group.class);
+                    group.id = documentSnapshot.getId();
 //                    group.name = documentSnapshot.getString(Constants.KEY_GROUP_NAME);
 //                    group.joinWithId = Boolean.TRUE.equals(documentSnapshot.getBoolean(Constants.KEY_JOIN_WITH_GROUP_ID));
-                    group.id = documentSnapshot.getId();
                     if (group.image != null) {
                         groupImage.setImageBitmap(getGroupImage(group.image));
                     }
@@ -216,30 +220,18 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
             });
         } else {
             descriptionEntry.setOnClickListener(v -> {
-                SaveDescription alert = new SaveDescription(event.getDescription());
+                SaveDescription alert = new SaveDescription(group, event);
                 alert.show(getSupportFragmentManager(), "test");
-                event.setDescription(preferenceManager.getString(Constants.KEY_DESCRIPTION));
-                db.collection(Constants.KEY_COLLECTION_GROUPS).document(currentGroupId)
-                        .update(Constants.KEY_EVENTS, FieldValue.arrayRemove(event)).addOnSuccessListener(unused -> {
-                            db.collection(Constants.KEY_COLLECTION_GROUPS).document(currentGroupId)
-                                    .update(Constants.KEY_EVENTS, FieldValue.arrayUnion(event)).addOnSuccessListener(unused1 -> {
-                                        showToast("Event updated");
-                                    }).addOnFailureListener(e -> {
-                                        showToast("Failed to update event to db");
-                                        e.printStackTrace();
-                                    });
-                        }).addOnFailureListener(e -> {
-                            showToast("Failed to update event to db");
-                            e.printStackTrace();
-                        });
             });
             delete.setImageResource(R.drawable.baseline_delete_24);
             delete.setPadding((int) getResources().getDimension(R.dimen.tablePadding), (int) getResources().getDimension(R.dimen.tablePadding), (int) getResources().getDimension(R.dimen.tablePadding), (int) getResources().getDimension(R.dimen.tablePadding));
             delete.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.background_icon_light));
             delete.setOnClickListener(v -> {
                 tableLayout.removeView(tableRow);
+                List<Event> events = group.events;
+                events.remove(event);
                 db.collection(Constants.KEY_COLLECTION_GROUPS).document(currentGroupId)
-                        .update(Constants.KEY_EVENTS, FieldValue.arrayRemove(event)).addOnFailureListener(e -> {
+                        .update(Constants.KEY_EVENTS, events).addOnFailureListener(e -> {
                             showToast("Failed to delete event from db");
                             e.printStackTrace();
                         });
@@ -285,13 +277,14 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
         addEvent.setOnClickListener(v -> {
             Event event = collectEventData();
             addEventToTable(event);
+            event.setWanted(true);
             addEventToDb(event);
             type.setText(null);
             subject.setText(null);
             date.setText(null);
         });
         description.setOnClickListener(v -> {
-            SaveDescription alert = new SaveDescription(null);
+            SaveDescription alert = new SaveDescription(group, null);
             alert.show(getSupportFragmentManager(), "test");
         });
         groupName.setOnClickListener(v -> {
@@ -390,9 +383,9 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
     }
 
     private String getFileSizeInCorrectUnit(long sizeBytes) {
-        if(sizeBytes > 1024){
-            if(sizeBytes > 1024 * 1024){
-                if(sizeBytes > 1024 * 1024 * 1024){
+        if (sizeBytes > 1024) {
+            if (sizeBytes > 1024 * 1024) {
+                if (sizeBytes > 1024 * 1024 * 1024) {
                     return (sizeBytes / (1024 * 1024 * 1024)) + " GB";
                 } else {
                     return (sizeBytes / (1024 * 1024)) + " MB";
@@ -419,7 +412,6 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
         String dateText = date.getText().toString().trim();
         String descriptionText = preferenceManager.getString(Constants.KEY_DESCRIPTION);
         preferenceManager.putString(Constants.KEY_DESCRIPTION, "");
-
         return new Event(typeText, subjectText, dateText, descriptionText);
     }
 
