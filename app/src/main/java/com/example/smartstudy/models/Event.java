@@ -15,31 +15,23 @@ public class Event {
     }
 
     long dbId;
-    private String id, subject, type, startDate, endDate, description, color;
+    private String id, subject, type, startDate, endDate, description, color, groupId, firebaseId;
     private int volume;
     private int progress;
     private int remainingDays;
     private int absolutMinutes;
     private int remainingMinutes;
-    private boolean wanted;
+    private List<String> notWanted;
 
-    public boolean isWanted() {
-        return wanted;
+    public List<String> getNotWanted() {
+        return notWanted;
     }
 
-    public void setWanted(boolean wanted) {
-        this.wanted = wanted;
+    public void setNotWanted(List<String> notWanted) {
+        this.notWanted = notWanted;
     }
 
-    public int getFromGroup() {
-        return fromGroup;
-    }
 
-    public void setFromGroup(int fromGroup) {
-        this.fromGroup = fromGroup;
-    }
-
-    private int fromGroup;
     private List<Todo> todos;
 
     public int getVolume() {
@@ -92,17 +84,34 @@ public class Event {
         this.id = UUID.randomUUID().toString();
     }
 
-    public void setNecessaryMissingAttributes() {
-        if(startDate == null) {
+    public void setNecessaryMissingAttributes(String groupId) {
+        if(startDate == null || startDate.isEmpty()) {
             setStartDate(LocalDate.now().toString());
         }
-        if(endDate == null) {
+        if(endDate == null || endDate.isEmpty()) {
             setEndDate(LocalDate.now().plusMonths(1).toString());
         }
         if(color == null) {
             setColor("red");
         }
-        setFromGroup(1);
+        setGroupId(groupId);
+        setFirebaseId(UUID.randomUUID().toString());
+    }
+
+    public String getFirebaseId() {
+        return firebaseId;
+    }
+
+    public void setFirebaseId(String firebaseId) {
+        this.firebaseId = firebaseId;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     public String getId() {

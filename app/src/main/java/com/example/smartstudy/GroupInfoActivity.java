@@ -168,10 +168,11 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
                                 .get().addOnSuccessListener(documentSnapshot -> {
                                     Group group = documentSnapshot.toObject(Group.class);
                                     for (Event event : group.events) {
-                                        if(event.isWanted()) {
+                                        List<String> notWanted = event.getNotWanted();
+                                        if(notWanted == null || !notWanted.contains(currentUserEmail)) {
                                             db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)
                                                     .update(Constants.KEY_EVENTS, FieldValue.arrayRemove(event));
-                                            event.setNecessaryMissingAttributes();
+                                            event.setNecessaryMissingAttributes(groupId);
                                             long eventID = dbEventHelper.addEventObject(event);
                                             event.setDbId(eventID);
                                             db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)

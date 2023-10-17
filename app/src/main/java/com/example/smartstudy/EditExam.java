@@ -1,5 +1,7 @@
 package com.example.smartstudy;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -8,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -16,7 +19,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.DialogFragment;
@@ -24,20 +26,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartstudy.adapters.TodosAdapter;
 import com.example.smartstudy.models.Event;
+import com.example.smartstudy.models.Group;
 import com.example.smartstudy.models.Todo;
+import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.TodoSelectListener;
+import com.example.smartstudy.utilities.Util;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class EditExam extends DialogFragment implements TodoSelectListener {
+public class EditExam extends DialogFragment implements TodoSelectListener, DatePickerDialog.OnDateSetListener {
     AppCompatImageView addTodo;
     RecyclerView todosForEventView;
     AppCompatImageView prevEvent, nextEvent;
     Button newEmptyEvent;
-    EditText inputTodo, inputTime, subject, type, dueDay, startDate;
+    EditText inputTodo, inputTime, subject, type;
+    TextView dueDay, startDate;
     RatingBar volume;
     Spinner colour;
     LocalDate selectedDate;
@@ -62,7 +71,6 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
         View view = inflater.inflate(R.layout.dialog_edit_exam, null);
         // Inflate and set the layout for the dialog
         // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         addTodo = view.findViewById(R.id.addToDoEdit);
         prevEvent = view.findViewById(R.id.prevEvent);
         prevEvent.setVisibility(View.GONE);
@@ -103,64 +111,129 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
         showDayData();
         setListeners();
 
-        builder.setTitle("Edit Event")
-                // Pass null as the parent view because its going in the dialog layout
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setView(view)
-                .setPositiveButton("Save Changes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        shownEvent.setSubject(subject.getText().toString());
-                        shownEvent.setType(type.getText().toString());
-                        shownEvent.setEndDate(dueDay.getText().toString());
-                        shownEvent.setStartDate(startDate.getText().toString());
-                        shownEvent.setColor(colour.getSelectedItem().toString());
-                        shownEvent.setVolume((int)volume.getRating()*2);
+                .setTitle("Edit Event")
+                // Pass null as the parent view because its going in the dialog layout
+                .setPositiveButton("Save Changes", null)
+                .setNegativeButton("Cancel", null)
+                .setNeutralButton("Delete", null)
+                .create();
 
-                        if (shownEvent.getStartDate().equals("")){
-                            shownEvent.setStartDate(LocalDate.now().toString());
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                Button save = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                save.setTextColor(getResources().getColor(R.color.primaryVariant));
+                Button delete = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+                delete.setTextColor(getResources().getColor(R.color.remove));
+                Button cancel = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                cancel.setTextColor(getResources().getColor(R.color.primaryVariant));
+
+                save.setOnClickListener(v -> {
+                    shownEvent.setSubject(subject.getText().toString());
+                    shownEvent.setType(type.getText().toString());
+                    shownEvent.setEndDate(Util.getFormattedDateForDB(dueDay.getText().toString()));
+                    shownEvent.setStartDate(Util.getFormattedDateForDB(startDate.getText().toString()));
+                    shownEvent.setColor(colour.getSelectedItem().toString());
+                    shownEvent.setVolume((int)volume.getRating()*2);
+
+                    if (shownEvent.getStartDate().equals("")){
+                        shownEvent.setStartDate(LocalDate.now().toString());
+                    }
+                    if(shownEvent.getEndDate().equals("")){
+                        Toast.makeText(getContext(), "Set an Due Day!", Toast.LENGTH_SHORT).show();
+                    }else{
+                        long currentEventId;
+                        if(emptyEvent) {
+                            currentEventId = dbHelper.addEventObject(shownEvent);
+                        } else {
+                            currentEventId = dbHelper.updateEventObject(shownEvent);
                         }
-                        if(shownEvent.getEndDate().equals("")){
-                            Toast.makeText(getContext(), "Set an Due Day!", Toast.LENGTH_SHORT).show();
-                        }else{
-                            long currentEventId;
-                            if(emptyEvent) {
-                                currentEventId = dbHelper.addEventObject(shownEvent);
-                            } else {
-                                currentEventId = dbHelper.updateEventObject(shownEvent);
-                            }
-                            for (int i = 0; i < todosForEvent.size(); i++){
-                                boolean newTodo = true;
-                                for (int j = 0; j < allTodos.size(); j++){
-                                    if (Objects.equals(todosForEvent.get(i).getId(), allTodos.get(j).getId())){
-                                        Todo todo = todosForEvent.get(i);
-                                        todo.setCollection(String.valueOf(currentEventId));
-                                        dbTodoHelper.updateTodoObject(todo);
-                                        newTodo = false;
-                                        break;
-                                    }
-                                }
-                                if(newTodo){
+                        for (int i = 0; i < todosForEvent.size(); i++){
+                            boolean newTodo = true;
+                            for (int j = 0; j < allTodos.size(); j++){
+                                if (Objects.equals(todosForEvent.get(i).getId(), allTodos.get(j).getId())){
                                     Todo todo = todosForEvent.get(i);
                                     todo.setCollection(String.valueOf(currentEventId));
-                                    dbTodoHelper.addTodoObject(todo);
+                                    dbTodoHelper.updateTodoObject(todo);
+                                    newTodo = false;
+                                    break;
                                 }
                             }
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                                    new PlanFragment()).commit();
+                            if(newTodo){
+                                Todo todo = todosForEvent.get(i);
+                                todo.setCollection(String.valueOf(currentEventId));
+                                dbTodoHelper.addTodoObject(todo);
+                            }
                         }
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
+                        dialog.dismiss();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                                new PlanFragment()).commit();
                     }
                 });
-        // Create the AlertDialog object and return it
-        return builder.create();
+
+                delete.setOnClickListener(v -> {
+                    if(emptyEvent){
+                        dialog.dismiss();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                                new PlanFragment()).commit();
+                    }else{
+                        dbHelper.deleteEventObject(shownEvent);
+                        if(shownEvent.getGroupId() != null) {
+                            DocumentReference groupDoc = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_GROUPS)
+                                    .document(shownEvent.getGroupId());
+                            groupDoc.get()
+                                    .addOnSuccessListener(documentSnapshot -> {
+                                        Group group = documentSnapshot.toObject(Group.class);
+                                        for (Event event : group.events) {
+                                            if (event.getFirebaseId().equals(shownEvent.getFirebaseId())) {
+                                                List<Event> events = group.events;
+                                                events.remove(event);
+                                                List<String> notWanted = event.getNotWanted();
+                                                notWanted.add(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                                                event.setNotWanted(notWanted);
+                                                events.add(event);
+                                                groupDoc.update("events", events).addOnFailureListener(e -> {
+                                                    Toast.makeText(getContext(), "Error while deleting event", Toast.LENGTH_SHORT).show();
+                                                });
+                                            }
+                                        }
+
+                                    });
+                        }
+                        todaysEvents.remove(shownEvent);
+                        if(todaysEvents.size() > 0) {
+                            shownEvent = todaysEvents.get(0);
+                            prevEvent.setVisibility(View.INVISIBLE);
+                            if(todaysEvents.size() > 1)
+                                nextEvent.setVisibility(View.VISIBLE);
+                            else {
+                                nextEvent.setVisibility(View.INVISIBLE);
+                            }
+                            showEvent();
+                        } else {
+                            emptyEvent = true;
+                            shownEvent = new Event();
+                            showEvent();
+                        }
+                    }
+                });
+                cancel.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                            new PlanFragment()).commit();
+                });
+            }
+        });
+        dialog.show();
+        return dialog;
     }
 
     private void setPreDates() {
-        startDate.setText(LocalDate.now().toString());
-        dueDay.setText(selectedDate.toString());
+        startDate.setText(Util.getFormattedDate(LocalDate.now()));
+        dueDay.setText(Util.getFormattedDate(selectedDate));
     }
 
     private ArrayList<String> splitString(String text, char splitSymbol){
@@ -207,11 +280,14 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
         type.setText(shownEvent.getType());
 
         volume.setRating(shownEvent.getVolume()/2);
-        startDate.setText(shownEvent.getStartDate());
-        dueDay.setText(shownEvent.getEndDate());
+        startDate.setText(Util.getFormattedDate(LocalDate.parse(shownEvent.getStartDate())));
+        dueDay.setText(Util.getFormattedDate(LocalDate.parse(shownEvent.getEndDate())));
         progress = shownEvent.getProgress(); //bereits gelernte Stunden
         float gesStd = shownEvent.getAbsolutMinutes();
         String col = shownEvent.getColor();
+        if(col == null) {
+            col = "red";
+        }
         setColor(col);
         for(int j = 0; j < allTodos.size(); j++) {
             if(allTodos.get(j).getCollection().equals(shownEvent.getId())) {
@@ -252,6 +328,10 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
     }
 
     private void setListeners() {
+        dueDay.setOnClickListener(v -> {
+                DialogFragment datePicker = new DatePickerFragment();
+                datePicker.show(getParentFragmentManager(), "date picker");
+        });
         addTodo.setOnClickListener(v -> {
             try {
                 int minutesEst = Integer.parseInt(inputTime.getText().toString());
@@ -367,6 +447,12 @@ public class EditExam extends DialogFragment implements TodoSelectListener {
             dbTodoHelper.updateTodoObject(todo);
             dbHelper.updateEventObject(shownEvent);
         }
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        LocalDate date = LocalDate.of(year, month, dayOfMonth);
+        dueDay.setText(Util.getFormattedDate(date));
     }
 }
 

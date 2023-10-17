@@ -81,13 +81,12 @@
         app:layout_constraintEnd_toStartOf="@+id/volume_edit"
         app:layout_constraintTop_toBottomOf="@+id/type_edit" />
 
-    <EditText
+    <TextView
         android:id="@+id/dueDay_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressEdit" />
@@ -113,13 +112,12 @@
         app:layout_constraintEnd_toStartOf="@+id/startDateEdit"
         app:layout_constraintTop_toBottomOf="@+id/dueDay_edit" />
 
-    <EditText
+    <TextView
         android:id="@+id/startDateEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ems="10"
-        android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dueDay_edit" />

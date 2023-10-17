@@ -6,6 +6,8 @@ import android.widget.Toast;
 import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.Todo;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Util {
@@ -18,5 +20,19 @@ public class Util {
 
     public static void showToast(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static String getFormattedDate(LocalDate date) {
+        DateTimeFormatter germanFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return date.format(germanFormatter);
+    }
+
+    public static String getFormattedDateForDB(String date) {
+        DateTimeFormatter dbFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(date).format(dbFormatter);
+    }
+
+    public static LocalDate convertStringToLocalDate(String date) {
+        return LocalDate.parse(date);
     }
 }

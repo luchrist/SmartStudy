@@ -192,17 +192,19 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                                     .get().addOnSuccessListener(doc -> {
                                         Group group = doc.toObject(Group.class);
                                         for (Event event : group.events) {
-                                            if (event.isWanted()) {
+                                            List<String> notWanted = event.getNotWanted();
+                                            if (notWanted == null || !notWanted.contains(user.getEmail())) {
                                                 if(event.getDbId() != 0) {
                                                     dbEventHelper.deleteEventObject(event);
                                                 }
-                                                db.collection(Constants.KEY_COLLECTION_GROUPS).document(id)
-                                                        .update(Constants.KEY_EVENTS, FieldValue.arrayRemove(event));
-                                                event.setNecessaryMissingAttributes();
+                                                List<Event> events = group.events;
+                                                events.remove(event);
+                                                event.setNecessaryMissingAttributes(id);
                                                 long eventID = dbEventHelper.addEventObject(event);
                                                 event.setDbId(eventID);
+                                                events.add(event);
                                                 db.collection(Constants.KEY_COLLECTION_GROUPS).document(id)
-                                                        .update(Constants.KEY_EVENTS, FieldValue.arrayUnion(event));
+                                                        .update(Constants.KEY_EVENTS, events);
                                             }
                                         }
                                     })

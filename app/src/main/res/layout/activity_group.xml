@@ -180,8 +180,10 @@
 
                     <TableLayout
                         android:id="@+id/tableLayout"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_marginEnd="@dimen/_4sdp"
                         android:layout_gravity="center_horizontal">
 
                         <TableRow>
@@ -208,9 +210,9 @@
                                 android:textSize="@dimen/_12ssp"
                                 android:textStyle="bold" />
 
-                            <EditText
+                            <TextView
                                 android:id="@+id/dateInput"
-                                android:layout_width="@dimen/_65sdp"
+                                android:layout_width="wrap_content"
                                 android:hint="@string/date"
                                 android:imeOptions="actionDone"
                                 android:inputType="date"

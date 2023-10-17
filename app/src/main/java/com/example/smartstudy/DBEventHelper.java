@@ -26,7 +26,8 @@ public class DBEventHelper extends SQLiteOpenHelper {
     public static final String COLUMN_COLOR = "color";
     public static final String COLUMN_PROGRESS = "progress";
     public static final String COLUMN_DESCRIPTION = "description";
-    public static final String COLUMN_FROM_GROUP = "fromgroup";
+    public static final String COLUMN_GROUP_ID = "groupid";
+    public static final String COLUMN_FIREBASE_ID = "firebaseid";
     public static final String COLUMN_REMAININGDAYS = "remainingdays";
     public static final String COLUMN_REMAININGMINUTES = "remainingminutes";
     public static final String COLUMN_ABSOLUTMINUTES = "absolutminutes";
@@ -50,7 +51,8 @@ public class DBEventHelper extends SQLiteOpenHelper {
                     COLUMN_COLOR + " TEXT NOT NULL, " +
                     COLUMN_PROGRESS + " INTEGER, " +
                     COLUMN_DESCRIPTION + " TEXT, " +
-                    COLUMN_FROM_GROUP + " INTEGER, " +
+                    COLUMN_GROUP_ID + " TEXT, " +
+                    COLUMN_FIREBASE_ID + " TEXT, " +
                     COLUMN_REMAININGDAYS + " INTEGER, " +
                     COLUMN_REMAININGMINUTES + " INTEGER, " +
                     COLUMN_ABSOLUTMINUTES + " INTEGER);";
@@ -78,7 +80,8 @@ public class DBEventHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_COLOR, event.getColor());
         contentValues.put(COLUMN_PROGRESS, event.getProgress());
         contentValues.put(COLUMN_DESCRIPTION, event.getDescription());
-        contentValues.put(COLUMN_FROM_GROUP, event.getFromGroup());
+        contentValues.put(COLUMN_GROUP_ID, event.getGroupId());
+        contentValues.put(COLUMN_FIREBASE_ID, event.getFirebaseId());
         contentValues.put(COLUMN_REMAININGDAYS, event.getRemainingDays());
         contentValues.put(COLUMN_REMAININGMINUTES, event.getRemainingMinutes());
         contentValues.put(COLUMN_ABSOLUTMINUTES, event.getAbsolutMinutes());
@@ -102,7 +105,8 @@ public class DBEventHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_COLOR, event.getColor());
         contentValues.put(COLUMN_PROGRESS, event.getProgress());
         contentValues.put(COLUMN_DESCRIPTION, event.getDescription());
-        contentValues.put(COLUMN_FROM_GROUP, event.getFromGroup());
+        contentValues.put(COLUMN_GROUP_ID, event.getGroupId());
+        contentValues.put(COLUMN_FIREBASE_ID, event.getFirebaseId());
         contentValues.put(COLUMN_REMAININGDAYS, event.getRemainingDays());
         contentValues.put(COLUMN_REMAININGMINUTES, event.getRemainingMinutes());
         contentValues.put(COLUMN_ABSOLUTMINUTES, event.getAbsolutMinutes());

@@ -140,10 +140,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         preferenceManager.putBoolean("studyNeed", true);
         sub.setText(currentEvent.getSubject());
         ty.setText(currentEvent.getType());
-        DateTimeFormatter finalFormatter = DateTimeFormatter.ofPattern("dd.MM.yy");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate endDate = LocalDate.parse(currentEvent.getEndDate(), formatter);
-        dueDate.setText(endDate.format(finalFormatter));
+        dueDate.setText(Util.getFormattedDate(endDate));
         int absolut = currentEvent.getAbsolutMinutes();
         int faktor;
         if (absolut != 0) {

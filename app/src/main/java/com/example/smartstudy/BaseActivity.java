@@ -18,18 +18,25 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         PreferenceManager preferenceManager = new PreferenceManager(getApplicationContext());
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        documentReference = db.collection(Constants.KEY_COLLECTION_USERS).document(preferenceManager.getString(Constants.KEY_EMAIL));
+        String userMail = preferenceManager.getString(Constants.KEY_EMAIL);
+        if(userMail != null) {
+            documentReference = db.collection(Constants.KEY_COLLECTION_USERS).document(preferenceManager.getString(Constants.KEY_EMAIL));
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        documentReference.update(Constants.KEY_AVAILABILITY, false);
+        if (documentReference != null) {
+            documentReference.update(Constants.KEY_AVAILABILITY, false);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        documentReference.update(Constants.KEY_AVAILABILITY, true);
+        if(documentReference != null) {
+            documentReference.update(Constants.KEY_AVAILABILITY, true);
+        }
     }
 }

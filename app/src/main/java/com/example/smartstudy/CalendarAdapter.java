@@ -47,15 +47,15 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
         for (int i = 0; i < end.size(); i++){
 
             String endDate = end.get(i);
-            String[] endDateSplittet = endDate.split("-");
-
-           String month = endDateSplittet[1];
-            month = getMonat(month);
-            String showingMonth = String.valueOf(this.month);
-            showingMonth = monthShorted(showingMonth);
-            if (showingMonth.equalsIgnoreCase(month)){
-                String day = endDateSplittet[2];
-                day = transformDay(day);
+            if(endDate != null && !endDate.isEmpty()) {
+                String[] endDateSplittet = endDate.split("-");
+                String month = endDateSplittet[1];
+                month = getMonat(month);
+                String showingMonth = String.valueOf(this.month);
+                showingMonth = monthShorted(showingMonth);
+                if (showingMonth.equalsIgnoreCase(month)){
+                    String day = endDateSplittet[2];
+                    day = transformDay(day);
                     if(day.equalsIgnoreCase(daysOfMonth.get(position))){
                         String color = col.get(i);
                         switch (color){
@@ -84,14 +84,10 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
                             case "purple":
                                 holder.dayOfMonth.setTextColor(Color.rgb(128,0,128));
                                 break;
-
-
                         }
                     }
-
+                }
             }
-
-
         }
 
     }
@@ -158,11 +154,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
         if (cursor1.getCount() == 0){
         }else {
             while (cursor1.moveToNext()) {
-
                 end.add(cursor1.getString(5));
                 col.add(cursor1.getString(6));
-
-
             }
         }
     }

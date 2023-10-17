@@ -1,6 +1,7 @@
 package com.example.smartstudy;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -28,6 +30,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 
 import com.example.smartstudy.dialogs.SaveDescription;
 import com.example.smartstudy.models.Event;
@@ -35,6 +38,7 @@ import com.example.smartstudy.models.Group;
 import com.example.smartstudy.models.Member;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
+import com.example.smartstudy.utilities.Util;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -45,17 +49,22 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-public class GroupActivity extends BaseActivity { //implements SaveFileGroupName.FileGroupNameDialogInterface {
+public class GroupActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener { //implements SaveFileGroupName.FileGroupNameDialogInterface {
 
     private String encodedImage, currentUserEmail, currentGroupId;
     private int shownUploadedFiles = 0;
     HashMap<Integer, Integer> fileLayouts = new HashMap<>();
     private boolean isCurrentUserAdmin = false;
     TableLayout tableLayout;
-    EditText type, subject, date, mostImportantInfo;
+    EditText type, subject, mostImportantInfo;
+    TextView date;
     LinearLayout filesLayout;
     ConstraintLayout uploadFiles;
     AppCompatImageView back, chat, copyId, description, addEvent;
@@ -246,6 +255,10 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
     }
 
     private void setListeners() {
+        date.setOnClickListener(v -> {
+            DialogFragment datePicker = new DatePickerFragment();
+            datePicker.show(getSupportFragmentManager(), "date picker");
+        });
 
         uploadFiles.setOnClickListener(v -> {
             //Create Intent
@@ -277,7 +290,6 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
         addEvent.setOnClickListener(v -> {
             Event event = collectEventData();
             addEventToTable(event);
-            event.setWanted(true);
             addEventToDb(event);
             type.setText(null);
             subject.setText(null);
@@ -399,6 +411,7 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
     }
 
     private void addEventToDb(Event event) {
+        event.setEndDate(Util.getFormattedDateForDB(event.getEndDate()));
         db.collection(Constants.KEY_COLLECTION_GROUPS).document(currentGroupId)
                 .update(Constants.KEY_EVENTS, FieldValue.arrayUnion(event)).addOnFailureListener(e -> {
                     showToast("Failed to add event to db");
@@ -451,6 +464,12 @@ public class GroupActivity extends BaseActivity { //implements SaveFileGroupName
         previewBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] bytes = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(bytes, Base64.DEFAULT);
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        LocalDate chosenDate = LocalDate.of(year, month, dayOfMonth);
+        date.setText(Util.getFormattedDate(chosenDate));
     }
 
    /* @Override
