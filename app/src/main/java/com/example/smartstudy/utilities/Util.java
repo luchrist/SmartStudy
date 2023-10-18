@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Util {
+    private static final DateTimeFormatter germanFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     public static int getTimeNeededForTodos(Event event, List<Todo> todos) {
         return todos.stream()
@@ -23,13 +24,12 @@ public class Util {
     }
 
     public static String getFormattedDate(LocalDate date) {
-        DateTimeFormatter germanFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return date.format(germanFormatter);
     }
 
     public static String getFormattedDateForDB(String date) {
         DateTimeFormatter dbFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(date).format(dbFormatter);
+        return LocalDate.parse(date,germanFormatter).format(dbFormatter);
     }
 
     public static LocalDate convertStringToLocalDate(String date) {

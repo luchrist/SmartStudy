@@ -86,9 +86,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:textSize="@dimen/_14ssp"
+        android:textColor="@color/primaryText"
         android:ems="10"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/textView30"
         app:layout_constraintTop_toBottomOf="@+id/progressEdit" />
 
     <TextView
@@ -96,10 +98,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/_25sdp"
         android:text="due day"
-        android:textSize="16sp"
+        android:textSize="@dimen/_12ssp"
         app:layout_constraintBottom_toBottomOf="@+id/dueDay_edit"
         app:layout_constraintEnd_toStartOf="@+id/dueDay_edit"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/dueDay_edit" />
 
     <TextView
@@ -107,9 +111,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/_25sdp"
         android:text="startdate"
+        android:textSize="@dimen/_12ssp"
         app:layout_constraintBottom_toBottomOf="@+id/startDateEdit"
         app:layout_constraintEnd_toStartOf="@+id/startDateEdit"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dueDay_edit" />
 
     <TextView
@@ -117,9 +124,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:textSize="@dimen/_14ssp"
+        android:textColor="@color/primaryText"
         android:ems="10"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/textView32"
         app:layout_constraintTop_toBottomOf="@+id/dueDay_edit" />
 
     <Spinner

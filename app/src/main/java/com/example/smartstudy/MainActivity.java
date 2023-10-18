@@ -2,12 +2,14 @@ package com.example.smartstudy;
 
 import static com.google.firebase.firestore.Filter.equalTo;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.smartstudy.Builder.EventBuilder;
 import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.Group;
 import com.example.smartstudy.models.Member;
@@ -42,7 +45,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private static final Logger logger = Logger.getLogger(MainActivity.class.getName());
     //Variables
@@ -191,20 +194,22 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                             db.collection(Constants.KEY_COLLECTION_GROUPS).document(id)
                                     .get().addOnSuccessListener(doc -> {
                                         Group group = doc.toObject(Group.class);
-                                        for (Event event : group.events) {
-                                            List<String> notWanted = event.getNotWanted();
-                                            if (notWanted == null || !notWanted.contains(user.getEmail())) {
-                                                if(event.getDbId() != 0) {
-                                                    dbEventHelper.deleteEventObject(event);
+                                        if(group.events != null) {
+                                            for (Event event : group.events) {
+                                                List<String> notWanted = event.getNotWanted();
+                                                if (notWanted == null || !notWanted.contains(user.getEmail())) {
+                                                    if(event.getDbId() != 0) {
+                                                        dbEventHelper.deleteEventObject(new EventBuilder().setId(String.valueOf(event.getDbId())).build());
+                                                    }
+                                                    List<Event> events = group.events;
+                                                    events.remove(event);
+                                                    event.setNecessaryMissingAttributes(id);
+                                                    long eventID = dbEventHelper.addEventObject(event);
+                                                    event.setDbId(eventID);
+                                                    events.add(event);
+                                                    db.collection(Constants.KEY_COLLECTION_GROUPS).document(id)
+                                                            .update(Constants.KEY_EVENTS, events);
                                                 }
-                                                List<Event> events = group.events;
-                                                events.remove(event);
-                                                event.setNecessaryMissingAttributes(id);
-                                                long eventID = dbEventHelper.addEventObject(event);
-                                                event.setDbId(eventID);
-                                                events.add(event);
-                                                db.collection(Constants.KEY_COLLECTION_GROUPS).document(id)
-                                                        .update(Constants.KEY_EVENTS, events);
                                             }
                                         }
                                     })

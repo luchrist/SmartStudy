@@ -51,6 +51,7 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
     List<Member> members;
     MembersAdapter membersAdapter;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private boolean changedOnCreate;
 
 
     @Override
@@ -72,12 +73,30 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
         currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
         groupId = preferenceManager.getString(Constants.KEY_GROUP_ID);
         groupName.setText(preferenceManager.getString(Constants.KEY_GROUP_NAME));
+        setCheckbox();
         showUsers();
         setListeners();
     }
 
+    private void setCheckbox() {
+        db.collection(Constants.KEY_COLLECTION_USERS)
+                .document(currentUserEmail)
+                .collection(Constants.KEY_COLLECTION_GROUPS)
+                .document(groupId).get().addOnSuccessListener(documentSnapshot -> {
+                    Boolean addExamsToPlan = (Boolean) documentSnapshot.get(Constants.KEY_ADD_EXAMS_TO_PLAN);
+                    if(addExamsToPlan != checkBox.isChecked()) {
+                        changedOnCreate = true;
+                        checkBox.setChecked(addExamsToPlan);
+                    }
+                });
+    }
+
     private void setListeners() {
         checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (changedOnCreate) {
+                changedOnCreate = false;
+                return;
+            }
             if (isChecked) {
                 addExamsToPlan();
             } else {
@@ -167,16 +186,16 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
                         db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)
                                 .get().addOnSuccessListener(documentSnapshot -> {
                                     Group group = documentSnapshot.toObject(Group.class);
-                                    for (Event event : group.events) {
-                                        List<String> notWanted = event.getNotWanted();
-                                        if(notWanted == null || !notWanted.contains(currentUserEmail)) {
-                                            db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)
-                                                    .update(Constants.KEY_EVENTS, FieldValue.arrayRemove(event));
+                                    if (group.events != null) {
+                                        for (Event event : group.events) {
+                                            List<Event> events = group.events;
+                                            events.remove(event);
                                             event.setNecessaryMissingAttributes(groupId);
                                             long eventID = dbEventHelper.addEventObject(event);
                                             event.setDbId(eventID);
+                                            events.add(event);
                                             db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)
-                                                    .update(Constants.KEY_EVENTS, FieldValue.arrayUnion(event));
+                                                    .update(Constants.KEY_EVENTS, events);
                                         }
                                     }
                                 })
@@ -283,11 +302,11 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
         db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId)
                 .update(Constants.KEY_MEMBERS, FieldValue.arrayRemove(member))
                 .addOnSuccessListener(d -> {
-                    if(member.email.equals(currentUserEmail)){
+                    if (member.email.equals(currentUserEmail)) {
                         showToast("You left the group");
                         startActivity(new Intent(this, MainActivity.class));
                         finish();
-                    }else{
+                    } else {
                         showToast("Member removed");
                     }
                 });

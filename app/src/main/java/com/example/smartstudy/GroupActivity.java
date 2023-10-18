@@ -256,7 +256,7 @@ public class GroupActivity extends BaseActivity implements DatePickerDialog.OnDa
 
     private void setListeners() {
         date.setOnClickListener(v -> {
-            DialogFragment datePicker = new DatePickerFragment();
+            DialogFragment datePicker = new DatePickerActivityFragment();
             datePicker.show(getSupportFragmentManager(), "date picker");
         });
 
@@ -468,7 +468,7 @@ public class GroupActivity extends BaseActivity implements DatePickerDialog.OnDa
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        LocalDate chosenDate = LocalDate.of(year, month, dayOfMonth);
+        LocalDate chosenDate = LocalDate.of(year, month+1, dayOfMonth);
         date.setText(Util.getFormattedDate(chosenDate));
     }
 

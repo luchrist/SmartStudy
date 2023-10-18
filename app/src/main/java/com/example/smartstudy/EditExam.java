@@ -12,14 +12,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,6 +39,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class EditExam extends DialogFragment implements TodoSelectListener, DatePickerDialog.OnDateSetListener {
+    private static int DATEPICKED = 0;
     AppCompatImageView addTodo;
     RecyclerView todosForEventView;
     AppCompatImageView prevEvent, nextEvent;
@@ -63,10 +62,12 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
     public EditExam(LocalDate selectedDate) {
         this.selectedDate = selectedDate;
     }
+    public EditExam() {
+    }
 
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState){
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_edit_exam, null);
         // Inflate and set the layout for the dialog
@@ -137,24 +138,24 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
                     shownEvent.setEndDate(Util.getFormattedDateForDB(dueDay.getText().toString()));
                     shownEvent.setStartDate(Util.getFormattedDateForDB(startDate.getText().toString()));
                     shownEvent.setColor(colour.getSelectedItem().toString());
-                    shownEvent.setVolume((int)volume.getRating()*2);
+                    shownEvent.setVolume((int) volume.getRating() * 2);
 
-                    if (shownEvent.getStartDate().equals("")){
+                    if (shownEvent.getStartDate().equals("")) {
                         shownEvent.setStartDate(LocalDate.now().toString());
                     }
-                    if(shownEvent.getEndDate().equals("")){
+                    if (shownEvent.getEndDate().equals("")) {
                         Toast.makeText(getContext(), "Set an Due Day!", Toast.LENGTH_SHORT).show();
-                    }else{
+                    } else {
                         long currentEventId;
-                        if(emptyEvent) {
+                        if (emptyEvent) {
                             currentEventId = dbHelper.addEventObject(shownEvent);
                         } else {
                             currentEventId = dbHelper.updateEventObject(shownEvent);
                         }
-                        for (int i = 0; i < todosForEvent.size(); i++){
+                        for (int i = 0; i < todosForEvent.size(); i++) {
                             boolean newTodo = true;
-                            for (int j = 0; j < allTodos.size(); j++){
-                                if (Objects.equals(todosForEvent.get(i).getId(), allTodos.get(j).getId())){
+                            for (int j = 0; j < allTodos.size(); j++) {
+                                if (Objects.equals(todosForEvent.get(i).getId(), allTodos.get(j).getId())) {
                                     Todo todo = todosForEvent.get(i);
                                     todo.setCollection(String.valueOf(currentEventId));
                                     dbTodoHelper.updateTodoObject(todo);
@@ -162,7 +163,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
                                     break;
                                 }
                             }
-                            if(newTodo){
+                            if (newTodo) {
                                 Todo todo = todosForEvent.get(i);
                                 todo.setCollection(String.valueOf(currentEventId));
                                 dbTodoHelper.addTodoObject(todo);
@@ -175,13 +176,13 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
                 });
 
                 delete.setOnClickListener(v -> {
-                    if(emptyEvent){
+                    if (emptyEvent) {
                         dialog.dismiss();
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                                 new PlanFragment()).commit();
-                    }else{
+                    } else {
                         dbHelper.deleteEventObject(shownEvent);
-                        if(shownEvent.getGroupId() != null) {
+                        if (shownEvent.getGroupId() != null) {
                             DocumentReference groupDoc = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_GROUPS)
                                     .document(shownEvent.getGroupId());
                             groupDoc.get()
@@ -204,10 +205,10 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
                                     });
                         }
                         todaysEvents.remove(shownEvent);
-                        if(todaysEvents.size() > 0) {
+                        if (todaysEvents.size() > 0) {
                             shownEvent = todaysEvents.get(0);
                             prevEvent.setVisibility(View.INVISIBLE);
-                            if(todaysEvents.size() > 1)
+                            if (todaysEvents.size() > 1)
                                 nextEvent.setVisibility(View.VISIBLE);
                             else {
                                 nextEvent.setVisibility(View.INVISIBLE);
@@ -236,19 +237,19 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
         dueDay.setText(Util.getFormattedDate(selectedDate));
     }
 
-    private ArrayList<String> splitString(String text, char splitSymbol){
+    private ArrayList<String> splitString(String text, char splitSymbol) {
         ArrayList<String> ziffern = new ArrayList<>();
         int c = 0;
-        for(int i = 0; i < text.length(); i++){
-            if(text.charAt(i) == splitSymbol){
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == splitSymbol) {
                 String part = "";
-                for (int j= 1; j <= c; j++){
-                    part+= text.charAt(i-j);
+                for (int j = 1; j <= c; j++) {
+                    part += text.charAt(i - j);
                 }
                 ziffern.add(part);
-                ziffern.add(String.valueOf(text.charAt(i+1)));
+                ziffern.add(String.valueOf(text.charAt(i + 1)));
                 return ziffern;
-            }else{
+            } else {
                 c++;
             }
         }
@@ -256,14 +257,14 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
     }
 
     private void showDayData() {
-        for(int i = 0; i < events.size(); i++){
-            if(events.get(i).getEndDate().equals(selectedDate.toString())){
+        for (int i = 0; i < events.size(); i++) {
+            if (events.get(i).getEndDate().equals(selectedDate.toString())) {
                 todaysEvents.add(events.get(i));
             }
         }
-        if(!todaysEvents.isEmpty()) {
+        if (!todaysEvents.isEmpty()) {
             shownEvent = todaysEvents.get(0);
-            if(todaysEvents.size() < 2) {
+            if (todaysEvents.size() < 2) {
                 nextEvent.setVisibility(View.INVISIBLE);
             }
             showEvent();
@@ -279,65 +280,74 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
         subject.setText(shownEvent.getSubject());
         type.setText(shownEvent.getType());
 
-        volume.setRating(shownEvent.getVolume()/2);
+        volume.setRating(shownEvent.getVolume() / 2);
         startDate.setText(Util.getFormattedDate(LocalDate.parse(shownEvent.getStartDate())));
         dueDay.setText(Util.getFormattedDate(LocalDate.parse(shownEvent.getEndDate())));
         progress = shownEvent.getProgress(); //bereits gelernte Stunden
         float gesStd = shownEvent.getAbsolutMinutes();
         String col = shownEvent.getColor();
-        if(col == null) {
+        if (col == null) {
             col = "red";
         }
         setColor(col);
-        for(int j = 0; j < allTodos.size(); j++) {
-            if(allTodos.get(j).getCollection().equals(shownEvent.getId())) {
+        for (int j = 0; j < allTodos.size(); j++) {
+            if (allTodos.get(j).getCollection().equals(shownEvent.getId())) {
                 todosForEvent.add(allTodos.get(j));
-                todosAdapter.notifyItemInserted(todosForEvent.size()-1);
+                todosAdapter.notifyItemInserted(todosForEvent.size() - 1);
             }
         }
         float faktor = 100 / gesStd;
-        progressBar.setProgress((int) (progress *faktor));
+        progressBar.setProgress((int) (progress * faktor));
     }
 
     private String minutesToString(String s) {
         int minutes = Integer.parseInt(s);
-        int hours = minutes/60;
-        int mins = minutes%60;
+        int hours = minutes / 60;
+        int mins = minutes % 60;
         return String.valueOf(hours + "." + mins);
     }
 
     private void loadData() {
         Cursor cursor = dbHelper.readAllData();
-        if (cursor.getCount() == 0){
+        if (cursor.getCount() == 0) {
             Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
             while (cursor.moveToNext()) {
-                Event event = new Event(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(4),cursor.getString(5), cursor.getString(6), cursor.getInt(3), cursor.getInt(7));
+                Event event = new Event(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getInt(3), cursor.getInt(7));
                 events.add(event);
             }
         }
         cursor = dbTodoHelper.readAllData();
-        if (cursor.getCount() == 0){
+        if (cursor.getCount() == 0) {
             Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
             while (cursor.moveToNext()) {
-                Todo todo = new Todo(cursor.getString(0), cursor.getString(3),cursor.getString(1),cursor.getInt(2),cursor.getInt(4));
+                Todo todo = new Todo(cursor.getString(0), cursor.getString(3), cursor.getString(1), cursor.getInt(2), cursor.getInt(4));
                 allTodos.add(todo);
             }
         }
     }
 
     private void setListeners() {
+        startDate.setOnClickListener(v -> {
+            DATEPICKED = 0;
+            DialogFragment datePicker = new DatePickerFragment();
+            datePicker.setTargetFragment(EditExam.this, 0);
+            datePicker.show(getFragmentManager(), "date picker");
+        });
+
         dueDay.setOnClickListener(v -> {
-                DialogFragment datePicker = new DatePickerFragment();
-                datePicker.show(getParentFragmentManager(), "date picker");
+            DATEPICKED = 1;
+            DialogFragment datePicker = new DatePickerFragment();
+            datePicker.setTargetFragment(EditExam.this, 0);
+            datePicker.show(getFragmentManager(), "date picker");
         });
         addTodo.setOnClickListener(v -> {
             try {
                 int minutesEst = Integer.parseInt(inputTime.getText().toString());
-                Todo todo = new Todo(shownEvent.getId(), inputTodo.getText().toString(), minutesEst,0);
+                Todo todo = new Todo(shownEvent.getId(), inputTodo.getText().toString(), minutesEst, 0);
                 todosForEvent.add(todo);
-                todosAdapter.notifyItemInserted(todosForEvent.size()-1);
+                todosAdapter.notifyItemInserted(todosForEvent.size() - 1);
                 inputTodo.setText("");
                 inputTime.setText("");
             } catch (NumberFormatException e) {
@@ -348,10 +358,10 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
         prevEvent.setOnClickListener(v -> {
             if (shownEvent != null) {
                 int currentIndex = todaysEvents.indexOf(shownEvent);
-                if(currentIndex > 0) {
+                if (currentIndex > 0) {
                     shownEvent = todaysEvents.get(currentIndex - 1);
                     showEvent();
-                    if(currentIndex == 1) {
+                    if (currentIndex == 1) {
                         prevEvent.setVisibility(View.INVISIBLE);
                     }
                     nextEvent.setVisibility(View.VISIBLE);
@@ -359,15 +369,15 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
             }
         });
         nextEvent.setOnClickListener(v -> {
-            if(shownEvent != null) {
+            if (shownEvent != null) {
                 int currentIndex = todaysEvents.indexOf(shownEvent);
-                if(currentIndex < todaysEvents.size()-1) {
+                if (currentIndex < todaysEvents.size() - 1) {
                     shownEvent = todaysEvents.get(currentIndex + 1);
                     int oldSize = todosForEvent.size();
                     todosForEvent.clear();
                     todosAdapter.notifyItemRangeRemoved(0, oldSize);
                     showEvent();
-                    if(currentIndex == todaysEvents.size()-2) {
+                    if (currentIndex == todaysEvents.size() - 2) {
                         nextEvent.setVisibility(View.INVISIBLE);
                     }
                     prevEvent.setVisibility(View.VISIBLE);
@@ -399,7 +409,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
 
     private void setColor(String col) {
         int co;
-        switch (col){
+        switch (col) {
             case "red":
                 co = 0;
                 break;
@@ -451,8 +461,12 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        LocalDate date = LocalDate.of(year, month, dayOfMonth);
-        dueDay.setText(Util.getFormattedDate(date));
+        LocalDate date = LocalDate.of(year, month+1, dayOfMonth);
+        if (DATEPICKED == 0)
+            startDate.setText(Util.getFormattedDate(date));
+        else if (DATEPICKED == 1) {
+            dueDay.setText(Util.getFormattedDate(date));
+        }
     }
 }
 
