@@ -18,6 +18,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.smartstudy.utilities.PreferenceManager;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
@@ -31,6 +35,7 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
     private DatePickerDialog date_picker_dialog;
     private Button date_button, save, exeptionTime;
     private DBExeptionHelper dbExeptionHelper;
+    private PreferenceManager preferenceManager;
     SharedPreferences sp;
     SharedPreferences.Editor editor;
     @Nullable
@@ -40,6 +45,7 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.time_fragment, container, false);
         sp = getActivity().getSharedPreferences("SP", 0);
         editor = sp.edit();
+        preferenceManager = new PreferenceManager(getContext());
         dbTimeHelper = new DbTimeHelper(getContext());
         dbExeptionHelper = new DBExeptionHelper(getContext());
         monTimePicker = view.findViewById(R.id.monTimePicker);
@@ -197,12 +203,18 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
                         minute = selectedMinute;
                         if (monTimePicker.equals(view)) {
                             monTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                            if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+                                updateRemainingTime(monTimePicker, mon);
+                            }
                             if(mon == null){
                                 dbTimeHelper.addTimeObject("Monday", stringToMinutes(monTimePicker.getText().toString()));
                             } else {
                                 dbTimeHelper.updateTimeObject(mon.getId(), mon.getDay(), stringToMinutes(monTimePicker.getText().toString()));
                             }
                         } else if (tueTimePicker.equals(view)) {
+                            if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.TUESDAY)) {
+                                updateRemainingTime(tueTimePicker, tue);
+                            }
                             tueTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
                             if (tue == null) {
                                 dbTimeHelper.addTimeObject("Tuesday", stringToMinutes(tueTimePicker.getText().toString()));
@@ -210,6 +222,9 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
                                 dbTimeHelper.updateTimeObject(tue.getId(), tue.getDay(), stringToMinutes(tueTimePicker.getText().toString()));
                             }
                         } else if (view == wedTimePicker) {
+                            if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.WEDNESDAY)) {
+                                updateRemainingTime(wedTimePicker, wed);
+                            }
                             wedTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
                             if (wed == null) {
                                 dbTimeHelper.addTimeObject("Wednesday", stringToMinutes(wedTimePicker.getText().toString()));
@@ -217,6 +232,9 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
                                 dbTimeHelper.updateTimeObject(wed.getId(), wed.getDay(), stringToMinutes(wedTimePicker.getText().toString()));
                             }
                         } else if (view == thuTimePicker) {
+                            if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.THURSDAY)) {
+                                updateRemainingTime(thuTimePicker, thu);
+                            }
                             thuTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
                             if (thu == null) {
                                 dbTimeHelper.addTimeObject("Thursday", stringToMinutes(thuTimePicker.getText().toString()));
@@ -224,6 +242,9 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
                                 dbTimeHelper.updateTimeObject(thu.getId(), thu.getDay(), stringToMinutes(thuTimePicker.getText().toString()));
                             }
                         } else if (view == friTimePicker) {
+                            if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.FRIDAY)) {
+                                updateRemainingTime(friTimePicker, fri);
+                            }
                             friTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
                             if (fri == null) {
                                 dbTimeHelper.addTimeObject("Friday", stringToMinutes(friTimePicker.getText().toString()));
@@ -231,6 +252,9 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
                                 dbTimeHelper.updateTimeObject(fri.getId(), fri.getDay(), stringToMinutes(friTimePicker.getText().toString()));
                             }
                         } else if (view == satTimePicker) {
+                            if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+                                updateRemainingTime(satTimePicker, sat);
+                            }
                             satTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
                             if (sat == null) {
                                 dbTimeHelper.addTimeObject("Saturday", stringToMinutes(satTimePicker.getText().toString()));
@@ -238,6 +262,9 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
                                 dbTimeHelper.updateTimeObject(sat.getId(), sat.getDay(), stringToMinutes(satTimePicker.getText().toString()));
                             }
                         } else if (view == sunTimePicker) {
+                            if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+                                updateRemainingTime(sunTimePicker, sun);
+                            }
                             sunTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
                             if (sun == null) {
                                 dbTimeHelper.addTimeObject("Sunday", stringToMinutes(sunTimePicker.getText().toString()));
@@ -267,6 +294,17 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
 
 
             }
+
+    private void updateRemainingTime(Button dayTimePicker, TimeObject day) {
+        int remainingTimeToday = preferenceManager.getInt("remainingTimeToday");
+        int newRemainingTimeToday;
+        if(day == null) {
+            newRemainingTimeToday = remainingTimeToday + stringToMinutes(dayTimePicker.getText().toString());
+        } else {
+            newRemainingTimeToday = remainingTimeToday + stringToMinutes(dayTimePicker.getText().toString()) - day.getTime();
+        }
+        preferenceManager.putInt("remainingTimeToday", newRemainingTimeToday);
+    }
 
     private int stringToMinutes(String time) {
         String[] timeSplittet = time.split(":");

@@ -405,7 +405,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
             while (cursor.moveToNext()) {
                 if (cursor.getString(1).equalsIgnoreCase(day)) {
                     //return sp.getInt(cursor.getString(1), 0);
-                    return 5;
+                    return 10;
                     //return cursor.getInt(2);
                 }
             }

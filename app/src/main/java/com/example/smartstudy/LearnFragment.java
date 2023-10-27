@@ -42,8 +42,7 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
     private long timerLeftInMillis;
     private TodosAdapter todosAdapter;
     private Todo runningTodo;
-    SharedPreferences.Editor editor;
-    SharedPreferences sp;
+    PreferenceManager preferenceManager;
 
     public LearnFragment(Event event, int neededTime, List<Todo> todos, int remTimeBeforeEvent) {
         this.event = event;
@@ -76,10 +75,20 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
 
         todos = new ArrayList<>();
 
-        sp = getActivity().getSharedPreferences("SP", 0);
-        timerInMillis= (sp.getInt("timer", 2) * 60) *1000;
-        sessionTime = sp.getInt("sessionTime", 0);
+        preferenceManager = new PreferenceManager(getContext());
+        int timerInMinutes = preferenceManager.getInt("timer");
+        if (timerInMinutes == 0) {
+            timerInMinutes = 90;
+        }
+        timerInMillis = timerInMinutes * 60000;
+        String lastSessionId = preferenceManager.getString("sessionId");
+        if (event.getId().equals(lastSessionId)) {
+            sessionTime = preferenceManager.getInt("sessionTime");
+        } else {
+            sessionTime = 0;
+        }
         timerLeftInMillis = timerInMillis;
+        preferenceManager.putString("sessionId", event.getId());
         timerRunning = true;
         updateCountdownText();
         isBreak = false;
@@ -89,7 +98,6 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
         totalTimeLeft.setText(String.valueOf(event.getRemainingMinutes()));
         todayTimeLeft.setText(String.valueOf(neededTime - sessionTime));
         todayTimeSpend.setText(String.valueOf(sessionTime));
-        editor = sp.edit();
         findCurrentTodo();
         resumeTimer();
 
@@ -117,10 +125,9 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
             if (!isDone){
                 Toast.makeText(getContext(),"Don't push away all the work!", Toast.LENGTH_SHORT).show();
             }else{
-                String name = sp.getString("username", "");
+                String name = preferenceManager.getString("username");
                 Toast.makeText(getContext(),"Well done"+name + "!", Toast.LENGTH_SHORT).show();
             }
-            PreferenceManager preferenceManager = new PreferenceManager(getActivity());
             preferenceManager.putInt("remainingTimeToday", remTimeBeforeEvent - sessionTime);
             preferenceManager.putString("today", LocalDate.now().toString());
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
@@ -157,15 +164,19 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
                 @Override
                 public void onTick(long millisUntilFinished) {
                     timerLeftInMillis = millisUntilFinished;
-                    timeSpendSeconds += 1;
                     updateCountdownText();
                     if (!isBreak){
+                        timeSpendSeconds += 1;
                         updateProgress();
                     }
                 }
 
                 @Override
                 public void onFinish() {
+                    if (!isBreak){
+                        timeSpendSeconds += 1;
+                        updateProgress();
+                    }
                     timerRunning = false;
                     continueTimer();
                 }
@@ -179,9 +190,9 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
                 @Override
                 public void onTick(long millisUntilFinished) {
                     timerLeftInMillis = millisUntilFinished;
-                    timeSpendSeconds += 1;
                     updateCountdownText();
                     if (!isBreak){
+                        timeSpendSeconds += 1;
                         updateProgress();
                     }
                 }
@@ -189,7 +200,13 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
                 @Override
                 public void onFinish() {
                     timerRunning = false;
-                    continueTimer();
+                    if(isBreak){
+                        continueTimer();
+                    }else{
+                        timeSpendSeconds += 1;
+                        updateProgress();
+                        doneSession();
+                    }
                 }
             }.start();
             timerRunning = true;
@@ -210,7 +227,10 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
         if(!isBreak){
             isBreak = true;
             titleLearn.setText("PAUSE");
-            timerInMinutes = sp.getInt("break", 1);
+            timerInMinutes = preferenceManager.getInt("break");
+            if (timerInMinutes == 0){
+                timerInMinutes = 10;
+            }
             timerLeftInMillis = (timerInMinutes*60)*1000;
             resumeTimer();
         }else{
@@ -222,21 +242,22 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
     }
 
     private void updateProgress() {
-        if (timeSpendSeconds == 60){
+        if (timeSpendSeconds % 60 == 0){
             event.setProgress(event.getProgress()+1);
             sessionTime +=1;
-            timeSpendSeconds = 0;
-            runningTodo.setTime(runningTodo.getTime()-1);
-            if (runningTodo.getTime() < 0){
-                runningTodo.setTime(0);
+            if (runningTodo != null) {
+                runningTodo.setTime(runningTodo.getTime()-1);
+                if (runningTodo.getTime() < 0){
+                    runningTodo.setTime(0);
+                }
+                dbTodoHelper.updateTodoObject(runningTodo);
+                todosAdapter.notifyItemChanged(todos.indexOf(runningTodo));
             }
-            dbTodoHelper.updateTodoObject(runningTodo);
-            todosAdapter.notifyItemChanged(todos.indexOf(runningTodo));
+
             totalTimeLeft.setText(String.valueOf(event.getRemainingMinutes()));
             todayTimeLeft.setText(String.valueOf(neededTime -sessionTime));
             todayTimeSpend.setText(String.valueOf(sessionTime));
-            editor.putInt("sessionTime", sessionTime );
-            editor.commit();
+            preferenceManager.putInt("sessionTime", sessionTime);
             dbEventHelper.updateEventObject(event);
         }
     }
