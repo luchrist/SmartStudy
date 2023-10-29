@@ -106,6 +106,7 @@
     <string name="if_file_group_does_not_exist_yet_enter_its_name_here">If file-group does not exist yet, enter its name here</string>
     <string name="shared_files">Shared Files</string>
     <string name="time_left">Time Left:</string>
+    <string name="exam_name">Exam Name</string>
 </resources>
 
     <!---->

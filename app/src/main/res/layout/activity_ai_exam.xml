@@ -4,66 +4,112 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primaryVariant"
     tools:context=".AiExam">
 
-    <TextView
-        android:id="@+id/question"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Was ist 1*1?"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/backNavBtn"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_marginStart="@dimen/_16sdp"
         android:layout_marginTop="@dimen/_12sdp"
-        android:textColor="@color/primaryVariant"
-        android:textSize="@dimen/_14ssp"/>
+        android:background="@drawable/background_icon"
+        android:padding="@dimen/_6sdp"
+        android:src="@drawable/round_arrow_back_ios_24"
+        android:tint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/answer_a"
+    <TextView
+        android:id="@+id/examName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_icon"
-        android:padding="@dimen/_8sdp"
-        android:text="A: 3"
+        android:text="@string/exam_name"
         android:textColor="@color/white"
+        android:textSize="@dimen/_14ssp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/backNavBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question"
-        android:layout_marginTop="@dimen/_12sdp"/>
-    <Button
-        android:id="@+id/answer_b"
+        app:layout_constraintTop_toTopOf="@+id/backNavBtn" />
+
+    <TextView
+        android:id="@+id/correctAnswersRatio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_icon"
-        android:padding="@dimen/_8sdp"
-        android:text="A: 2"
+        android:text="0/0"
         android:textColor="@color/white"
+        android:textSize="@dimen/_14ssp"
+        android:textStyle="bold"
+        android:layout_marginEnd="@dimen/_16sdp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/answer_a"
-        android:layout_marginTop="@dimen/_8sdp"/>
-    <Button
-        android:id="@+id/answer_c"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/background_icon"
-        android:padding="@dimen/_8sdp"
-        android:text="A: 1"
-        android:textColor="@color/white"
+        app:layout_constraintTop_toTopOf="@id/examName"
+        app:layout_constraintBottom_toBottomOf="@+id/examName"/>
+
+    <FrameLayout
+        android:id="@+id/frame"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/background_content_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/answer_b"
-        android:layout_marginTop="@dimen/_8sdp"/>
-    <Button
-        android:id="@+id/answer_d"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/background_icon"
-        android:padding="@dimen/_8sdp"
-        android:text="A: 10"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/answer_c"
-        android:layout_marginTop="@dimen/_8sdp"/>
+        app:layout_constraintTop_toBottomOf="@+id/backNavBtn">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/question"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="Was ist 1*1?"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:textColor="@color/primaryVariant"
+                android:textSize="@dimen/_14ssp"/>
+            <Button
+                android:id="@+id/answer_a"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_icon"
+                android:padding="@dimen/_8sdp"
+                android:text="A: 3"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/white"
+                android:layout_marginTop="@dimen/_12sdp"/>
+            <Button
+                android:id="@+id/answer_b"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_icon"
+                android:padding="@dimen/_8sdp"
+                android:text="A: 2"
+                android:textColor="@color/white"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/_8sdp"/>
+            <Button
+                android:id="@+id/answer_c"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_icon"
+                android:padding="@dimen/_8sdp"
+                android:text="A: 1"
+                android:textColor="@color/white"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/_8sdp"/>
+            <Button
+                android:id="@+id/answer_d"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_icon"
+                android:padding="@dimen/_8sdp"
+                android:text="A: 10"
+                android:textColor="@color/white"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/_8sdp"/>
+        </LinearLayout>
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

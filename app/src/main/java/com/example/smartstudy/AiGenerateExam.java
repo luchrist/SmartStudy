@@ -16,7 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -28,12 +28,13 @@ import okhttp3.Response;
 
 public class AiGenerateExam extends BaseActivity {
 
-    private static final String OPENAI_API_KEY = "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";
+    private static final String OPENAI_API_KEY = "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";
     EditText topicInput, languageInput;
     Button startExam;
     ProgressBar progressBar;
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    OkHttpClient client = new OkHttpClient();
+    OkHttpClient.Builder builder = new OkHttpClient.Builder();
+    OkHttpClient client;
 
 
     @Override
@@ -45,6 +46,10 @@ public class AiGenerateExam extends BaseActivity {
         startExam = findViewById(R.id.startExamBtn);
         progressBar = findViewById(R.id.apiProgress);
         setListeners();
+        builder.connectTimeout(120, TimeUnit.SECONDS);
+        builder.readTimeout(120, TimeUnit.SECONDS);
+        builder.writeTimeout(120, TimeUnit.SECONDS);
+        client = builder.build();
     }
 
     private void setListeners() {
@@ -74,56 +79,44 @@ public class AiGenerateExam extends BaseActivity {
                     .header("Authorization", "Bearer " + OPENAI_API_KEY)
                     .post(body)
                     .build();
-
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    progressBar.setVisibility(ProgressBar.GONE);
-                    Toast.makeText(AiGenerateExam.this, "Connection failed", Toast.LENGTH_SHORT).show();
+                    runOnUiThread(() -> {
+                        Toast.makeText(AiGenerateExam.this, "Connection failed", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(ProgressBar.INVISIBLE);
+                    });
+                    startActivity(new Intent(AiGenerateExam.this, AiGenerateExam.class));
                 }
 
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    progressBar.setVisibility(ProgressBar.GONE);
                         if (response.isSuccessful()) {
                             try {
-                                Toast.makeText(AiGenerateExam.this, "Successful", Toast.LENGTH_SHORT).show();
-                                JSONObject jsonObject = new JSONObject(response.body().toString());
-                                JSONArray jsonArray = null;
-                                jsonArray = jsonObject.getJSONArray("choices");
-//                                String result = jsonArray.getJSONObject(0)
-//                                        .getJSONObject(Constants.KEY_PROMPT)
-//                                        .getString("content");
-                                JSONObject responseMessage = jsonArray.getJSONObject(0)
-                                        .getJSONObject(Constants.KEY_PROMPT);
-                                JSONObject arguments = responseMessage.getJSONObject("function_call").getJSONObject("arguments");
-                                ArrayList<String> questions = (ArrayList<String>) arguments.get("questions");
-                                ArrayList<String> answersA = (ArrayList<String>) arguments.get("answersA");
-                                ArrayList<String> answersB = (ArrayList<String>) arguments.get("answersB");
-                                ArrayList<String> answersC = (ArrayList<String>) arguments.get("answersC");
-                                ArrayList<String> answersD = (ArrayList<String>) arguments.get("answersD");
-                                ArrayList<CorrectAnswer> correctAnswers = (ArrayList<CorrectAnswer>) arguments.get("correctAnswers");
-                                getExamQuestionsAndAnswers(questions, answersA, answersB, answersC, answersD, correctAnswers);
+                                runOnUiThread(() -> {
+                                    Toast.makeText(AiGenerateExam.this, "Successful", Toast.LENGTH_SHORT).show();
+                                    progressBar.setVisibility(ProgressBar.INVISIBLE);
+                                });
+                                JSONObject jsonObject = new JSONObject(response.body().string());
+                                JSONArray jsonArray = jsonObject.getJSONArray("choices");
+                                JSONObject message = jsonArray.getJSONObject(0);
+                                JSONObject message1 = message.getJSONObject("message");
+                                String content = message1.getString("content");
+
+                                Intent intent = new Intent(AiGenerateExam.this, AiExam.class);
+                                intent.putExtra(Constants.KEY_RESPONSE, content);
+                                startActivity(intent);
                             }catch (JSONException e) {
                                 throw new RuntimeException(e);
                             }
                         } else {
-                            Toast.makeText(AiGenerateExam.this, "Response is unsuccessful", Toast.LENGTH_SHORT).show();
+                            runOnUiThread(() -> {
+                                Toast.makeText(AiGenerateExam.this, "Response is unsuccessful", Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(ProgressBar.INVISIBLE);
+                            });
                         }
                 }
             });
         });
-    }
-
-
-    private void getExamQuestionsAndAnswers(ArrayList<String> questions, ArrayList<String> answersA, ArrayList<String> answersB, ArrayList<String> answersC, ArrayList<String> answersD, ArrayList<CorrectAnswer> correctAnswers) {
-        Intent intent = new Intent(this, AiExam.class);
-        intent.putExtra(Constants.KEY_QUESTIONS, questions);
-        intent.putExtra(Constants.KEY_ANSWERSA, answersA);
-        intent.putExtra(Constants.KEY_ANSWERSB, answersB);
-        intent.putExtra(Constants.KEY_ANSWERSC, answersC);
-        intent.putExtra(Constants.KEY_ANSWERSD, answersD);
-        intent.putExtra(Constants.KEY_CORRECT_ANSWERS, correctAnswers);
-        startActivity(intent);
     }
 }

@@ -25,4 +25,6 @@
     <color name="receivedMessageBackground">#090D16</color>
     <color name="secondary">#F01456</color>
     <color name="remove">#F10A0A</color>
+    <color name="correct">#03BD0A</color>
+    <color name="wrong">#D80505</color>
 </resources>
