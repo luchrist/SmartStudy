@@ -51,6 +51,9 @@ public class Constants {
     public static final String REMOTE_MSG_REGISTRATION_IDS = "registration_ids";
     public static final String KEY_ADD_EXAMS_TO_PLAN = "addExamsToPlan";
     public static final String KEY_RESPONSE = "response";
+    public static final String KEY_TOPIC = "topic";
+    public static final String KEY_LANGUAGE = "language";
+    public static final String KEY_POINTS = "points";
     public static HashMap<String, String> remoteMsgHeaders = null;
     public static HashMap<String, String> getRemoteMsgHeaders() {
         if (remoteMsgHeaders == null) {

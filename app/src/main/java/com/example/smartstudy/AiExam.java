@@ -1,25 +1,33 @@
 package com.example.smartstudy;
 
-import android.annotation.SuppressLint;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.smartstudy.utilities.Constants;
+import androidx.appcompat.widget.AppCompatImageView;
 
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+import com.example.smartstudy.utilities.Constants;
+import com.example.smartstudy.utilities.PreferenceManager;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AiExam extends BaseActivity {
 
     private int questionNumber, correctAnswers, correctColor, wrongColor;
     private char correctAnswer = 'a';
-    String response;
-    private TextView question, correctAnswersRatio;
+    String response, remainingResponse, language;
+    private TextView question, correctAnswersRatio, examName;
     private Button answerA, answerB, answerC, answerD;
+    AppCompatImageView backBtn, repeatBtn, generateNewBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +38,21 @@ public class AiExam extends BaseActivity {
         answerB = findViewById(R.id.answer_b);
         answerC = findViewById(R.id.answer_c);
         answerD = findViewById(R.id.answer_d);
+        examName = findViewById(R.id.examName);
         correctAnswersRatio = findViewById(R.id.correctAnswersRatio);
+        generateNewBtn = findViewById(R.id.generateNewBtn);
+        backBtn = findViewById(R.id.backNavBtn);
+        repeatBtn = findViewById(R.id.repeatBtn);
         correctColor = this.getResources().getColor(R.color.correct);
         wrongColor = this.getResources().getColor(R.color.wrong);
         setListeners();
 
         Intent intent = getIntent();
+        String topic = intent.getStringExtra(Constants.KEY_TOPIC);
+        examName.setText(String.format("%s Exam", topic));
+        language = intent.getStringExtra(Constants.KEY_LANGUAGE);
         response = intent.getStringExtra(Constants.KEY_RESPONSE);
+        remainingResponse = response;
         if(response != null){
             showQuestion();
         } else {
@@ -48,56 +64,110 @@ public class AiExam extends BaseActivity {
     private void setListeners() {
         answerA.setOnClickListener(v -> {
             if (correctAnswer == 'a') {
-                answerA.setBackgroundColor(correctColor);
                 correctAnswers++;
+                blinkEffectGreen(answerA);
             } else {
-                answerA.setBackgroundColor(wrongColor);
-                showCorrectAnswer();
+                Button correctBtn = getCorrectBtn();
+                blinkEffectRed(answerA, correctBtn);
             }
-            continueExam();
         });
         answerB.setOnClickListener(v -> {
             if (correctAnswer == 'b') {
-                answerB.setBackgroundColor(correctColor);
                 correctAnswers++;
+                blinkEffectGreen(answerB);
             } else {
-                answerB.setBackgroundColor(wrongColor);
-                showCorrectAnswer();
+                blinkEffectRed(answerB, getCorrectBtn());
             }
-            continueExam();
         });
         answerC.setOnClickListener(v -> {
             if (correctAnswer == 'c') {
-                answerC.setBackgroundColor(correctColor);
                 correctAnswers++;
+                blinkEffectGreen(answerC);
             } else {
-                answerC.setBackgroundColor(wrongColor);
-                showCorrectAnswer();
+                blinkEffectRed(answerC, getCorrectBtn());
             }
-            continueExam();
         });
         answerD.setOnClickListener(v -> {
             if (correctAnswer == 'd') {
-                answerD.setBackgroundColor(correctColor);
                 correctAnswers++;
+                blinkEffectGreen(answerD);
             } else {
-                answerD.setBackgroundColor(wrongColor);
-                showCorrectAnswer();
+                blinkEffectRed(answerD, getCorrectBtn());
             }
-            continueExam();
         });
+        backBtn.setOnClickListener(v -> onBackPressed());
+        repeatBtn.setOnClickListener(v -> {
+            remainingResponse = response;
+            correctAnswers = 0;
+            questionNumber = 0;
+            correctAnswersRatio.setText(String.format("%s/%s", correctAnswers, questionNumber));
+            displayExamButtons();
+            showQuestion();
+        });
+        generateNewBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AiGenerateExam.class);
+            intent.putExtra(Constants.KEY_TOPIC, examName.getText().toString().trim());
+            intent.putExtra(Constants.KEY_LANGUAGE, language);
+            startActivity(intent);
+        });
+    }
+
+    private void displayExamButtons() {
+        repeatBtn.setVisibility(View.GONE);
+        generateNewBtn.setVisibility(View.GONE);
+        answerD.setVisibility(View.VISIBLE);
+        answerC.setVisibility(View.VISIBLE);
+        answerB.setVisibility(View.VISIBLE);
+        answerA.setVisibility(View.VISIBLE);
+    }
+
+    private void blinkEffectRed(Button answerBtn, Button correctBtn) {
+        ObjectAnimator correctAnimator = ObjectAnimator.ofInt(correctBtn, "backgroundColor", Color.GREEN , getResources().getColor(R.color.primaryVariant));
+        correctAnimator.setDuration(250);
+        correctAnimator.setEvaluator(new ArgbEvaluator());
+        correctAnimator.setRepeatCount(2);
+        correctAnimator.setRepeatMode(ValueAnimator.REVERSE);
+        correctAnimator.start();
+
+        ObjectAnimator animator = ObjectAnimator.ofInt(answerBtn, "backgroundColor", Color.RED , getResources().getColor(R.color.primaryVariant));
+        animator.setDuration(270);
+        animator.setEvaluator(new ArgbEvaluator());
+        animator.setRepeatCount(2);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+
+        // Adding the listener
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                continueExam();
+            }
+        });
+
+        animator.start();
+    }
+
+    private void blinkEffectGreen(Button answerBtn) {
+        ObjectAnimator animator = ObjectAnimator.ofInt(answerBtn, "backgroundColor", Color.GREEN , getResources().getColor(R.color.primaryVariant));
+        animator.setDuration(250);
+        animator.setEvaluator(new ArgbEvaluator());
+        animator.setRepeatCount(2);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+
+        // Adding the listener
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                continueExam();
+            }
+        });
+
+        animator.start();
     }
 
     private void continueExam() {
         correctAnswersRatio.setText(String.format("%s/%s", correctAnswers, questionNumber));
-        // delay
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         showNeutral();
-        if (response != null) {
+        if (remainingResponse != null) {
             showQuestion();
         } else {
             showResult();
@@ -105,46 +175,102 @@ public class AiExam extends BaseActivity {
     }
 
     private void showNeutral() {
-        answerA.setBackgroundColor(this.getResources().getColor(R.color.primaryVariant));
-        answerB.setBackgroundColor(this.getResources().getColor(R.color.primaryVariant));
-        answerC.setBackgroundColor(this.getResources().getColor(R.color.primaryVariant));
-        answerD.setBackgroundColor(this.getResources().getColor(R.color.primaryVariant));
+        answerA.setBackgroundResource(R.drawable.background_icon);
+        answerB.setBackgroundResource(R.drawable.background_icon);
+        answerC.setBackgroundResource(R.drawable.background_icon);
+        answerD.setBackgroundResource(R.drawable.background_icon);
     }
 
-    private void showCorrectAnswer() {
+    private Button getCorrectBtn() {
         switch (correctAnswer) {
             case 'a':
-                answerA.setBackgroundColor(correctColor);
-                break;
+                return answerA;
             case 'b':
-                answerB.setBackgroundColor(correctColor);
-                break;
+                return answerB;
             case 'c':
-                answerC.setBackgroundColor(correctColor);
-                break;
+                return answerC;
             case 'd':
-                answerD.setBackgroundColor(correctColor);
-                break;
+                return answerD;
             default:
-                break;
+                return answerA;
         }
     }
 
     private void showResult() {
-        answerA.setVisibility(View.GONE);
-        answerB.setVisibility(View.GONE);
-        answerC.setVisibility(View.GONE);
-        answerD.setVisibility(View.GONE);
         if (questionNumber == 0) {
             Toast.makeText(this, "Couldnt create an Exam!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, AiGenerateExam.class));
+        } else {
+            answerA.setVisibility(View.GONE);
+            answerB.setVisibility(View.GONE);
+            answerC.setVisibility(View.GONE);
+            answerD.setVisibility(View.GONE);
+            double ratio = (double) correctAnswers / questionNumber;
+            double grade = getGrade(ratio);
+            addPoints(ratio);
+            String recommendation = getRecommendation(grade);
+
+            question.setText(String.format("Your Grade: %s \nPoints: %s of %s \n%s", grade, correctAnswers, questionNumber, recommendation));
+            repeatBtn.setVisibility(View.VISIBLE);
+            generateNewBtn.setVisibility(View.VISIBLE);
         }
-        //Todo: show Exam Result give options how to continue: repeat, repeat with new questions or go back to generate new exams
+    }
+
+    private void addPoints(double ratio) {
+        int points = (int) (ratio * 100);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection(Constants.KEY_COLLECTION_USERS)
+                .document(currentUserEmail).update(Constants.KEY_POINTS, FieldValue.increment(points));
+    }
+
+    private String getRecommendation(double grade) {
+        if(grade <= 1.5) {
+            return "Großartig! Bereite dich darauf vor als Streber bezeichnet zu werden!";
+        } else if (grade <= 2.5) {
+            return "Gut! Du bist bereit für die Prüfung!";
+        } else if (grade <= 3.5) {
+            return "ok! Ruh dich nicht darauf aus";
+        } else if (grade <= 4.5) {
+            return "Naja! Du solltest nochmal lernen oder beten";
+        } else {
+            return "Kataststrophe, Renn zum Arzt und schreib dich krank!";
+        }
+    }
+
+    private double getGrade(double ratio) {
+        if (ratio >= 0.95){
+            return 1;
+        } else if (ratio >= 0.85){
+            return 1.5;
+        } else if (ratio >= 0.75){
+            return 2;
+        } else if (ratio >= 0.65){
+            return 2.5;
+        } else if (ratio >= 0.55){
+            return 3;
+        } else if (ratio >= 0.45){
+            return 3.5;
+        } else if (ratio >= 0.35){
+            return 4;
+        } else if (ratio >= 0.25){
+            return 4.5;
+        } else if (ratio >= 0.15){
+            return 5;
+        } else {
+            return 6;
+        }
     }
 
     private void showQuestion() {
         questionNumber++;
-        String[] split = response.split("\\?",2);
+        String[] split = remainingResponse.split("\\?",2);
         String question = split[0];
+        int i = question.lastIndexOf("\\n");
+        if(i != -1) {
+            question = question.substring(i);
+        }
         split = split[1].split("\\n", 8);
         String a = split[1];
         String b = split[2];
@@ -155,9 +281,9 @@ public class AiExam extends BaseActivity {
             correct = split[6];
         }
         if (split.length > 7) {
-            response= split[7];
+            remainingResponse= split[7];
         } else {
-            response = null;
+            remainingResponse = null;
         }
         correctAnswer = correct.split(": ", 2)[1].charAt(0);
         this.question.setText(String.format("%s?", question));

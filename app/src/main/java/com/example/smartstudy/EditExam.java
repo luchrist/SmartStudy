@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.WindowDecorActionBar;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,10 +28,12 @@ import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.Group;
 import com.example.smartstudy.models.Todo;
 import com.example.smartstudy.utilities.Constants;
+import com.example.smartstudy.utilities.PreferenceManager;
 import com.example.smartstudy.utilities.TodoSelectListener;
 import com.example.smartstudy.utilities.Util;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalDate;
@@ -58,6 +61,9 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
     int progress;
     private boolean emptyEvent;
     private TodosAdapter todosAdapter;
+    private FirebaseFirestore db;
+    private PreferenceManager preferenceManager;
+    private TextView pointsText;
 
     public EditExam(LocalDate selectedDate) {
         this.selectedDate = selectedDate;
@@ -87,6 +93,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
         volume = view.findViewById(R.id.volume_edit);
         progressBar = view.findViewById(R.id.progressEdit);
         todosForEventView = view.findViewById(R.id.todosRecyclerView);
+        pointsText = getActivity().findViewById(R.id.points);
 
         events = new ArrayList<>();
         todaysEvents = new ArrayList<>();
@@ -98,6 +105,9 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
 
         dbHelper = new DBEventHelper(EditExam.this.getContext());
         dbTodoHelper = new DBTodoHelper(EditExam.this.getContext());
+        db = FirebaseFirestore.getInstance();
+
+        preferenceManager = new PreferenceManager(getContext());
 
 
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -149,6 +159,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
                         long currentEventId;
                         if (emptyEvent) {
                             currentEventId = dbHelper.addEventObject(shownEvent);
+                            addPoints();
                         } else {
                             currentEventId = dbHelper.updateEventObject(shownEvent);
                         }
@@ -183,7 +194,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
                     } else {
                         dbHelper.deleteEventObject(shownEvent);
                         if (shownEvent.getGroupId() != null) {
-                            DocumentReference groupDoc = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_GROUPS)
+                            DocumentReference groupDoc = db.collection(Constants.KEY_COLLECTION_GROUPS)
                                     .document(shownEvent.getGroupId());
                             groupDoc.get()
                                     .addOnSuccessListener(documentSnapshot -> {
@@ -230,6 +241,17 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
         });
         dialog.show();
         return dialog;
+    }
+
+    private void addPoints() {
+        int points = 50;
+        int currentPoints = Integer.parseInt(pointsText.getText().toString().trim());
+        currentPoints += points;
+        pointsText.setText(currentPoints);
+
+        String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
+        db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserEmail)
+                .update(Constants.KEY_POINTS, FieldValue.increment(points));
     }
 
     private void setPreDates() {

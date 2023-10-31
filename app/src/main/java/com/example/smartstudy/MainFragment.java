@@ -1,5 +1,6 @@
 package com.example.smartstudy;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -25,10 +26,13 @@ import com.example.smartstudy.adapters.TodosAdapter;
 import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.TimeException;
 import com.example.smartstudy.models.Todo;
+import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
 import com.example.smartstudy.utilities.TodoSelectListener;
 import com.example.smartstudy.utilities.Util;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -66,6 +70,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     private PreferenceManager preferenceManager;
     private TodosAdapter todosAdapter;
     private int remainingTimeToday, remTimeBeforeEvent;
+    private LinearLayout pointContainer;
+    private TextView pointsText;
 
     @Nullable
     @org.jetbrains.annotations.Nullable
@@ -244,6 +250,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     private void setListeners(View view) {
+        pointContainer.setOnClickListener(v -> {
+            startActivity(new Intent(getContext(), PointsFragment.class));
+        });
         lessonsList.setOnClickListener(this);
         homeTitle.setOnClickListener(this);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -367,12 +376,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         ty = view.findViewById(R.id.typeStudyPlan);
         tim = view.findViewById(R.id.timeNeeded);
         dueDate = view.findViewById(R.id.dueDate);
-
         startTimer = view.findViewById(R.id.start);
         startTimer.setOnClickListener(this);
         completed = view.findViewById(R.id.completed);
         completed.setOnClickListener(this);
         progressBar = view.findViewById(R.id.progressBar);
+        pointContainer = getActivity().findViewById(R.id.pointsContainer);
+        pointsText = getActivity().findViewById(R.id.points);
     }
 
     private String minutesToString(Integer m) {
@@ -521,9 +531,23 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
             dbEventHelper.updateEventObject(currentEvent);
             preferenceManager.putString("today", today.toString());
             preferenceManager.putInt("remainingTimeToday", remainingTimeToday);
+            addPoints(Integer.parseInt(tim.getText().toString()));
             plan();
         }
     }
+
+    private void addPoints(int timeLearned) {
+        int points = timeLearned * 5;
+        int currentPoints = Integer.parseInt(pointsText.getText().toString().trim());
+        currentPoints += points;
+        pointsText.setText(currentPoints);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
+        db.collection(Constants.KEY_COLLECTION_USERS)
+                .document(currentUserEmail).update(Constants.KEY_POINTS, FieldValue.increment(points));
+    }
+
     @Override
     public void onTodoSelected(Todo todo) {
         if (todo.getChecked() == 0) {

@@ -2,14 +2,12 @@ package com.example.smartstudy;
 
 import static com.google.firebase.firestore.Filter.equalTo;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +22,7 @@ import com.example.smartstudy.Builder.EventBuilder;
 import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.Group;
 import com.example.smartstudy.models.Member;
+import com.example.smartstudy.models.User;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -56,7 +55,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
-    TextView title, headertext;
+    TextView title, headertext, pointsCount;
     LinearLayout points;
     SharedPreferences sp;
     private boolean studyneed = false;
@@ -127,14 +126,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                }
             }
             sp = this.getSharedPreferences("SP", 0);
-
             drawerLayout = findViewById(R.id.drawer);
             toolbar = findViewById(R.id.toolbar);
             title = findViewById(R.id.variabel_text);
-            points = findViewById(R.id.pointsContainer);
+            pointsCount = findViewById(R.id.topbar).findViewById(R.id.points);
+            points = findViewById(R.id.topbar).findViewById(R.id.pointsContainer);
 
             points.setOnClickListener(view -> {
-                startActivity(new Intent(this, PointsActivity.class));
+                startActivity(new Intent(this, PointsFragment.class));
             });
 
             final String[] username = {""};
@@ -175,8 +174,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         }
                         logger.log(Level.INFO, message);
                     });
+            displayCurrentUserPoints();
             updateEventsFromGroups();
         }
+    }
+
+    private void displayCurrentUserPoints() {
+        db.collection(Constants.KEY_COLLECTION_USERS).document(user.getEmail()).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    User user = documentSnapshot.toObject(User.class);
+                    pointsCount.setText(user.points);
+                });
     }
 
     private void updateEventsFromGroups() {
@@ -200,6 +208,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                                                 if (notWanted == null || !notWanted.contains(user.getEmail())) {
                                                     if(event.getDbId() != 0) {
                                                         dbEventHelper.deleteEventObject(new EventBuilder().setId(String.valueOf(event.getDbId())).build());
+                                                    } else {
+                                                        addPoints();
                                                     }
                                                     List<Event> events = group.events;
                                                     events.remove(event);
@@ -224,6 +234,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     showToast("Failed to update events");
                     logger.log(Level.WARNING, "Failed to update events", e);
                 });
+    }
+
+    private void addPoints() {
+        int points = Integer.parseInt(pointsCount.getText().toString().trim());
+        points += 50;
+        pointsCount.setText(String.valueOf(points));
+
+        db.collection(Constants.KEY_COLLECTION_USERS).document(user.getEmail())
+                .update(Constants.KEY_POINTS, FieldValue.increment(50));
     }
 
     private void getFCMToken() {
@@ -310,6 +329,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, new PlanFragment()).commit();
                 title.setText("Plan");
                 navigationView.setCheckedItem(R.id.nav_plan);
+                break;
+            case R.id.nav_points:
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, new PointsFragment()).commit();
+                title.setText("Settings");
+                navigationView.setCheckedItem(R.id.nav_settings);
                 break;
             case R.id.nav_settings:
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, new SettingsFragment()).commit();

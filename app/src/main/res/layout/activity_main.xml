@@ -19,9 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize">
 
-            <include android:id="@+id/topbar"
-                layout="@layout/toolbar"/>
-
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -32,7 +29,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                 />
+                >
+                <include android:id="@+id/topbar"
+                    layout="@layout/toolbar"/>
+            </androidx.appcompat.widget.Toolbar>
                 <!--android:elevation="4dp"-->
                 <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                  android:theme="?attr/actionBarTheme" -->

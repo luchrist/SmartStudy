@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.appcompat.app.WindowDecorActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,8 +19,11 @@ import android.widget.Toast;
 import com.example.smartstudy.adapters.TodosAdapter;
 import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.Todo;
+import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
 import com.example.smartstudy.utilities.TodoSelectListener;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,6 +47,7 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
     private TodosAdapter todosAdapter;
     private Todo runningTodo;
     PreferenceManager preferenceManager;
+    private TextView pointsText;
 
     public LearnFragment(Event event, int neededTime, List<Todo> todos, int remTimeBeforeEvent) {
         this.event = event;
@@ -65,6 +70,7 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
         todayTimeLeft = view.findViewById(R.id.todayTimeLeft);
         todayTimeSpend = view.findViewById(R.id.todayTimeSpend);
         giveUp = view.findViewById(R.id.giveUpBtn);
+        pointsText = getActivity().findViewById(R.id.points);
         giveUp.setOnClickListener(this);
         RecyclerView todosRecyclerView = view.findViewById(R.id.todosRecyclerView);
         todosAdapter = new TodosAdapter(todos, this);
@@ -217,9 +223,22 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
 
     private void doneSession() {
         titleLearn.setText("CONGRATULATION !!!");
+        addPoints();
         giveUp.setText("Done");
         giveUp.setTextColor(Color.GREEN);
         isDone = true;
+    }
+
+    private void addPoints() {
+        int points = sessionTime * 5;
+        int currentPoints = Integer.parseInt(pointsText.getText().toString().trim());
+        currentPoints += points;
+        pointsText.setText(currentPoints);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
+        db.collection(Constants.KEY_COLLECTION_USERS)
+                .document(currentUserEmail).update(Constants.KEY_POINTS, FieldValue.increment(points));
     }
 
     private void continueTimer() {

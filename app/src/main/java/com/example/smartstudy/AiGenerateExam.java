@@ -28,7 +28,7 @@ import okhttp3.Response;
 
 public class AiGenerateExam extends BaseActivity {
 
-    private static final String OPENAI_API_KEY = "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";
+    private static final String OPENAI_API_KEY = "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";
     EditText topicInput, languageInput;
     Button startExam;
     ProgressBar progressBar;
@@ -57,7 +57,7 @@ public class AiGenerateExam extends BaseActivity {
             progressBar.setVisibility(ProgressBar.VISIBLE);
             String topic = topicInput.getText().toString().trim();
             String language = languageInput.getText().toString().trim();
-            String prompt = String.format("Create an multiple choice Exam about %s with 4 possible answers a,b,c,d per question and provide the right answer." +
+            String prompt = String.format("Create an multiple choice Exam about %s with 4 possible answers a,b,c,d per question and provide the right answer. Make Sure that only one answer is correct." +
                     " The exam should be in the language %s", topic, language);
 
             JSONObject jsonObject = new JSONObject();
@@ -105,6 +105,8 @@ public class AiGenerateExam extends BaseActivity {
 
                                 Intent intent = new Intent(AiGenerateExam.this, AiExam.class);
                                 intent.putExtra(Constants.KEY_RESPONSE, content);
+                                intent.putExtra(Constants.KEY_TOPIC, topic);
+                                intent.putExtra(Constants.KEY_LANGUAGE, language);
                                 startActivity(intent);
                             }catch (JSONException e) {
                                 throw new RuntimeException(e);
