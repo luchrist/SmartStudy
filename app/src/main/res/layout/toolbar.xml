@@ -4,15 +4,23 @@
     android:id="@+id/linear"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:background="#D62D2D"
+    android:background="@color/primaryVariant"
     android:orientation="horizontal">
+
+   <androidx.appcompat.widget.AppCompatImageView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:src="@drawable/baseline_menu_24"
+       android:tint="@color/white"
+       android:layout_marginStart="@dimen/_10sdp"
+       android:layout_gravity="center_vertical"/>
 
     <TextView
         android:id="@+id/variabel_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="200dp"
+        android:layout_marginStart="@dimen/_80sdp"
         android:padding="@dimen/_10sdp"
         android:text="Home"
         android:textColor="@color/primary"
@@ -31,7 +39,7 @@
             android:id="@+id/points_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="@dimen/_12sdp"
             android:layout_marginEnd="-12dp"
             android:padding="@dimen/_10sdp"
             android:text="Points:"

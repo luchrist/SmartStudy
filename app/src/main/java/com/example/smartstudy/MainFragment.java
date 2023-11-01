@@ -1,6 +1,5 @@
 package com.example.smartstudy;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -48,7 +47,7 @@ import java.util.stream.Stream;
 
 public class MainFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, TodoSelectListener {
 
-    private TextView title, sub, ty, tim, dueDate, homeTitle;
+    private TextView title, sub, ty, tim, dueDate, timetableTitle;
     private NavigationView navigationView;
     private Spinner spinner;
     private LinearLayout lessonsList;
@@ -250,11 +249,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     private void setListeners(View view) {
-        pointContainer.setOnClickListener(v -> {
-            startActivity(new Intent(getContext(), PointsFragment.class));
-        });
         lessonsList.setOnClickListener(this);
-        homeTitle.setOnClickListener(this);
+        timetableTitle.setOnClickListener(this);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -367,7 +363,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
     private void connectViews(View view) {
         title = requireActivity().findViewById(R.id.variabel_text);
-        homeTitle = view.findViewById(R.id.timetable_title);
+        timetableTitle = view.findViewById(R.id.timetable_title);
         navigationView = requireActivity().findViewById(R.id.nav_view);
         spinner = view.findViewById(R.id.spinner);
         lessonsList = view.findViewById(R.id.lessonslist);
@@ -508,7 +504,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
     @Override
     public void onClick(View v) {
-        if (v.equals(lessonsList) || v.equals(homeTitle)) {
+        if (v.equals(lessonsList) || v.equals(timetableTitle)) {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                     new TimetableFragment()).commit();
             title.setText("Timetable");
@@ -540,7 +536,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         int points = timeLearned * 5;
         int currentPoints = Integer.parseInt(pointsText.getText().toString().trim());
         currentPoints += points;
-        pointsText.setText(currentPoints);
+        pointsText.setText(String.valueOf(currentPoints));
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);

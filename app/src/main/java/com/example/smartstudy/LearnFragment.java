@@ -233,7 +233,7 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
         int points = sessionTime * 5;
         int currentPoints = Integer.parseInt(pointsText.getText().toString().trim());
         currentPoints += points;
-        pointsText.setText(currentPoints);
+        pointsText.setText(String.valueOf(currentPoints));
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);

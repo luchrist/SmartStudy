@@ -247,7 +247,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
         int points = 50;
         int currentPoints = Integer.parseInt(pointsText.getText().toString().trim());
         currentPoints += points;
-        pointsText.setText(currentPoints);
+        pointsText.setText(String.valueOf(currentPoints));
 
         String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
         db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserEmail)

@@ -129,11 +129,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             drawerLayout = findViewById(R.id.drawer);
             toolbar = findViewById(R.id.toolbar);
             title = findViewById(R.id.variabel_text);
-            pointsCount = findViewById(R.id.topbar).findViewById(R.id.points);
-            points = findViewById(R.id.topbar).findViewById(R.id.pointsContainer);
+            pointsCount = findViewById(R.id.points);
+            points = findViewById(R.id.pointsContainer);
 
             points.setOnClickListener(view -> {
-                startActivity(new Intent(this, PointsFragment.class));
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, new PointsFragment()).commit();
             });
 
             final String[] username = {""};
@@ -183,7 +183,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         db.collection(Constants.KEY_COLLECTION_USERS).document(user.getEmail()).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     User user = documentSnapshot.toObject(User.class);
-                    pointsCount.setText(user.points);
+                    pointsCount.setText(String.valueOf(user.points));
                 });
     }
 

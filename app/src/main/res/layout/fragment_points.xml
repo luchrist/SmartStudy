@@ -48,6 +48,15 @@
                     android:textColor="@color/primaryText"
                     android:textStyle="bold"
                     android:textAlignment="center"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/yourCouponsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:overScrollMode="never"
+                    android:padding="@dimen/_20sdp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -79,7 +88,15 @@
                     android:textAlignment="center"
                     android:layout_marginTop="@dimen/_12sdp"
                     android:visibility="gone"/>
-                <include layout="@layout/coupon"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/availableCouponsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:overScrollMode="never"
+                    android:padding="@dimen/_20sdp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
             </LinearLayout>
         </LinearLayout>
 
