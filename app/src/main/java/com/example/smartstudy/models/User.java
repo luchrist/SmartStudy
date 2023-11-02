@@ -7,6 +7,6 @@ public class User implements Serializable {
 
         public boolean availability;
         public String userName, email, image, fcmToken;
-        public List<String> groupId;
+        public List<String> groupId, couponIds;
         public int points;
 }

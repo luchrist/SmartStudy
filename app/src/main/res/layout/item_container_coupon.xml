@@ -16,7 +16,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@drawable/background_image"
-        android:src="@drawable/amazonlogo"
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_12sdp"/>
     <androidx.appcompat.widget.AppCompatButton
@@ -24,6 +23,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Redeem"
+        android:paddingEnd="@dimen/_4sdp"
+        android:paddingStart="@dimen/_4sdp"
         android:textColor="@color/white"
         android:background="@drawable/background_icon"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +34,6 @@
         android:id="@+id/couponValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="20% OFF"
         android:textColor="@color/primaryText"
         android:textSize="@dimen/_14ssp"
         android:textStyle="bold"
@@ -45,7 +45,6 @@
         android:id="@+id/couponPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1500"
         android:textColor="@color/primaryText"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
