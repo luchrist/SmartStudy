@@ -6,60 +6,39 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/languages"
-        android:layout_width="match_parent"
+        android:id="@+id/decks"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="120dp"
-        android:text="Languages"
+        android:background="@drawable/background_kasten"
+        android:text="   Decks   "
+        android:padding="@dimen/_40sdp"
+        android:textColor="@color/primaryVariant"
+        android:textSize="@dimen/_18sdp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/tests"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_kasten"
+        android:text="Test Your\nKnowledge"
+        android:padding="@dimen/_28sdp"
+        android:textColor="@color/primaryVariant"
+        android:textSize="@dimen/_18sdp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/center" />
+
+    <TextView
+        android:id="@+id/center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/math"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Math"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/languages" />
-
-    <Button
-        android:id="@+id/informatic"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Informatic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/math" />
-
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="coming soon ..."
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/informatic" />
-
-    <TextView
-        android:id="@+id/textView20"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Choose a topic to study"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/languages"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/aiGenerateExam"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Generate Exam to any Topic"
-        app:layout_constraintBottom_toTopOf="@+id/languages"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
