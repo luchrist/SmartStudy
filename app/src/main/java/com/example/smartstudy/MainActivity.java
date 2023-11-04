@@ -134,6 +134,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
             points.setOnClickListener(view -> {
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, new PointsFragment()).commit();
+                title.setText("Points");
+                navigationView.setCheckedItem(R.id.nav_points);
             });
 
             final String[] username = {""};
@@ -332,8 +334,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             case R.id.nav_points:
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, new PointsFragment()).commit();
-                title.setText("Settings");
-                navigationView.setCheckedItem(R.id.nav_settings);
+                title.setText("Points");
+                navigationView.setCheckedItem(R.id.nav_points);
                 break;
             case R.id.nav_settings:
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, new SettingsFragment()).commit();

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 
 public class TimetableFragment extends Fragment implements View.OnClickListener {
 
-    FloatingActionButton addBtn;
+    AppCompatImageView addBtn;
     LinearLayout mon, tue, wed, thu, fri;
     DbHelper dbHelper;
     ArrayList<String> timetableId, timetableSub, timetableBeg, timetableEnd, timetableRoom, timetableTeach, timetableDay;

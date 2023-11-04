@@ -76,14 +76,14 @@
             android:layout_height="wrap_content"
             android:text="Friday" />
     </LinearLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/addBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_margin="@dimen/_4sdp"
         android:layout_gravity="bottom"
-        android:layout_margin="4dp"
-        android:layout_weight="1"
-        android:clickable="true"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        android:padding="@dimen/_6sdp"
+        android:src="@drawable/baseline_add_24"
+        android:tint="@color/white"
+        android:background="@drawable/background_round_icon"/>
 </LinearLayout>

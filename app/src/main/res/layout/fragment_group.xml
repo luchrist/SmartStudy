@@ -1,49 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
-    android:background="@drawable/background_content_bottom"
-    tools:context=".GroupFragment">
-
-    <SearchView
+    tools:context=".GroupFragment"
+    android:background="@color/primaryVariant">
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        android:background="@drawable/background_content_bottom"
+        >
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/addGroupBtn"
-        android:layout_width="@dimen/_30sdp"
-        android:layout_height="@dimen/_30sdp"
-        android:layout_marginEnd="@dimen/_16sdp"
-        android:layout_marginBottom="@dimen/_12sdp"
-        android:layout_gravity="bottom|end"
-        android:padding="@dimen/_6sdp"
-        android:src="@drawable/baseline_add_24"
-        android:tint="@color/white"
-        android:background="@drawable/background_round_icon"/>
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="@dimen/_25sdp"
-        android:layout_height="@dimen/_25sdp"
-        android:layout_gravity="center"/>
-    <TextView
-        android:id="@+id/errorMsg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="@dimen/_24sdp"
-        android:layout_marginEnd="@dimen/_24sdp"
-        android:gravity="center"
-        android:textSize="@dimen/_12ssp"
-        android:visibility="gone"/>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height= "match_parent"
-        android:layout_marginBottom="@dimen/_50sdp"
-        android:layout_marginTop="@dimen/_35sdp">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/addGroupBtn"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:layout_marginBottom="@dimen/_12sdp"
+            android:layout_gravity="bottom|end"
+            android:padding="@dimen/_6sdp"
+            android:src="@drawable/baseline_add_24"
+            android:tint="@color/white"
+            android:background="@drawable/background_round_icon"/>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_gravity="center"/>
+        <TextView
+            android:id="@+id/errorMsg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_24sdp"
+            android:layout_marginEnd="@dimen/_24sdp"
+            android:gravity="center"
+            android:textSize="@dimen/_12ssp"
+            android:visibility="gone"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/groupsRecyclerView"
@@ -53,7 +49,8 @@
             android:orientation="vertical"
             android:overScrollMode="never"
             android:padding="@dimen/_20sdp"
-            android:layout_marginBottom="@dimen/_12sdp"
+            android:layout_marginBottom="@dimen/_50sdp"
+            android:layout_marginTop="@dimen/_5sdp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-    </ScrollView>
+    </FrameLayout>
 </FrameLayout>

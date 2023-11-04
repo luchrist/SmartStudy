@@ -7,10 +7,12 @@
         <item
             android:id="@+id/nav_home"
             android:title="Home"
+            android:iconTint="@color/primaryVariant"
             android:icon="@drawable/ic_home" />
         <item
             android:id="@+id/nav_group"
             android:icon="@drawable/icons8_gruppe_30"
+            android:iconTint="@color/primaryVariant"
             android:title="Group" />
         <item
             android:id="@+id/nav_timetable"
