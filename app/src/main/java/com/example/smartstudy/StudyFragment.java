@@ -48,15 +48,6 @@ public class StudyFragment extends Fragment {
 
             }
         });
-
-        informatic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                        new InformaticFragment()).commit();
-
-            }
-        });
         return view;
     }
 }
