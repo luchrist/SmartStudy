@@ -18,7 +18,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.WindowDecorActionBar;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -86,7 +85,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
         inputTodo = view.findViewById(R.id.inputTodoEdit);
         inputTime = view.findViewById(R.id.inputTimeEdit);
         colour = view.findViewById(R.id.colourEdit);
-        subject = view.findViewById(R.id.subject_edit);
+        subject = view.findViewById(R.id.deckName);
         type = view.findViewById(R.id.type_edit);
         dueDay = view.findViewById(R.id.dueDay_edit);
         startDate = view.findViewById(R.id.startDateEdit);

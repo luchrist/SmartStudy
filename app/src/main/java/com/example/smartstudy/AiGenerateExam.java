@@ -27,7 +27,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class AiGenerateExam extends BaseActivity {
-
     private static final String OPENAI_API_KEY = "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";
     EditText topicInput, languageInput;
     Button startExam;

@@ -42,7 +42,7 @@ public class AiExam extends BaseActivity {
         correctAnswersRatio = findViewById(R.id.correctAnswersRatio);
         generateNewBtn = findViewById(R.id.generateNewBtn);
         backBtn = findViewById(R.id.backNavBtn);
-        repeatBtn = findViewById(R.id.repeatBtn);
+        repeatBtn = findViewById(R.id.repeatB);
         correctColor = this.getResources().getColor(R.color.correct);
         wrongColor = this.getResources().getColor(R.color.wrong);
         setListeners();

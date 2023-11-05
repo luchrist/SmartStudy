@@ -35,7 +35,6 @@ import java.util.stream.Stream;
 
 public class GroupFragment extends Fragment implements GroupSelectListener {
 
-    private SearchView searchView;
     private AppCompatImageView addBtn;
     ProgressBar progressBar;
     TextView errorMsg;

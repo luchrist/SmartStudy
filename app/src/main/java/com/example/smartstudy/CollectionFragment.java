@@ -129,8 +129,7 @@ public class CollectionFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View view) {
         if(view == test){
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                    new TestFragment(title)).commit();
+            //Todo: delete class
 
         }else if(view == practise){
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,

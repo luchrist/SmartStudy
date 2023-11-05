@@ -29,4 +29,5 @@
     <color name="remove">#F10A0A</color>
     <color name="correct">#03BD0A</color>
     <color name="wrong">#D80505</color>
+    <color name="medium">#E38700</color>
 </resources>
