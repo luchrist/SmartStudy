@@ -95,7 +95,8 @@ public class StudyFragment extends Fragment implements DeckSelectListener {
 
     @Override
     public void onStudyDeckSelected(Deck deck) {
-
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, new PractiseFragment(deck)).commit();
     }
 
     @Override

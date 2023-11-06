@@ -26,6 +26,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -108,19 +109,32 @@ public class CreateDeckDialog extends DialogFragment {
                     if (matchBool) {
                         cardType = CardType.MATCHING;
                     }
-                    Card card = new Card(frontString, backString, cardType, reversedBool);
+                    Card card = new Card(frontString, backString, cardType, false);
                     if (subDeck.isEmpty()) {
                         cards.add(card);
+                        if(reversedBool) {
+                            Card reversedCard = new Card(backString, frontString, cardType, true);
+                            cards.add(reversedCard);
+                        }
                     } else {
                         boolean foundExisting = false;
                         for (Deck deck : subDecks) {
                             if (deck.getName().equals(subDeck)) {
                                 deck.addCard(card);
+                                if(reversedBool) {
+                                    Card reversedCard = new Card(backString, frontString, cardType, true);
+                                    deck.addCard(reversedCard);
+                                }
                                 foundExisting = true;
                             }
                         }
                         if (!foundExisting) {
-                            List<Card> newCards = Collections.singletonList(card);
+                            List<Card> newCards = new ArrayList<>();
+                            newCards.add(card);
+                            if(reversedBool) {
+                                Card reversedCard = new Card(backString, frontString, cardType, true);
+                                newCards.add(reversedCard);
+                            }
                             Deck newDeck = new Deck(subDeck, newCards, null, deckNameString);
                             subDecks.add(newDeck);
                             arrayAdapter.notifyDataSetChanged();

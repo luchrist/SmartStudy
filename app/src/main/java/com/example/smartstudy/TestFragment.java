@@ -1,5 +1,8 @@
 package com.example.smartstudy;
 
+import static com.example.smartstudy.utilities.StudyUtilities.getGrade;
+import static com.example.smartstudy.utilities.StudyUtilities.getRecommendation;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +19,7 @@ import com.example.smartstudy.models.CardType;
 import com.example.smartstudy.models.Deck;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
+import com.example.smartstudy.utilities.StudyUtilities;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -120,6 +124,12 @@ public class TestFragment extends Fragment {
                 continueButton.setVisibility(View.GONE);
             }
         });
+        repeatBtn.setOnClickListener(v -> {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, new TestFragment(deck)).commit();
+        });
+        exitBtn.setOnClickListener(v -> {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, new StudyFragment()).commit();
+        });
     }
 
     private void continueTest() {
@@ -144,9 +154,6 @@ public class TestFragment extends Fragment {
 
     private void showCard(Card randomCard) {
         allCards.remove(randomCard);
-        if (randomCard.isReversed()) {
-            randomCard = randomCard.returnCardInRandomOrder();
-        }
         currentCard = randomCard;
         frontCard.setText(randomCard.getFront());
         if (randomCard.getType().equals(CardType.MATCHING)) {
@@ -183,49 +190,12 @@ public class TestFragment extends Fragment {
         int currentPoints = Integer.parseInt(pointsText.getText().toString().trim());
         currentPoints += points;
         pointsText.setText(String.valueOf(currentPoints));
+
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(Constants.KEY_COLLECTION_USERS)
                 .document(currentUserEmail).update(Constants.KEY_POINTS, FieldValue.increment(points));
-    }
-
-    private String getRecommendation(double grade) {
-        if(grade <= 1.5) {
-            return "Großartig! Bereite dich darauf vor als Streber bezeichnet zu werden!";
-        } else if (grade <= 2.5) {
-            return "Gut! Du bist bereit für die Prüfung!";
-        } else if (grade <= 3.5) {
-            return "ok! Ruh dich nicht darauf aus";
-        } else if (grade <= 4.5) {
-            return "Naja! Du solltest nochmal lernen oder beten";
-        } else {
-            return "Kataststrophe, Renn zum Arzt und schreib dich krank!";
-        }
-    }
-
-    private double getGrade(double ratio) {
-        if (ratio >= 0.95){
-            return 1;
-        } else if (ratio >= 0.85){
-            return 1.5;
-        } else if (ratio >= 0.75){
-            return 2;
-        } else if (ratio >= 0.65){
-            return 2.5;
-        } else if (ratio >= 0.55){
-            return 3;
-        } else if (ratio >= 0.45){
-            return 3.5;
-        } else if (ratio >= 0.35){
-            return 4;
-        } else if (ratio >= 0.25){
-            return 4.5;
-        } else if (ratio >= 0.15){
-            return 5;
-        } else {
-            return 6;
-        }
     }
 
     private void removeViews() {

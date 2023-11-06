@@ -132,8 +132,8 @@ public class CollectionFragment extends Fragment implements View.OnClickListener
             //Todo: delete class
 
         }else if(view == practise){
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                    new PractiseFragment(title)).commit();
+
+//Todo: delete class
 
         }
     }
