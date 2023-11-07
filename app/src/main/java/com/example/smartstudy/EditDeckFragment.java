@@ -26,6 +26,7 @@ import com.example.smartstudy.utilities.CardSelectListener;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.DeckSelectListener;
 import com.example.smartstudy.utilities.PreferenceManager;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -184,8 +185,8 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
                     db.collection(Constants.KEY_COLLECTION_USERS)
                             .document(preferenceManager.getString(Constants.KEY_EMAIL))
                             .collection(Constants.KEY_COLLECTION_DECKS)
-                            .document(subDeck.getName())
-                            .delete()
+                            .document(deck.getName())
+                            .update(Constants.KEY_SUB_DECKS, FieldValue.arrayRemove(subDeck))
                             .addOnSuccessListener(unused -> {
                                 int index = subDecks.indexOf(subDeck);
                                 subDecks.remove(subDeck);

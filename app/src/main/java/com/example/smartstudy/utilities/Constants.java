@@ -10,6 +10,7 @@ public class Constants {
     public static final String KEY_COLLECTION_COUPONS= "coupons";
 
     public static final String KEY_USER_NAME = "userName";
+    public static final String KEY_SUB_DECKS = "subDecks";
     public static final String KEY_GROUP_NAME = "name";
     public static final String KEY_EMAIL = "email";
     public static final String KEY_COUPON_IDS = "couponIds";
