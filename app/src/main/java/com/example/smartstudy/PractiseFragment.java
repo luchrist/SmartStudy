@@ -70,7 +70,7 @@ public class PractiseFragment extends Fragment {
                 .collection(Constants.KEY_COLLECTION_DECKS).document(deck.getName());
         setListeners();
 
-        allCards = deck.getAllCards();
+        allCards = deck.returnAllCards();
         if (allCards.size() == 0) {
             frontCard.setText("No cards in this deck, please add some cards before.");
             return view;
@@ -157,6 +157,8 @@ public class PractiseFragment extends Fragment {
                     currentCard.setCertainty(currentCard.getCertainty() - 1);
                     pushCardToCorrectList(currentCard);
                 }
+                currentCard.incrementMediumAnswers();
+                currentCard.incrementTotalRequests();
                 showCard(getCardDependingOnDifficultyInPast());
                 addPoints(5);
             }
@@ -201,6 +203,8 @@ public class PractiseFragment extends Fragment {
             currentCard.setCertainty(5);
         }
         pushCardToCorrectList(currentCard);
+        currentCard.incrementTotalRequests();
+        currentCard.incrementRightAnswers();
     }
 
     private void updateCardCertaintyInDB(Card currentC, int i) {
@@ -216,7 +220,10 @@ public class PractiseFragment extends Fragment {
                             .findFirst();
                 }
                 if (foundCard.isPresent()) {
-                    foundCard.get().setCertainty(foundCard.get().getCertainty() + i);
+                    Card card = foundCard.get();
+                    card.setCertainty(card.getCertainty() + i);
+                    card.incrementTotalRequests();
+                    incrementRightStack(card, i);
                     deckDoc.set(deck);
                 } else {
                     updateCardInSubDeck(deck.getSubDecks(), currentC, i);
@@ -225,6 +232,16 @@ public class PractiseFragment extends Fragment {
         }).addOnFailureListener(e -> {
             Toast.makeText(getContext(), "Error while updating card certainty", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    private void incrementRightStack(Card card, int i) {
+        if (i == 1 || i == -1) {
+            card.incrementMediumAnswers();
+        } else if (i == 2) {
+            card.incrementRightAnswers();
+        } else if (i == -2) {
+            card.incrementWrongAnswers();
+        }
     }
 
     private boolean checkEquality(Card card, Card currentC) {
@@ -244,6 +261,8 @@ public class PractiseFragment extends Fragment {
                 Card card = foundCard.get();
                 subDeck.getCards().remove(card);
                 card.setCertainty(card.getCertainty() + i);
+                card.incrementTotalRequests();
+                incrementRightStack(card, i);
                 subDeck.getCards().add(card);
                 deckDoc.set(deck);
                 return;
@@ -261,6 +280,8 @@ public class PractiseFragment extends Fragment {
             currentCard.setCertainty(-5);
         }
         pushCardToCorrectList(currentCard);
+        currentCard.incrementWrongAnswers();
+        currentCard.incrementTotalRequests();
     }
 
     private void showCard(Card randomCard) {

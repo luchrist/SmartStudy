@@ -87,7 +87,7 @@ public class StudyFragment extends Fragment implements DeckSelectListener {
 
     private void setListeners() {
         createDeck.setOnClickListener(v -> {
-            CreateDeckDialog dialog = new CreateDeckDialog();
+            CreateDeckDialog dialog = new CreateDeckDialog(null);
             dialog.show(getParentFragmentManager(), "Create Deck Dialog");
         });
         aiTest.setOnClickListener(v -> startActivity(new Intent(this.getActivity(), AiGenerateExam.class)));
@@ -101,7 +101,8 @@ public class StudyFragment extends Fragment implements DeckSelectListener {
 
     @Override
     public void onEditDeckSelected(Deck deck) {
-
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, new EditDeckFragment(deck)).commit();
     }
 
     @Override

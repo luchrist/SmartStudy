@@ -5,64 +5,47 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="@dimen/_8sdp"
-    android:layout_marginEnd="@dimen/_18sdp"
-    android:layout_marginStart="@dimen/_18sdp"
+    android:layout_marginEnd="@dimen/_22sdp"
+    android:layout_marginStart="@dimen/_22sdp"
     android:padding="@dimen/_8sdp"
     android:background="@drawable/background_input">
 
     <TextView
-        android:id="@+id/deckTitle"
+        android:id="@+id/cardFront"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Deck Name"
-        android:textColor="@color/primaryText"
-        android:textSize="@dimen/_12ssp"
         android:padding="@dimen/_8sdp"
+        android:text="Card Front"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/_14ssp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <TextView
-        android:id="@+id/btnTest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/background_icon"
-        android:padding="@dimen/_8sdp"
-        android:text="Test"
-        android:layout_marginEnd="@dimen/_2sdp"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_10ssp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnStudy"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/btnStudy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/background_icon"
-        android:padding="@dimen/_8sdp"
-        android:text="Study"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_10ssp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/deckEdit"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/deckEdit"
+        android:id="@+id/cardEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/inputBackground"
         android:src="@drawable/baseline_edit_24"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/deckRemove"
+
+        app:layout_constraintEnd_toStartOf="@+id/cardPauseResume"
+        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/cardPauseResume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/inputBackground"
+        android:src="@drawable/baseline_pause_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cardRemove"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/deckRemove"
+        android:id="@+id/cardRemove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/inputBackground"

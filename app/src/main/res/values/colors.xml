@@ -28,6 +28,10 @@
     <color name="secondary">#F01456</color>
     <color name="remove">#F10A0A</color>
     <color name="correct">#03BD0A</color>
+    <color name="reallyGood">#009105</color>
+    <color name="good">#00D807</color>
     <color name="wrong">#D80505</color>
+    <color name="reallyBad">#D30000</color>
+    <color name="bad">#EA0000</color>
     <color name="medium">#E38700</color>
 </resources>

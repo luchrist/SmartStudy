@@ -19,7 +19,6 @@ import com.example.smartstudy.models.CardType;
 import com.example.smartstudy.models.Deck;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
-import com.example.smartstudy.utilities.StudyUtilities;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -63,7 +62,7 @@ public class TestFragment extends Fragment {
 
         setListeners();
 
-        allCards = deck.getAllCards();
+        allCards = deck.returnAllCards();
         if(allCards.size() == 0) {
             frontCard.setText("No cards in this deck, please add some cards before.");
             return view;

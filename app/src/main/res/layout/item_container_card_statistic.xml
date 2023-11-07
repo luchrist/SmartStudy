@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="@dimen/_8sdp"
+    android:layout_marginEnd="@dimen/_22sdp"
+    android:layout_marginStart="@dimen/_22sdp"
+    android:padding="@dimen/_8sdp"
+    android:background="@drawable/background_input">
+
+    <TextView
+        android:id="@+id/cardFront"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_8sdp"
+        android:text="Card Front"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/_14ssp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/cardBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_8sdp"
+        android:text="Card Back"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/_14ssp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardFront"/>
+
+    <TextView
+        android:id="@+id/totalReq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Requests:"
+        android:textColor="@color/primaryText"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginStart="@dimen/_2sdp"
+        app:layout_constraintStart_toEndOf="@+id/cardFront"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/correctAnswers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_check_24"
+        app:layout_constraintEnd_toEndOf="@+id/totalReq"
+        app:layout_constraintStart_toStartOf="@+id/totalReq"
+        app:layout_constraintTop_toBottomOf="@+id/totalReq"
+        app:tint="@color/correct" />
+    <ImageView
+        android:id="@+id/mediumAnswers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_sentiment_neutral_24"
+        app:layout_constraintEnd_toEndOf="@+id/correctAnswers"
+        app:layout_constraintStart_toStartOf="@+id/correctAnswers"
+        app:layout_constraintTop_toBottomOf="@+id/correctAnswers"
+        app:tint="@color/medium" />
+    <ImageView
+        android:id="@+id/wrongAnswers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_close_24"
+        app:layout_constraintEnd_toEndOf="@+id/mediumAnswers"
+        app:layout_constraintStart_toStartOf="@+id/mediumAnswers"
+        app:layout_constraintTop_toBottomOf="@+id/mediumAnswers"
+        app:tint="@color/wrong" />
+
+    <TextView
+        android:id="@+id/totalReqCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="12"
+        android:textColor="@color/primaryText"
+        android:layout_marginStart="@dimen/_2sdp"
+        app:layout_constraintStart_toEndOf="@+id/totalReq"
+        app:layout_constraintTop_toTopOf="@+id/totalReq"
+        app:layout_constraintBottom_toBottomOf="@+id/totalReq"/>
+    <TextView
+        android:id="@+id/correctAnswersCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="4"
+        android:textColor="@color/primaryText"
+        android:layout_marginStart="@dimen/_2sdp"
+        app:layout_constraintStart_toEndOf="@+id/correctAnswers"
+        app:layout_constraintTop_toTopOf="@+id/correctAnswers"
+        app:layout_constraintBottom_toBottomOf="@+id/correctAnswers"/>
+
+   <TextView
+        android:id="@+id/wrongAnswersCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3"
+        android:textColor="@color/primaryText"
+        android:layout_marginStart="@dimen/_2sdp"
+        app:layout_constraintStart_toEndOf="@+id/wrongAnswers"
+        app:layout_constraintTop_toTopOf="@+id/wrongAnswers"
+        app:layout_constraintBottom_toBottomOf="@+id/wrongAnswers"/>
+
+<TextView
+        android:id="@+id/mediumAnswersCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="7"
+        android:textColor="@color/primaryText"
+        android:layout_marginStart="@dimen/_2sdp"
+        app:layout_constraintStart_toEndOf="@+id/mediumAnswers"
+        app:layout_constraintTop_toTopOf="@+id/mediumAnswers"
+        app:layout_constraintBottom_toBottomOf="@+id/mediumAnswers"/>
+
+
+    <TextView
+        android:id="@+id/category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/medium"
+        android:padding="@dimen/_6sdp"
+        android:paddingStart="@dimen/_12sdp"
+        android:paddingEnd="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

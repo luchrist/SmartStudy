@@ -43,6 +43,11 @@ public class CreateDeckDialog extends DialogFragment {
     private List<Card> cards;
     private List<Deck> subDecks;
     private ArrayAdapter arrayAdapter;
+    private final Deck parentDeck;
+
+    public CreateDeckDialog(Deck parentDeck) {
+        this.parentDeck = parentDeck;
+    }
 
 
     @NonNull
@@ -158,18 +163,34 @@ public class CreateDeckDialog extends DialogFragment {
                     if(deckNameString == null) {
                         deckNameString = deckName.getText().toString().trim();
                     }
-                    Deck deck = new Deck(deckNameString, cards, subDecks, null);
-                    deckCollection.document(deckNameString).set(deck);
+                    if (parentDeck == null) {
+                        Deck deck = new Deck(deckNameString, cards, subDecks, null);
+                        deckCollection.document(deckNameString).set(deck);
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                                new StudyFragment()).commit();
+                    } else {
+                        Deck deck = new Deck(deckNameString, cards, subDecks, parentDeck.getName());
+                        List<Deck> decks = parentDeck.getSubDecks();
+                        decks.add(deck);
+                        parentDeck.setSubDecks(decks);
+                        deckCollection.document(parentDeck.getName()).set(parentDeck);
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                                new EditDeckFragment(parentDeck)).commit();
+                    }
                     dialog.dismiss();
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                            new StudyFragment()).commit();
+
                 }
             });
 
             cancel.setOnClickListener(v -> {
                 dialog.dismiss();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                        new StudyFragment()).commit();
+                if (parentDeck == null) {
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                            new StudyFragment()).commit();
+                } else {
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                            new EditDeckFragment(parentDeck)).commit();
+                }
             });
         });
         dialog.show();

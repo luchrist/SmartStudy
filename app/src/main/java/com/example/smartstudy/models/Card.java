@@ -2,7 +2,7 @@ package com.example.smartstudy.models;
 
 public class Card {
     private String front, back;
-    private int certainty;
+    private int certainty, totalRequests, wrongAnswers, rightAnswers, mediumAnswers;
     private CardType type;
     boolean paused, reversed;
 
@@ -14,6 +14,47 @@ public class Card {
     }
 
     public Card() {
+    }
+
+    public int getTotalRequests() {
+        return totalRequests;
+    }
+
+    public void incrementTotalRequests() {
+        this.totalRequests++;
+    }
+
+    public int getWrongAnswers() {
+        return wrongAnswers;
+    }
+
+    public void incrementWrongAnswers() {
+        this.wrongAnswers++;
+    }
+
+    public int getRightAnswers() {
+        return rightAnswers;
+    }
+
+    public void incrementRightAnswers() {
+        this.rightAnswers++;
+    }
+
+    public int getMediumAnswers() {
+        return mediumAnswers;
+    }
+
+    public void incrementMediumAnswers() {
+        this.mediumAnswers++;
+    }
+
+    public CorrectnessClasses returnCorrectnessClass() {
+        for (CorrectnessClasses correctnessClass : CorrectnessClasses.values()) {
+            if (correctnessClass.getLowerBound() <= certainty && correctnessClass.getUpperBound() >= certainty) {
+                return correctnessClass;
+            }
+        }
+        return null;
     }
 
     public String getFront() {

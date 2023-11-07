@@ -20,7 +20,7 @@ public class Deck {
     public Deck() {
     }
 
-    public List<Card> getAllCards() {
+    public List<Card> returnAllCards() {
         Stream.Builder<Card> cardStream = Stream.builder();
         getCards().stream().filter(card -> !card.isPaused()).forEach(cardStream::add);
         List<Deck> subDecks = getSubDecks();
