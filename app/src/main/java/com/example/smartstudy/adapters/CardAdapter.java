@@ -62,7 +62,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         }
 
         public void setCardData(Card card) {
-            binding.cardFront.setText(card.getFront());
+            if(card.getFront().length() > 20) {
+                binding.cardFront.setText(card.getFront().substring(0, 18) + "...");
+            } else {
+                binding.cardFront.setText(card.getFront());
+            }
             if (card.isPaused()) {
                 binding.cardPauseResume.setImageResource(R.drawable.baseline_play_arrow_24);
             }

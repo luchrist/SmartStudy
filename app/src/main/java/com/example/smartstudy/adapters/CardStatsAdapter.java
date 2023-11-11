@@ -52,8 +52,16 @@ public class CardStatsAdapter extends RecyclerView.Adapter<CardStatsAdapter.Card
         }
 
         public void setCardData(Card card) {
-            binding.cardFront.setText(card.getFront());
-            binding.cardBack.setText(card.getBack());
+            if (card.getFront().length() > 13) {
+                binding.cardFront.setText(card.getFront().substring(0, 10) + "...");
+            } else {
+                binding.cardFront.setText(card.getFront());
+            }
+            if (card.getBack().length() > 13) {
+                binding.cardBack.setText(card.getBack().substring(0, 10) + "...");
+            } else {
+                binding.cardBack.setText(card.getBack());
+            }
             CorrectnessClasses c = card.returnCorrectnessClass();
             switch (c) {
                 case REALLY_GOOD:

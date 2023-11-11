@@ -16,6 +16,13 @@
         <item>Friday</item>
         <item>Weekend</item>
     </string-array>
+    <string-array name="cardCategories">
+        <item>"all"</item>
+        <item>"new"</item>
+        <item>"hard"</item>
+        <item>"medium"</item>
+        <item>"easy"</item>
+    </string-array>
     <string-array name="colours">
         <item>red</item>
         <item>blue</item>

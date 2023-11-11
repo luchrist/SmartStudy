@@ -1,5 +1,6 @@
 package com.example.smartstudy;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -69,6 +72,10 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_deck, container, false);
         connectViews(view);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
+                R.array.cardCategories, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterSpinner.setAdapter(adapter);
         setListeners();
         deckNameTitle.setText(deck.getName());
         subDecks = deck.getSubDecks();
@@ -145,6 +152,37 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
         createSubDeckBtn.setOnClickListener(v -> {
             CreateDeckDialog dialog = new CreateDeckDialog(deck);
             dialog.show(getParentFragmentManager(), "Create Deck Dialog");
+        });
+        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 1:
+                        filteredCards = allCards.stream().filter(card -> card.getTotalRequests() == 0).collect(Collectors.toList());
+                        break;
+                    case 4:
+                        filteredCards = Stream.concat(reallyGoodCards.stream(), goodCards.stream()).collect(Collectors.toList());
+                        break;
+                    case 3:
+                        filteredCards = mediumCards;
+                        break;
+                    case 2:
+                        filteredCards = Stream.concat(badCards.stream(), reallyBadCards.stream()).collect(Collectors.toList());
+                        break;
+                    default:
+                        filteredCards = allCards;
+                        break;
+                }
+                cardStatsAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        filterBtn.setOnClickListener(v -> {
+            filterSpinner.performClick();
         });
     }
 
