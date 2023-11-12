@@ -2,6 +2,7 @@ package com.example.smartstudy;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -18,17 +19,21 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.smartstudy.adapters.CardAdapter;
 import com.example.smartstudy.adapters.CardStatsAdapter;
 import com.example.smartstudy.adapters.DeckAdapter;
 import com.example.smartstudy.models.Card;
+import com.example.smartstudy.models.CardType;
 import com.example.smartstudy.models.Deck;
 import com.example.smartstudy.utilities.CardSelectListener;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.DeckSelectListener;
 import com.example.smartstudy.utilities.PreferenceManager;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -53,6 +58,7 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
     private FirebaseFirestore db;
     private PreferenceManager preferenceManager;
     private int selectedColor;
+    private DocumentReference deckDoc;
 
     public EditDeckFragment(Deck deck) {
         this.deck = deck;
@@ -64,6 +70,18 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
         db = FirebaseFirestore.getInstance();
         preferenceManager = new PreferenceManager(requireContext());
         selectedColor = ContextCompat.getColor(getContext(), R.color.accentBlue);
+        if(deck.getParentDeck() == null) {
+            deckDoc = db.collection(Constants.KEY_COLLECTION_USERS)
+                    .document(preferenceManager.getString(Constants.KEY_EMAIL))
+                    .collection(Constants.KEY_COLLECTION_DECKS)
+                    .document(deck.getName());
+        } else {
+            deckDoc = db.collection(Constants.KEY_COLLECTION_USERS)
+                    .document(preferenceManager.getString(Constants.KEY_EMAIL))
+                    .collection(Constants.KEY_COLLECTION_DECKS)
+                    .document(deck.getParentDeck());
+        }
+
     }
 
     @Override
@@ -123,13 +141,16 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
+        if(deck.getParentDeck() == null) {
+            deckDoc.update(Constants.KEY_GROUP_NAME, deckNameTitle.getText().toString().trim());
+        } else {
+            subDecks.remove(deck);
+            deck.setName(deckNameTitle.getText().toString().trim());
+            subDecks.add(deck);
+            deckDoc.update(Constants.KEY_SUB_DECKS, subDecks);
+        }
     }
 
     private void setListeners() {
@@ -152,6 +173,10 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
         createSubDeckBtn.setOnClickListener(v -> {
             CreateDeckDialog dialog = new CreateDeckDialog(deck);
             dialog.show(getParentFragmentManager(), "Create Deck Dialog");
+        });
+        createNewCardsBtn.setOnClickListener(v -> {
+            CreateCardDialog dialog = new CreateCardDialog(deck);
+            dialog.show(getParentFragmentManager(), "Create Card Dialog");
         });
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -220,23 +245,20 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
                 .setTitle("Delete Deck")
                 .setMessage("Are you sure you want to delete this subDeck?")
                 .setPositiveButton("Delete", (dialog1, which) -> {
-                    db.collection(Constants.KEY_COLLECTION_USERS)
-                            .document(preferenceManager.getString(Constants.KEY_EMAIL))
-                            .collection(Constants.KEY_COLLECTION_DECKS)
-                            .document(deck.getName())
-                            .update(Constants.KEY_SUB_DECKS, FieldValue.arrayRemove(subDeck))
-                            .addOnSuccessListener(unused -> {
-                                int index = subDecks.indexOf(subDeck);
-                                subDecks.remove(subDeck);
-                                deckAdapter.notifyItemRemoved(index);
-                            })
-                            .addOnFailureListener(e -> {
-                                new AlertDialog.Builder(requireContext())
-                                        .setTitle("Error")
-                                        .setMessage("Failed to delete subDeck")
-                                        .setPositiveButton("Ok", null)
-                                        .show();
-                            });
+                    deckDoc
+                        .update(Constants.KEY_SUB_DECKS, FieldValue.arrayRemove(subDeck))
+                        .addOnSuccessListener(unused -> {
+                            int index = subDecks.indexOf(subDeck);
+                            subDecks.remove(subDeck);
+                            deckAdapter.notifyItemRemoved(index);
+                        })
+                        .addOnFailureListener(e -> {
+                            new AlertDialog.Builder(requireContext())
+                                    .setTitle("Error")
+                                    .setMessage("Failed to delete subDeck")
+                                    .setPositiveButton("Ok", null)
+                                    .show();
+                        });
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
@@ -250,16 +272,56 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
 
     @Override
     public void onPauseCardSelected(Card card) {
-
+        int i = cards.indexOf(card);
+        card.setPaused(!card.isPaused());
+        cards.set(i, card);
+        cardAdapter.notifyItemChanged(i);
+        deckDoc.update(Constants.KEY_CARDS, cards);
     }
 
     @Override
     public void onEditCardSelected(Card card) {
-
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.card_edit_dialog, null);
+        EditText front = view.findViewById(R.id.frontOfCard);
+        EditText back = view.findViewById(R.id.backOfCard);
+        RadioButton basic = view.findViewById(R.id.basicType);
+        RadioButton match = view.findViewById(R.id.matchType);
+        front.setText(card.getFront());
+        back.setText(card.getBack());
+        if(card.getType().equals(CardType.BASIC)) {
+            basic.setChecked(true);
+        } else {
+            match.setChecked(true);
+        }
+        new AlertDialog.Builder(getContext())
+                .setView(view)
+                .setTitle("Card content")
+                .setPositiveButton("OK", (dialog, which) -> {
+                    int i = cards.indexOf(card);
+                    String frontString = front.getText().toString().trim();
+                    String backString = back.getText().toString().trim();
+                    CardType cardType = CardType.BASIC;
+                    if(match.isChecked()) {
+                        cardType = CardType.MATCHING;
+                    }
+                    card.setFront(frontString);
+                    card.setBack(backString);
+                    card.setType(cardType);
+                    cards.set(i, card);
+                    cardAdapter.notifyItemChanged(i);
+                    deckDoc.update(Constants.KEY_CARDS, cards);
+                })
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
 
     @Override
     public void onDeleteCardSelected(Card card) {
-
+        int i = cards.indexOf(card);
+        cards.remove(card);
+        cardAdapter.notifyItemRemoved(i);
+        deckDoc.update(Constants.KEY_CARDS, FieldValue.arrayRemove(card));
     }
 }

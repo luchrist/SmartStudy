@@ -1,7 +1,12 @@
 package com.example.smartstudy.adapters;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +40,7 @@ public class CardStatsAdapter extends RecyclerView.Adapter<CardStatsAdapter.Card
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
         holder.setCardData(cards.get(position));
+        holder.setListener(cards.get(position));
     }
 
     @Override
@@ -84,6 +90,23 @@ public class CardStatsAdapter extends RecyclerView.Adapter<CardStatsAdapter.Card
             binding.correctAnswersCount.setText(String.valueOf(card.getRightAnswers()));
             binding.wrongAnswersCount.setText(String.valueOf(card.getWrongAnswers()));
             binding.mediumAnswersCount.setText(String.valueOf(card.getMediumAnswers()));
+        }
+
+        public void setListener(Card card) {
+            binding.cardContent.setOnClickListener(v -> {
+                LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View view = inflater.inflate(R.layout.card_content_dialog, null);
+                TextView front = view.findViewById(R.id.frontOfCard);
+                TextView back = view.findViewById(R.id.backOfCard);
+                front.setText(card.getFront());
+                back.setText(card.getBack());
+                new AlertDialog.Builder(v.getContext())
+                        .setView(view)
+                        .setTitle("Card content")
+                        .setPositiveButton("OK", (dialog, which) -> dialog.cancel())
+                        .create()
+                        .show();
+            });
         }
     }
 }

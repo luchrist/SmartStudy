@@ -140,7 +140,7 @@ public class CreateDeckDialog extends DialogFragment {
                                 Card reversedCard = new Card(backString, frontString, cardType, true);
                                 newCards.add(reversedCard);
                             }
-                            Deck newDeck = new Deck(subDeck, newCards, null, deckNameString);
+                            Deck newDeck = new Deck(subDeck, newCards, new ArrayList<>(), deckNameString);
                             subDecks.add(newDeck);
                             arrayAdapter.notifyDataSetChanged();
                         }

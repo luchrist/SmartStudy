@@ -17,7 +17,7 @@
         android:padding="@dimen/_8sdp"
         android:text="Card Front"
         android:textColor="@color/primaryText"
-        android:textSize="@dimen/_14ssp"
+        android:textSize="@dimen/_12ssp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

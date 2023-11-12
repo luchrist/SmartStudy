@@ -66,8 +66,13 @@ public class PractiseFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         preferenceManager = new PreferenceManager(getContext());
         currentUserMail = preferenceManager.getString(Constants.KEY_EMAIL);
-        deckDoc = db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserMail)
-                .collection(Constants.KEY_COLLECTION_DECKS).document(deck.getName());
+        if (deck.getParentDeck() != null) {
+            deckDoc = db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserMail)
+                    .collection(Constants.KEY_COLLECTION_DECKS).document(deck.getParentDeck());
+        } else {
+            deckDoc = db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserMail)
+                    .collection(Constants.KEY_COLLECTION_DECKS).document(deck.getName());
+        }
         setListeners();
 
         allCards = deck.returnAllCards();
@@ -226,7 +231,7 @@ public class PractiseFragment extends Fragment {
                     incrementRightStack(card, i);
                     deckDoc.set(deck);
                 } else {
-                    updateCardInSubDeck(deck.getSubDecks(), currentC, i);
+                    updateCardInSubDeck(deck, deck.getSubDecks(), currentC, i);
                 }
             }
         }).addOnFailureListener(e -> {
@@ -249,7 +254,7 @@ public class PractiseFragment extends Fragment {
                 && card.getType().equals(currentC.getType()) && card.isReversed() == currentC.isReversed();
     }
 
-    private void updateCardInSubDeck(List<Deck> subDecks, Card currentC, int i) {
+    private void updateCardInSubDeck(Deck deck, List<Deck> subDecks, Card currentC, int i) {
         if(subDecks == null){
             return;
         }
@@ -259,15 +264,18 @@ public class PractiseFragment extends Fragment {
                     .findFirst();
             if (foundCard.isPresent()) {
                 Card card = foundCard.get();
+                subDecks.remove(subDeck);
                 subDeck.getCards().remove(card);
                 card.setCertainty(card.getCertainty() + i);
                 card.incrementTotalRequests();
                 incrementRightStack(card, i);
                 subDeck.getCards().add(card);
+                subDecks.add(subDeck);
+                deck.setSubDecks(subDecks);
                 deckDoc.set(deck);
                 return;
             } else {
-                updateCardInSubDeck(subDeck.getSubDecks(), currentC, i);
+                updateCardInSubDeck(deck, subDeck.getSubDecks(), currentC, i);
             }
         }
     }
