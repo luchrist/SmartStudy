@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CreateCardDialog extends DialogFragment {
     private EditText front, back;
@@ -132,7 +133,22 @@ public class CreateCardDialog extends DialogFragment {
                 if (nextClicked) {
                     parentDeck.setCards(cards);
                     parentDeck.setSubDecks(subDecks);
-                    deckCollection.document(parentDeck.getName()).set(parentDeck);
+                    if(parentDeck.getParentDeck() == null) {
+                        deckCollection.document(parentDeck.getName()).set(parentDeck);
+                    } else {
+                        deckCollection.document(parentDeck.getParentDeck()).get()
+                                .addOnSuccessListener(documentSnapshot -> {
+                                    Deck masterDeck = documentSnapshot.toObject(Deck.class);
+                                    List<Deck> subDecks = masterDeck.getSubDecks();
+                                    subDecks = subDecks.stream()
+                                            .filter(subDeck -> !subDeck.getName().equals(parentDeck.getName()))
+                                            .collect(Collectors.toList());
+                                    subDecks.add(parentDeck);
+                                    masterDeck.setSubDecks(subDecks);
+                                    deckCollection.document(masterDeck.getName()).set(masterDeck);
+                                });
+                    }
+
                 }
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, new EditDeckFragment(parentDeck)).commit();
                 dialog.dismiss();

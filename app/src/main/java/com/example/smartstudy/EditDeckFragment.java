@@ -1,6 +1,5 @@
 package com.example.smartstudy;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -33,7 +32,10 @@ import com.example.smartstudy.utilities.CardSelectListener;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.DeckSelectListener;
 import com.example.smartstudy.utilities.PreferenceManager;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -70,10 +72,11 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
         db = FirebaseFirestore.getInstance();
         preferenceManager = new PreferenceManager(requireContext());
         selectedColor = ContextCompat.getColor(getContext(), R.color.accentBlue);
+        CollectionReference deckCol = db.collection(Constants.KEY_COLLECTION_USERS)
+                .document(preferenceManager.getString(Constants.KEY_EMAIL))
+                .collection(Constants.KEY_COLLECTION_DECKS);
         if(deck.getParentDeck() == null) {
-            deckDoc = db.collection(Constants.KEY_COLLECTION_USERS)
-                    .document(preferenceManager.getString(Constants.KEY_EMAIL))
-                    .collection(Constants.KEY_COLLECTION_DECKS)
+            deckDoc = deckCol
                     .document(deck.getName());
         } else {
             deckDoc = db.collection(Constants.KEY_COLLECTION_USERS)
@@ -140,16 +143,37 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
         reallyGoodCards = reallyGoodCardBuilder.build().collect(Collectors.toList());
     }
 
+
+    //need to change also documentname and parentDeckName of underlying subdecks
     @Override
     public void onDestroy() {
         super.onDestroy();
+        String deckName = deckNameTitle.getText().toString().trim();
         if(deck.getParentDeck() == null) {
-            deckDoc.update(Constants.KEY_GROUP_NAME, deckNameTitle.getText().toString().trim());
+            deckDoc.delete();
+            deck.setName(deckName);
+            for (Deck subDeck : deck.getSubDecks()) {
+                subDeck.setParentDeck(deckName);
+            }
+            db.collection(Constants.KEY_COLLECTION_USERS)
+                    .document(preferenceManager.getString(Constants.KEY_EMAIL))
+                    .collection(Constants.KEY_COLLECTION_DECKS).document(deckName).set(deck);
         } else {
-            subDecks.remove(deck);
-            deck.setName(deckNameTitle.getText().toString().trim());
-            subDecks.add(deck);
-            deckDoc.update(Constants.KEY_SUB_DECKS, subDecks);
+            deckDoc.get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        Deck parentDeck = documentSnapshot.toObject(Deck.class);
+                        List<Deck> parentSubDecks = parentDeck.getSubDecks();
+                        parentSubDecks = parentSubDecks.stream()
+                                .filter(s -> !s.getName().equals(deck.getName()))
+                                .collect(Collectors.toList());
+                        deck.setName(deckName);
+                        for (Deck subDeck : deck.getSubDecks()) {
+                            subDeck.setParentDeck(deckName);
+                        }
+                        parentSubDecks.add(deck);
+                        parentDeck.setSubDecks(parentSubDecks);
+                        deckDoc.set(parentDeck);
+                    });
         }
     }
 
@@ -189,7 +213,7 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
                         filteredCards = Stream.concat(reallyGoodCards.stream(), goodCards.stream()).collect(Collectors.toList());
                         break;
                     case 3:
-                        filteredCards = mediumCards;
+                        filteredCards = mediumCards.stream().filter(card -> card.getTotalRequests() > 0).collect(Collectors.toList());
                         break;
                     case 2:
                         filteredCards = Stream.concat(badCards.stream(), reallyBadCards.stream()).collect(Collectors.toList());
@@ -198,7 +222,8 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
                         filteredCards = allCards;
                         break;
                 }
-                cardStatsAdapter.notifyDataSetChanged();
+                cardStatsAdapter = new CardStatsAdapter(filteredCards);
+                statsCardsRecyclerView.setAdapter(cardStatsAdapter);
             }
 
             @Override
@@ -217,6 +242,7 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
         editBtn.setTextColor(selectedColor);
         statsBtn = view.findViewById(R.id.statisticsBtn);
         createSubDeckBtn = view.findViewById(R.id.createSubDeck);
+        createSubDeckBtn.setVisibility(View.INVISIBLE);
         createNewCardsBtn = view.findViewById(R.id.addNewCards);
         subDecksRecyclerView = view.findViewById(R.id.subDecksRecyclerView);
         cardsRecyclerView = view.findViewById(R.id.cardsRecyclerView);

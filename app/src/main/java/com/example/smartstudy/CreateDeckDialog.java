@@ -26,9 +26,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CreateDeckDialog extends DialogFragment {
     private EditText deckName, front, back;
@@ -41,8 +40,9 @@ public class CreateDeckDialog extends DialogFragment {
     private FirebaseFirestore db;
     private PreferenceManager preferenceManager;
     private List<Card> cards;
-    private List<Deck> subDecks;
+    private List<Deck> subDecks, masterDecks;
     private ArrayAdapter arrayAdapter;
+    private CollectionReference deckCollection;
     private final Deck parentDeck;
 
     public CreateDeckDialog(Deck parentDeck) {
@@ -71,9 +71,16 @@ public class CreateDeckDialog extends DialogFragment {
 
         db = FirebaseFirestore.getInstance();
         preferenceManager = new PreferenceManager(getContext());
-        CollectionReference deckCollection = db.collection(Constants.KEY_COLLECTION_USERS)
+        deckCollection = db.collection(Constants.KEY_COLLECTION_USERS)
                 .document(preferenceManager.getString(Constants.KEY_EMAIL))
                 .collection(Constants.KEY_COLLECTION_DECKS);
+
+        deckCollection.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    masterDecks = queryDocumentSnapshots.getDocuments().stream()
+                            .map(documentSnapshot -> documentSnapshot.toObject(Deck.class))
+                            .collect(Collectors.toList());
+                });
 
         AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setView(view)
@@ -196,6 +203,48 @@ public class CreateDeckDialog extends DialogFragment {
         dialog.show();
         return dialog;
     }
+
+    //need it when I accept more then a depth of 2
+/*
+
+    private Deck setParentDeckInMasterDeck(Deck masterDeck) {
+        if (masterDeck == parentDeck) {
+            return parentDeck;
+        } else {
+            return setParentDeckInMasterSubDeck(masterDeck, masterDeck.getSubDecks());
+        }
+    }
+
+    private Deck setParentDeckInMasterSubDeck(Deck masterDeck, List<Deck> subDecks) {
+        for (Deck)
+    }
+
+    private Deck findMasterDeck() {
+        for (Deck deck : masterDecks) {
+            if (deck == parentDeck) {
+                return deck;
+            }
+            Deck masterDeck = findParentDeckInSubMasterDecks(deck, deck.getSubDecks());
+            if (masterDeck != null) {
+                return masterDeck;
+            }
+        }
+        return null;
+    }
+
+    private Deck findParentDeckInSubMasterDecks(Deck masterDeck, List<Deck> subDecks) {
+        for (Deck deck : subDecks) {
+            if(deck == parentDeck) {
+                return masterDeck;
+            }
+            Deck mD = findParentDeckInSubMasterDecks(masterDeck, deck.getSubDecks());
+            if (mD != null) {
+                return masterDeck;
+            }
+        }
+        return null;
+    }
+*/
 
     private void setUpSupDeckNameAutoComplete() {
         arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, subDecks);

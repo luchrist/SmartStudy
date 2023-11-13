@@ -153,13 +153,13 @@ public class PractiseFragment extends Fragment {
                 correctnessRatio.setText(correctAnswers + "/" + cardCount);
                 if (currentCard.getCertainty() < 0) {
                     pullCardFromList(currentCard);
-                    updateCardCertaintyInDB(currentCard, 1);
                     currentCard.setCertainty(currentCard.getCertainty() + 1);
+                    updateCardCertaintyInDB(currentCard, 1);
                     pushCardToCorrectList(currentCard);
                 } else {
                     pullCardFromList(currentCard);
-                    updateCardCertaintyInDB(currentCard, -1);
                     currentCard.setCertainty(currentCard.getCertainty() - 1);
+                    updateCardCertaintyInDB(currentCard, -1);
                     pushCardToCorrectList(currentCard);
                 }
                 currentCard.incrementMediumAnswers();
@@ -202,11 +202,11 @@ public class PractiseFragment extends Fragment {
 
     private void upRankCard() {
         pullCardFromList(currentCard);
-        updateCardCertaintyInDB(currentCard, 2);
         currentCard.setCertainty(currentCard.getCertainty() + 2);
         if (currentCard.getCertainty() > 5) {
             currentCard.setCertainty(5);
         }
+        updateCardCertaintyInDB(currentCard, 2);
         pushCardToCorrectList(currentCard);
         currentCard.incrementTotalRequests();
         currentCard.incrementRightAnswers();
@@ -226,7 +226,7 @@ public class PractiseFragment extends Fragment {
                 }
                 if (foundCard.isPresent()) {
                     Card card = foundCard.get();
-                    card.setCertainty(card.getCertainty() + i);
+                    card.setCertainty(currentC.getCertainty());
                     card.incrementTotalRequests();
                     incrementRightStack(card, i);
                     deckDoc.set(deck);
@@ -266,7 +266,7 @@ public class PractiseFragment extends Fragment {
                 Card card = foundCard.get();
                 subDecks.remove(subDeck);
                 subDeck.getCards().remove(card);
-                card.setCertainty(card.getCertainty() + i);
+                card.setCertainty(currentC.getCertainty());
                 card.incrementTotalRequests();
                 incrementRightStack(card, i);
                 subDeck.getCards().add(card);
@@ -282,11 +282,11 @@ public class PractiseFragment extends Fragment {
 
     private void downRankCard() {
         pullCardFromList(currentCard);
-        updateCardCertaintyInDB(currentCard, -2);
         currentCard.setCertainty(currentCard.getCertainty() - 2);
         if (currentCard.getCertainty() < -5) {
             currentCard.setCertainty(-5);
         }
+        updateCardCertaintyInDB(currentCard, -2);
         pushCardToCorrectList(currentCard);
         currentCard.incrementWrongAnswers();
         currentCard.incrementTotalRequests();

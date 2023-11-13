@@ -2,11 +2,11 @@ package com.example.smartstudy.models;
 
 public enum CorrectnessClasses {
 
-    REALLY_GOOD(3, 5),
-    GOOD(1, 3),
+    REALLY_GOOD(4, 5),
+    GOOD(2, 3),
     MEDIUM(-1, 1),
-    BAD(-3, -1),
-    REALLY_BAD(-5, -3);
+    BAD(-3, -2),
+    REALLY_BAD(-5, -4);
 
     private final int lowerBound;
     private final int upperBound;
