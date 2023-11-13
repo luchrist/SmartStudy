@@ -41,7 +41,8 @@ public class CreateDeckDialog extends DialogFragment {
     private PreferenceManager preferenceManager;
     private List<Card> cards;
     private List<Deck> subDecks, masterDecks;
-    private ArrayAdapter arrayAdapter;
+    private List<String> subDeckNames;
+    private ArrayAdapter<String> adapter;
     private CollectionReference deckCollection;
     private final Deck parentDeck;
 
@@ -67,6 +68,7 @@ public class CreateDeckDialog extends DialogFragment {
 
         cards = new ArrayList<>();
         subDecks = new ArrayList<>();
+        subDeckNames = new ArrayList<>();
         setUpSupDeckNameAutoComplete();
 
         db = FirebaseFirestore.getInstance();
@@ -149,7 +151,8 @@ public class CreateDeckDialog extends DialogFragment {
                             }
                             Deck newDeck = new Deck(subDeck, newCards, new ArrayList<>(), deckNameString);
                             subDecks.add(newDeck);
-                            arrayAdapter.notifyDataSetChanged();
+                            subDeckNames.add(subDeck);
+                            setUpSupDeckNameAutoComplete();
                         }
                     }
                     subDeckName.setText("");
@@ -247,8 +250,9 @@ public class CreateDeckDialog extends DialogFragment {
 */
 
     private void setUpSupDeckNameAutoComplete() {
-        arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, subDecks);
-        subDeckName.setAdapter(arrayAdapter);
+        adapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_dropdown_item_1line, subDeckNames);
+        subDeckName.setAdapter(adapter);
         subDeckName.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus)
                 subDeckName.showDropDown();

@@ -242,7 +242,7 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
         editBtn.setTextColor(selectedColor);
         statsBtn = view.findViewById(R.id.statisticsBtn);
         createSubDeckBtn = view.findViewById(R.id.createSubDeck);
-        createSubDeckBtn.setVisibility(View.INVISIBLE);
+        //createSubDeckBtn.setVisibility(View.INVISIBLE);
         createNewCardsBtn = view.findViewById(R.id.addNewCards);
         subDecksRecyclerView = view.findViewById(R.id.subDecksRecyclerView);
         cardsRecyclerView = view.findViewById(R.id.cardsRecyclerView);
@@ -302,7 +302,11 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
         card.setPaused(!card.isPaused());
         cards.set(i, card);
         cardAdapter.notifyItemChanged(i);
-        deckDoc.update(Constants.KEY_CARDS, cards);
+        if(deck.getParentDeck() == null) {
+            deckDoc.update(Constants.KEY_CARDS, cards);
+        } else {
+            updateCardsInSubDeck();
+        }
     }
 
     @Override
@@ -336,11 +340,30 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
                     card.setType(cardType);
                     cards.set(i, card);
                     cardAdapter.notifyItemChanged(i);
-                    deckDoc.update(Constants.KEY_CARDS, cards);
+                    if(deck.getParentDeck() == null) {
+                        deckDoc.update(Constants.KEY_CARDS, cards);
+                    } else {
+                        updateCardsInSubDeck();
+                    }
                 })
                 .setNegativeButton("Cancel", null)
                 .create()
                 .show();
+    }
+
+    private void updateCardsInSubDeck() {
+        deckDoc.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Deck parentDeck = documentSnapshot.toObject(Deck.class);
+                    List<Deck> subDecks = parentDeck.getSubDecks();
+                    for (Deck subDeck : subDecks) {
+                        if(subDeck.getName().equals(deck.getName())) {
+                            subDeck.setCards(cards);
+                        }
+                    }
+                    parentDeck.setSubDecks(subDecks);
+                    deckDoc.set(parentDeck);
+                });
     }
 
     @Override
@@ -348,6 +371,10 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
         int i = cards.indexOf(card);
         cards.remove(card);
         cardAdapter.notifyItemRemoved(i);
-        deckDoc.update(Constants.KEY_CARDS, FieldValue.arrayRemove(card));
+        if(deck.getParentDeck() == null) {
+            deckDoc.update(Constants.KEY_CARDS, FieldValue.arrayRemove(card));
+        } else {
+            updateCardsInSubDeck();
+        }
     }
 }

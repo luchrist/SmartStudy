@@ -196,6 +196,7 @@ public class PractiseFragment extends Fragment {
             if (currentCard.getType().equals(CardType.MATCHING)) {
                 showCard(getCardDependingOnDifficultyInPast());
                 continueButton.setVisibility(View.GONE);
+                backCard.setError(null);
             }
         });
     }
