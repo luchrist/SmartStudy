@@ -114,6 +114,9 @@
     <string name="shared_files">Shared Files</string>
     <string name="time_left">Time Left:</string>
     <string name="exam_name">Exam Name</string>
+    <string name="forgot_pw_title">FORGOT PASSWORD</string>
+    <string name="reset_pw">RESET PASSWORD</string>
+    <string name="back">back</string>
 </resources>
 
     <!---->

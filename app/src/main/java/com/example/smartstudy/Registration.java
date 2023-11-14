@@ -111,7 +111,10 @@ public class Registration extends AppCompatActivity {
                                         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                                         preferenceManager.putString(Constants.KEY_EMAIL, email);
                                         preferenceManager.putString(Constants.KEY_USER_NAME, username);
-                                        preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
+                                        if (encodedImage != null) {
+                                            preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
+                                        }
+                                        preferenceManager.putBoolean(Constants.KEY_TUTORIAL, true);
                                         showToast("Account created");
                                         Intent intent = new Intent(getApplicationContext(), Login.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -130,10 +133,7 @@ public class Registration extends AppCompatActivity {
     }
 
     private Boolean isValidSignUpDetails() {
-        if (encodedImage == null) {
-            showToast("Please upload a profile picture");
-            return false;
-        } else if (usernameInput.getText().toString().trim().isEmpty()) {
+        if (usernameInput.getText().toString().trim().isEmpty()) {
             showToast("Please enter a username");
             return false;
         } else if (emailInput.getText().toString().trim().isEmpty()) {

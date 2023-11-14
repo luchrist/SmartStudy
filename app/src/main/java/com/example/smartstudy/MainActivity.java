@@ -178,7 +178,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     });
             displayCurrentUserPoints();
             updateEventsFromGroups();
+            if(preferenceManager.getBoolean(Constants.KEY_TUTORIAL)) {
+                tuturial();
+            }
         }
+    }
+
+    private void tuturial() {
+
     }
 
     private void displayCurrentUserPoints() {

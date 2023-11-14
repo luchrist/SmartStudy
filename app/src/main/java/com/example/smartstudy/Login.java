@@ -52,6 +52,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             startActivity(intent);
             finish();
         });
+        binding.forgot.setOnClickListener(v -> {
+            Intent intent = new Intent(Login.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+            finish();
+        });
     }
 
     @Override
