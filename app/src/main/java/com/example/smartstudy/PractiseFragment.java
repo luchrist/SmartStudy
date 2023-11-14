@@ -153,21 +153,16 @@ public class PractiseFragment extends Fragment {
                 cardCount++;
                 correctAnswers += 0.5;
                 correctnessRatio.setText(correctAnswers + "/" + cardCount);
+                pullCardFromList(currentCard);
                 if (currentCard.getCertainty() < 0) {
-                    pullCardFromList(currentCard);
                     currentCard.setCertainty(currentCard.getCertainty() + 1);
-                    currentCard.incrementMediumAnswers();
-                    findCardsDeckAndUpdateDeck(currentCard);
-                    pushCardToCorrectList(currentCard);
                 } else {
-                    pullCardFromList(currentCard);
                     currentCard.setCertainty(currentCard.getCertainty() - 1);
-                    currentCard.incrementMediumAnswers();
-                    pushCardToCorrectList(currentCard);
-                    findCardsDeckAndUpdateDeck(currentCard);
                 }
+                pushCardToCorrectList(currentCard);
                 currentCard.incrementMediumAnswers();
                 currentCard.incrementTotalRequests();
+                findCardsDeckAndUpdateDeck(currentCard);
                 showCard(getCardDependingOnDifficultyInPast());
                 addPoints(5);
             }

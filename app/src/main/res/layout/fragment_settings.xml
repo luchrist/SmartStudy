@@ -9,13 +9,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background_content_bottom">
+
         <TextView
             android:id="@+id/textView40"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_25sdp"
             android:padding="@dimen/_12sdp"
-            android:text="How much time do you want to learn straight?"
+            android:text="How much time do you want to study without breaks?"
+            android:textAlignment="center"
             android:textColor="@color/primaryText"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"

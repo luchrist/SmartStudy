@@ -176,9 +176,6 @@ public class CreateDeckDialog extends DialogFragment {
                 if(deckNameString.isEmpty()) {
                     deckName.setError("Deck name cannot be empty");
                 } else {
-                    if(deckNameString == null) {
-                        deckNameString = deckName.getText().toString().trim();
-                    }
                     if (parentDeck == null) {
                         Deck deck = new Deck(deckNameString, cards, subDecks, deckNameString);
                         deckCollection.document(deckNameString).set(deck);
@@ -191,7 +188,11 @@ public class CreateDeckDialog extends DialogFragment {
                         parentDeck.setSubDecks(decks);
                         String[] pathParts = parentDeck.getPath().split(":");
                         DocumentReference deckDoc = deckCollection.document(pathParts[0]);
-                        updateDeckInSubDeck(parentDeck, pathParts, deckDoc);
+                        if(pathParts.length > 1) {
+                            updateDeckInSubDeck(parentDeck, pathParts, deckDoc);
+                        } else {
+                            deckDoc.set(parentDeck);
+                        }
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                                 new EditDeckFragment(parentDeck)).commit();
                     }
