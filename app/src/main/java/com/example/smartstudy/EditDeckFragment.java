@@ -20,7 +20,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.smartstudy.adapters.CardAdapter;
 import com.example.smartstudy.adapters.CardStatsAdapter;
@@ -32,10 +31,7 @@ import com.example.smartstudy.utilities.CardSelectListener;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.DeckSelectListener;
 import com.example.smartstudy.utilities.PreferenceManager;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -60,7 +56,8 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
     private FirebaseFirestore db;
     private PreferenceManager preferenceManager;
     private int selectedColor;
-    private DocumentReference deckDoc;
+    private DocumentReference masterDeckDoc;
+    private String[] pathParts;
 
     public EditDeckFragment(Deck deck) {
         this.deck = deck;
@@ -72,19 +69,11 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
         db = FirebaseFirestore.getInstance();
         preferenceManager = new PreferenceManager(requireContext());
         selectedColor = ContextCompat.getColor(getContext(), R.color.accentBlue);
-        CollectionReference deckCol = db.collection(Constants.KEY_COLLECTION_USERS)
+        pathParts = deck.getPath().split(":");
+        masterDeckDoc = db.collection(Constants.KEY_COLLECTION_USERS)
                 .document(preferenceManager.getString(Constants.KEY_EMAIL))
-                .collection(Constants.KEY_COLLECTION_DECKS);
-        if(deck.getParentDeck() == null) {
-            deckDoc = deckCol
-                    .document(deck.getName());
-        } else {
-            deckDoc = db.collection(Constants.KEY_COLLECTION_USERS)
-                    .document(preferenceManager.getString(Constants.KEY_EMAIL))
-                    .collection(Constants.KEY_COLLECTION_DECKS)
-                    .document(deck.getParentDeck());
-        }
-
+                .collection(Constants.KEY_COLLECTION_DECKS)
+                .document(pathParts[0]);
     }
 
     @Override
@@ -149,31 +138,17 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
     public void onDestroy() {
         super.onDestroy();
         String deckName = deckNameTitle.getText().toString().trim();
-        if(deck.getParentDeck() == null) {
-            deckDoc.delete();
+        if(pathParts.length == 1) {
+            masterDeckDoc.delete();
             deck.setName(deckName);
             for (Deck subDeck : deck.getSubDecks()) {
-                subDeck.setParentDeck(deckName);
+                subDeck.setPath(deckName);
             }
             db.collection(Constants.KEY_COLLECTION_USERS)
                     .document(preferenceManager.getString(Constants.KEY_EMAIL))
                     .collection(Constants.KEY_COLLECTION_DECKS).document(deckName).set(deck);
         } else {
-            deckDoc.get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        Deck parentDeck = documentSnapshot.toObject(Deck.class);
-                        List<Deck> parentSubDecks = parentDeck.getSubDecks();
-                        parentSubDecks = parentSubDecks.stream()
-                                .filter(s -> !s.getName().equals(deck.getName()))
-                                .collect(Collectors.toList());
-                        deck.setName(deckName);
-                        for (Deck subDeck : deck.getSubDecks()) {
-                            subDeck.setParentDeck(deckName);
-                        }
-                        parentSubDecks.add(deck);
-                        parentDeck.setSubDecks(parentSubDecks);
-                        deckDoc.set(parentDeck);
-                    });
+            updateDeckInSubDeck();
         }
     }
 
@@ -271,21 +246,11 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
                 .setTitle("Delete Deck")
                 .setMessage("Are you sure you want to delete this subDeck?")
                 .setPositiveButton("Delete", (dialog1, which) -> {
-                    deckDoc
-                        .update(Constants.KEY_SUB_DECKS, FieldValue.arrayRemove(subDeck))
-                        .addOnSuccessListener(unused -> {
-                            int index = subDecks.indexOf(subDeck);
-                            subDecks.remove(subDeck);
-                            deckAdapter.notifyItemRemoved(index);
-                        })
-                        .addOnFailureListener(e -> {
-                            new AlertDialog.Builder(requireContext())
-                                    .setTitle("Error")
-                                    .setMessage("Failed to delete subDeck")
-                                    .setPositiveButton("Ok", null)
-                                    .show();
-                        });
-                })
+                    int index = subDecks.indexOf(subDeck);
+                    subDecks.remove(subDeck);
+                    deckAdapter.notifyItemRemoved(index);
+                    deck.setSubDecks(subDecks);
+                    updateDeckInSubDeck();})
                 .setNegativeButton("Cancel", null)
                 .show();
     }
@@ -302,10 +267,11 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
         card.setPaused(!card.isPaused());
         cards.set(i, card);
         cardAdapter.notifyItemChanged(i);
-        if(deck.getParentDeck() == null) {
-            deckDoc.update(Constants.KEY_CARDS, cards);
+        deck.setCards(cards);
+        if(pathParts.length == 1) {
+            masterDeckDoc.update(Constants.KEY_CARDS, cards);
         } else {
-            updateCardsInSubDeck();
+            updateDeckInSubDeck();
         }
     }
 
@@ -340,10 +306,11 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
                     card.setType(cardType);
                     cards.set(i, card);
                     cardAdapter.notifyItemChanged(i);
-                    if(deck.getParentDeck() == null) {
-                        deckDoc.update(Constants.KEY_CARDS, cards);
+                    deck.setCards(cards);
+                    if(pathParts.length == 1) {
+                        masterDeckDoc.update(Constants.KEY_CARDS, cards);
                     } else {
-                        updateCardsInSubDeck();
+                        updateDeckInSubDeck();
                     }
                 })
                 .setNegativeButton("Cancel", null)
@@ -351,19 +318,39 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
                 .show();
     }
 
-    private void updateCardsInSubDeck() {
-        deckDoc.get()
+    private void updateDeckInSubDeck() {
+        masterDeckDoc.get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    Deck parentDeck = documentSnapshot.toObject(Deck.class);
-                    List<Deck> subDecks = parentDeck.getSubDecks();
-                    for (Deck subDeck : subDecks) {
-                        if(subDeck.getName().equals(deck.getName())) {
-                            subDeck.setCards(cards);
+                    Deck masterDeck = documentSnapshot.toObject(Deck.class);
+                    ArrayList<Deck> decks = new ArrayList<>();
+                    decks.add(masterDeck);
+                    if (pathParts.length > 2) {
+                        for (int i = 1; i < pathParts.length-1; i++) {
+                            int finalI = i;
+                            decks.add(decks.get(decks.size()-1).getSubDecks().stream()
+                                    .filter(subDeck -> subDeck.getName().equals(pathParts[finalI]))
+                                    .findFirst().get());
                         }
                     }
-                    parentDeck.setSubDecks(subDecks);
-                    deckDoc.set(parentDeck);
-                });
+                    decks.add(deck);
+                    List<Deck> masterSubs = new ArrayList<>();
+                    for (int j = decks.size() -1; j > 0; j--) {
+                        int finalJ = j;
+                        masterSubs = decks.get(j-1).getSubDecks().stream()
+                                .filter(subDeck -> !subDeck.getName().equals(decks.get(finalJ).getName()))
+                                .collect(Collectors.toList());
+                        masterSubs.add(decks.get(j));
+                        decks.get(j-1).setSubDecks(masterSubs);
+                    }
+                    masterDeck.setSubDecks(masterSubs);
+                    masterDeckDoc.set(masterDeck);
+                }).addOnFailureListener(e -> {
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Error")
+                            .setMessage("Failed to update deck. Please try again.")
+                            .setPositiveButton("Ok", null)
+                            .show();
+                    });
     }
 
     @Override
@@ -371,10 +358,11 @@ public class EditDeckFragment extends Fragment implements DeckSelectListener, Ca
         int i = cards.indexOf(card);
         cards.remove(card);
         cardAdapter.notifyItemRemoved(i);
-        if(deck.getParentDeck() == null) {
-            deckDoc.update(Constants.KEY_CARDS, FieldValue.arrayRemove(card));
+        deck.setCards(cards);
+        if(pathParts.length == 1) {
+            masterDeckDoc.update(Constants.KEY_CARDS, FieldValue.arrayRemove(card));
         } else {
-            updateCardsInSubDeck();
+            updateDeckInSubDeck();
         }
     }
 }

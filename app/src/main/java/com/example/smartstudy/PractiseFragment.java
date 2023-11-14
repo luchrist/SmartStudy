@@ -1,5 +1,6 @@
 package com.example.smartstudy;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 
 public class PractiseFragment extends Fragment {
@@ -35,6 +37,7 @@ public class PractiseFragment extends Fragment {
     private AppCompatButton mediumButton;
     private AppCompatImageButton correct, wrong, submitAnswer, flipCard, continueButton;
     private final Deck deck;
+    private Deck deckOfCard;
     private Card currentCard;
     private List<Card> allCards, reallyBadCards, badCards, mediumCards, goodCards, reallyGoodCards;
     private int cardCount;
@@ -43,6 +46,7 @@ public class PractiseFragment extends Fragment {
     private PreferenceManager preferenceManager;
     private String currentUserMail;
     private DocumentReference deckDoc;
+    private String[] pathParts;
 
     public PractiseFragment(Deck deck) {
         this.deck = deck;
@@ -66,13 +70,11 @@ public class PractiseFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         preferenceManager = new PreferenceManager(getContext());
         currentUserMail = preferenceManager.getString(Constants.KEY_EMAIL);
-        if (deck.getParentDeck() != null) {
-            deckDoc = db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserMail)
-                    .collection(Constants.KEY_COLLECTION_DECKS).document(deck.getParentDeck());
-        } else {
-            deckDoc = db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserMail)
-                    .collection(Constants.KEY_COLLECTION_DECKS).document(deck.getName());
-        }
+
+        pathParts = deck.getPath().split(":");
+        deckDoc = db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserMail)
+                .collection(Constants.KEY_COLLECTION_DECKS).document(pathParts[0]);
+
         setListeners();
 
         allCards = deck.returnAllCards();
@@ -154,13 +156,15 @@ public class PractiseFragment extends Fragment {
                 if (currentCard.getCertainty() < 0) {
                     pullCardFromList(currentCard);
                     currentCard.setCertainty(currentCard.getCertainty() + 1);
-                    updateCardCertaintyInDB(currentCard, 1);
+                    currentCard.incrementMediumAnswers();
+                    findCardsDeckAndUpdateDeck(currentCard);
                     pushCardToCorrectList(currentCard);
                 } else {
                     pullCardFromList(currentCard);
                     currentCard.setCertainty(currentCard.getCertainty() - 1);
-                    updateCardCertaintyInDB(currentCard, -1);
+                    currentCard.incrementMediumAnswers();
                     pushCardToCorrectList(currentCard);
+                    findCardsDeckAndUpdateDeck(currentCard);
                 }
                 currentCard.incrementMediumAnswers();
                 currentCard.incrementTotalRequests();
@@ -207,13 +211,13 @@ public class PractiseFragment extends Fragment {
         if (currentCard.getCertainty() > 5) {
             currentCard.setCertainty(5);
         }
-        updateCardCertaintyInDB(currentCard, 2);
         pushCardToCorrectList(currentCard);
         currentCard.incrementTotalRequests();
         currentCard.incrementRightAnswers();
+        findCardsDeckAndUpdateDeck(currentCard);
     }
 
-    private void updateCardCertaintyInDB(Card currentC, int i) {
+    private void findCardsDeckAndUpdateDeck(Card currentC) {
         deckDoc.get().addOnSuccessListener(documentSnapshot -> {
             Deck deck = documentSnapshot.toObject(Deck.class);
             Optional<Card> foundCard = Optional.empty();
@@ -226,13 +230,14 @@ public class PractiseFragment extends Fragment {
                             .findFirst();
                 }
                 if (foundCard.isPresent()) {
-                    Card card = foundCard.get();
-                    card.setCertainty(currentC.getCertainty());
-                    card.incrementTotalRequests();
-                    incrementRightStack(card, i);
-                    deckDoc.set(deck);
+                    List<Card> cards = deck.getCards();
+                    cards.remove(foundCard.get());
+                    cards.add(currentC);
+                    deck.setCards(cards);
+                    pathParts = deck.getPath().split(":");
+                    updateDeckInSubDeck(deck);
                 } else {
-                    updateCardInSubDeck(deck, deck.getSubDecks(), currentC, i);
+                    updateCardInSubDeck(deck, deck.getSubDecks(), currentC);
                 }
             }
         }).addOnFailureListener(e -> {
@@ -255,7 +260,7 @@ public class PractiseFragment extends Fragment {
                 && card.getType().equals(currentC.getType()) && card.isReversed() == currentC.isReversed();
     }
 
-    private void updateCardInSubDeck(Deck deck, List<Deck> subDecks, Card currentC, int i) {
+    private void updateCardInSubDeck(Deck deck, List<Deck> subDecks, Card currentC) {
         if(subDecks == null){
             return;
         }
@@ -264,19 +269,15 @@ public class PractiseFragment extends Fragment {
                     .filter(card -> checkEquality(card, currentC))
                     .findFirst();
             if (foundCard.isPresent()) {
-                Card card = foundCard.get();
-                subDecks.remove(subDeck);
-                subDeck.getCards().remove(card);
-                card.setCertainty(currentC.getCertainty());
-                card.incrementTotalRequests();
-                incrementRightStack(card, i);
-                subDeck.getCards().add(card);
-                subDecks.add(subDeck);
-                deck.setSubDecks(subDecks);
-                deckDoc.set(deck);
+                List<Card> cards = subDeck.getCards();
+                cards.remove(foundCard.get());
+                cards.add(currentC);
+                subDeck.setCards(cards);
+                pathParts = subDeck.getPath().split(":");
+                updateDeckInSubDeck(subDeck);
                 return;
             } else {
-                updateCardInSubDeck(deck, subDeck.getSubDecks(), currentC, i);
+                updateCardInSubDeck(deck, subDeck.getSubDecks(), currentC);
             }
         }
     }
@@ -287,10 +288,10 @@ public class PractiseFragment extends Fragment {
         if (currentCard.getCertainty() < -5) {
             currentCard.setCertainty(-5);
         }
-        updateCardCertaintyInDB(currentCard, -2);
         pushCardToCorrectList(currentCard);
         currentCard.incrementWrongAnswers();
         currentCard.incrementTotalRequests();
+        findCardsDeckAndUpdateDeck(currentCard);
     }
 
     private void showCard(Card randomCard) {
@@ -370,5 +371,44 @@ public class PractiseFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(Constants.KEY_COLLECTION_USERS)
                 .document(currentUserEmail).update(Constants.KEY_POINTS, FieldValue.increment(points));
+    }
+
+    private void updateDeckInSubDeck() {
+        updateDeckInSubDeck(deck);
+    }
+
+    private void updateDeckInSubDeck(Deck lowestDeck) {
+        deckDoc.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Deck masterDeck = documentSnapshot.toObject(Deck.class);
+                    ArrayList<Deck> decks = new ArrayList<>();
+                    decks.add(masterDeck);
+                    if (pathParts.length > 2) {
+                        for (int i = 1; i < pathParts.length-1; i++) {
+                            int finalI = i;
+                            decks.add(decks.get(decks.size()-1).getSubDecks().stream()
+                                    .filter(subDeck -> subDeck.getName().equals(pathParts[finalI]))
+                                    .findFirst().get());
+                        }
+                    }
+                    decks.add(lowestDeck);
+                    List<Deck> masterSubs = new ArrayList<>();
+                    for (int j = decks.size() -1; j > 0; j--) {
+                        int finalJ = j;
+                        masterSubs = decks.get(j-1).getSubDecks().stream()
+                                .filter(subDeck -> !subDeck.getName().equals(decks.get(finalJ).getName()))
+                                .collect(Collectors.toList());
+                        masterSubs.add(decks.get(j));
+                        decks.get(j-1).setSubDecks(masterSubs);
+                    }
+                    masterDeck.setSubDecks(masterSubs);
+                    deckDoc.set(masterDeck);
+                }).addOnFailureListener(e -> {
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Error")
+                            .setMessage("Failed to update deck. Please try again.")
+                            .setPositiveButton("Ok", null)
+                            .show();
+                });
     }
 }

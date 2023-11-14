@@ -1,7 +1,6 @@
 package com.example.smartstudy.models;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -9,13 +8,13 @@ public class Deck {
     private String name;
     private List<Card> cards;
     private List<Deck> subDecks;
-    private String parentDeck;
+    private String path;
 
-    public Deck(String name, List<Card> cards, List<Deck> subDecks, String parentDeck) {
+    public Deck(String name, List<Card> cards, List<Deck> subDecks, String path) {
         this.name = name;
         this.cards = cards;
         this.subDecks = subDecks;
-        this.parentDeck = parentDeck;
+        this.path = path;
     }
 
     public Deck() {
@@ -64,12 +63,12 @@ public class Deck {
         this.subDecks = subDecks;
     }
 
-    public String getParentDeck() {
-        return parentDeck;
+    public String getPath() {
+        return path;
     }
 
-    public void setParentDeck(String parentDeck) {
-        this.parentDeck = parentDeck;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public void addCard(Card card) {

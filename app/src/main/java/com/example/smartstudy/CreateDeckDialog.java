@@ -23,6 +23,7 @@ import com.example.smartstudy.models.Deck;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -149,7 +150,12 @@ public class CreateDeckDialog extends DialogFragment {
                                 Card reversedCard = new Card(backString, frontString, cardType, true);
                                 newCards.add(reversedCard);
                             }
-                            Deck newDeck = new Deck(subDeck, newCards, new ArrayList<>(), deckNameString);
+                            Deck newDeck;
+                            if(parentDeck == null) {
+                                newDeck = new Deck(subDeck, newCards, new ArrayList<>(), String.format("%s:%s", deckNameString, subDeck));
+                            } else {
+                                newDeck = new Deck(subDeck, newCards, new ArrayList<>(), String.format("%s:%s:%s", parentDeck.getPath(), deckNameString, subDeck));
+                            }
                             subDecks.add(newDeck);
                             subDeckNames.add(subDeck);
                             setUpSupDeckNameAutoComplete();
@@ -174,16 +180,18 @@ public class CreateDeckDialog extends DialogFragment {
                         deckNameString = deckName.getText().toString().trim();
                     }
                     if (parentDeck == null) {
-                        Deck deck = new Deck(deckNameString, cards, subDecks, null);
+                        Deck deck = new Deck(deckNameString, cards, subDecks, deckNameString);
                         deckCollection.document(deckNameString).set(deck);
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                                 new StudyFragment()).commit();
                     } else {
-                        Deck deck = new Deck(deckNameString, cards, subDecks, parentDeck.getName());
+                        Deck deck = new Deck(deckNameString, cards, subDecks, String.format("%s:%s", parentDeck.getPath(), deckNameString));
                         List<Deck> decks = parentDeck.getSubDecks();
                         decks.add(deck);
                         parentDeck.setSubDecks(decks);
-                        deckCollection.document(parentDeck.getName()).set(parentDeck);
+                        String[] pathParts = parentDeck.getPath().split(":");
+                        DocumentReference deckDoc = deckCollection.document(pathParts[0]);
+                        updateDeckInSubDeck(parentDeck, pathParts, deckDoc);
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                                 new EditDeckFragment(parentDeck)).commit();
                     }
@@ -205,6 +213,41 @@ public class CreateDeckDialog extends DialogFragment {
         });
         dialog.show();
         return dialog;
+    }
+
+    private void updateDeckInSubDeck(Deck lowestDeck, String[] pathParts, DocumentReference deckDoc) {
+        deckDoc.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Deck masterDeck = documentSnapshot.toObject(Deck.class);
+                    ArrayList<Deck> decks = new ArrayList<>();
+                    decks.add(masterDeck);
+                    if (pathParts.length > 2) {
+                        for (int i = 1; i < pathParts.length-1; i++) {
+                            int finalI = i;
+                            decks.add(decks.get(decks.size()-1).getSubDecks().stream()
+                                    .filter(subDeck -> subDeck.getName().equals(pathParts[finalI]))
+                                    .findFirst().get());
+                        }
+                    }
+                    decks.add(lowestDeck);
+                    List<Deck> masterSubs = new ArrayList<>();
+                    for (int j = decks.size() -1; j > 0; j--) {
+                        int finalJ = j;
+                        masterSubs = decks.get(j-1).getSubDecks().stream()
+                                .filter(subDeck -> !subDeck.getName().equals(decks.get(finalJ).getName()))
+                                .collect(Collectors.toList());
+                        masterSubs.add(decks.get(j));
+                        decks.get(j-1).setSubDecks(masterSubs);
+                    }
+                    masterDeck.setSubDecks(masterSubs);
+                    deckDoc.set(masterDeck);
+                }).addOnFailureListener(e -> {
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Error")
+                            .setMessage("Failed to update deck. Please try again.")
+                            .setPositiveButton("Ok", null)
+                            .show();
+                });
     }
 
     //need it when I accept more then a depth of 2

@@ -14,7 +14,6 @@ import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.smartstudy.models.Card;
@@ -23,10 +22,12 @@ import com.example.smartstudy.models.Deck;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class CreateCardDialog extends DialogFragment {
@@ -42,6 +43,8 @@ public class CreateCardDialog extends DialogFragment {
     private List<String> subDeckNames;
     private ArrayAdapter<String> adapter;
     private final Deck parentDeck;
+    private String[] pathParts;
+    private DocumentReference masterDeckDoc;
 
     public CreateCardDialog(Deck parentDeck) {
         this.parentDeck = parentDeck;
@@ -68,7 +71,11 @@ public class CreateCardDialog extends DialogFragment {
 
         db = FirebaseFirestore.getInstance();
         preferenceManager = new PreferenceManager(getContext());
-        CollectionReference deckCollection = db.collection(Constants.KEY_COLLECTION_USERS).document(preferenceManager.getString(Constants.KEY_EMAIL)).collection(Constants.KEY_COLLECTION_DECKS);
+        pathParts = parentDeck.getPath().split(":");
+        masterDeckDoc = db.collection(Constants.KEY_COLLECTION_USERS)
+                .document(preferenceManager.getString(Constants.KEY_EMAIL))
+                .collection(Constants.KEY_COLLECTION_DECKS)
+                .document(pathParts[0]);
 
         AlertDialog dialog = new AlertDialog.Builder(getContext()).setView(view).setTitle("Create New Cards")
                 // Pass null as the parent view because its going in the dialog layout
@@ -119,7 +126,7 @@ public class CreateCardDialog extends DialogFragment {
                             Card reversedCard = new Card(backString, frontString, cardType, true);
                             newCards.add(reversedCard);
                         }
-                        Deck newDeck = new Deck(subDeck, newCards, new ArrayList<>(), parentDeck.getName());
+                        Deck newDeck = new Deck(subDeck, newCards, new ArrayList<>(), String.format("%s:%s", parentDeck.getPath(), subDeck));
                         subDecks.add(newDeck);
                         subDeckNames.add(subDeck);
                         setUpSupDeckNameAutoComplete();
@@ -136,20 +143,10 @@ public class CreateCardDialog extends DialogFragment {
                 if (nextClicked) {
                     parentDeck.setCards(cards);
                     parentDeck.setSubDecks(subDecks);
-                    if(parentDeck.getParentDeck() == null) {
-                        deckCollection.document(parentDeck.getName()).set(parentDeck);
+                    if(pathParts.length == 1) {
+                        masterDeckDoc.set(parentDeck);
                     } else {
-                        deckCollection.document(parentDeck.getParentDeck()).get()
-                                .addOnSuccessListener(documentSnapshot -> {
-                                    Deck masterDeck = documentSnapshot.toObject(Deck.class);
-                                    List<Deck> subDecks = masterDeck.getSubDecks();
-                                    subDecks = subDecks.stream()
-                                            .filter(subDeck -> !subDeck.getName().equals(parentDeck.getName()))
-                                            .collect(Collectors.toList());
-                                    subDecks.add(parentDeck);
-                                    masterDeck.setSubDecks(subDecks);
-                                    deckCollection.document(masterDeck.getName()).set(masterDeck);
-                                });
+                        updateDeckInSubDeck();
                     }
 
                 }
@@ -168,6 +165,41 @@ public class CreateCardDialog extends DialogFragment {
         });
         dialog.show();
         return dialog;
+    }
+
+    private void updateDeckInSubDeck() {
+        masterDeckDoc.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Deck masterDeck = documentSnapshot.toObject(Deck.class);
+                    ArrayList<Deck> decks = new ArrayList<>();
+                    decks.add(masterDeck);
+                    if (pathParts.length > 2) {
+                        for (int i = 1; i < pathParts.length-1; i++) {
+                            int finalI = i;
+                            decks.add(decks.get(decks.size()-1).getSubDecks().stream()
+                                    .filter(subDeck -> subDeck.getName().equals(pathParts[finalI]))
+                                    .findFirst().get());
+                        }
+                    }
+                    decks.add(parentDeck);
+                    List<Deck> masterSubs = new ArrayList<>();
+                    for (int j = decks.size() -1; j > 0; j--) {
+                        int finalJ = j;
+                        masterSubs = decks.get(j-1).getSubDecks().stream()
+                                .filter(subDeck -> !subDeck.getName().equals(decks.get(finalJ).getName()))
+                                .collect(Collectors.toList());
+                        masterSubs.add(decks.get(j));
+                        decks.get(j-1).setSubDecks(masterSubs);
+                    }
+                    masterDeck.setSubDecks(masterSubs);
+                    masterDeckDoc.set(masterDeck);
+                }).addOnFailureListener(e -> {
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Error")
+                            .setMessage("Failed to update deck. Please try again.")
+                            .setPositiveButton("Ok", null)
+                            .show();
+                });
     }
 
     private void setUpSupDeckNameAutoComplete() {
