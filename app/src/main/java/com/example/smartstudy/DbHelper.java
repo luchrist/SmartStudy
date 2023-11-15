@@ -26,6 +26,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ROOM = "room";
     public static final String COLUMN_BEGIN = "starttime";
     public static final String COLUMN_END = "endtime";
+    public static final String COLUMN_COLOUR = "colour";
 
     public DbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -42,7 +43,8 @@ public class DbHelper extends SQLiteOpenHelper {
                     COLUMN_END + " TEXT NOT NULL, " +
                     COLUMN_DAY + " TEXT NOT NULL, " +
                     COLUMN_ROOM + " TEXT, " +
-                    COLUMN_TEACHER + " TEXT);";
+                    COLUMN_TEACHER + " TEXT, " +
+                    COLUMN_COLOUR + " TEXT);";
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -55,7 +57,7 @@ public class DbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    void addTimeTableObject(String sub, String beg, String end, String day, String room, String teach){
+    void addTimeTableObject(String sub, String beg, String end, String day, String room, String teach, String colour){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_SUBJECT, sub);
@@ -64,6 +66,7 @@ public class DbHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_DAY, day);
         contentValues.put(COLUMN_ROOM, room);
         contentValues.put(COLUMN_TEACHER, teach);
+        contentValues.put(COLUMN_COLOUR, colour);
         if(sub.length() != 0 && beg.length() != 0 && end.length() != 0){
             long result = db.insert(TABLE, null, contentValues);
             if(result == -1){
@@ -76,7 +79,7 @@ public class DbHelper extends SQLiteOpenHelper {
         }
 
     }
-    void updateTimetableObject(String id, String sub, String beg, String end, String day, String room, String teach){
+    void updateTimetableObject(String id, String sub, String beg, String end, String day, String room, String teach, String colour){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_SUBJECT, sub);
@@ -85,6 +88,7 @@ public class DbHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_DAY, day);
         contentValues.put(COLUMN_ROOM, room);
         contentValues.put(COLUMN_TEACHER, teach);
+        contentValues.put(COLUMN_COLOUR, colour);
 
         if(sub.length() != 0 && beg.length() != 0 && end.length() != 0){
             long result = db.update(TABLE,contentValues, "id=?", new String[]{id});

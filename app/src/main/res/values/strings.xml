@@ -9,12 +9,13 @@
     <string name="facebook_application_id" translatable="false">1:1030104945757:android:5c5eb6eea4135a866829b4</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb1:1030104945757:android:5c5eb6eea4135a866829b4</string>
     <string-array name="weekdays">
-        <item>Monday</item>
-        <item>Tuesday</item>
-        <item>Wednesday</item>
-        <item>Thursday</item>
-        <item>Friday</item>
-        <item>Weekend</item>
+        <item>MONDAY</item>
+        <item>TUESDAY</item>
+        <item>WEDNESDAY</item>
+        <item>THURSDAY</item>
+        <item>FRIDAY</item>
+        <item>SATURDAY</item>
+        <item>SUNDAY</item>
     </string-array>
     <string-array name="cardCategories">
         <item>"all"</item>
@@ -32,6 +33,7 @@
         <item>orange</item>
         <item>pink</item>
         <item>purple</item>
+        <item>grey</item>
     </string-array>
     <string-array name="times">
         <item>0.0</item>

@@ -15,12 +15,12 @@ import androidx.fragment.app.DialogFragment;
 
 public class UpdateLesson extends DialogFragment {
     EditText lesson, timeBegin, timeTo, room, teacher;
-    Spinner day;
-    String weekday, sub, beg, end, roomtext, teach, id;
+    Spinner day, colour;
+    String weekday, sub, beg, end, roomtext, teach, id, colString;
 
 
 
-    public UpdateLesson(String day, String sub, String beg, String end, String room, String teach, String id) {
+    public UpdateLesson(String day, String sub, String beg, String end, String room, String teach, String id, String colour) {
         weekday = day;
         this.sub = sub;
         this.beg = beg;
@@ -28,7 +28,7 @@ public class UpdateLesson extends DialogFragment {
         this.roomtext = room;
         this.teach = teach;
         this.id = id;
-
+        this.colString = colour;
     }
 
     @Override
@@ -41,6 +41,7 @@ public class UpdateLesson extends DialogFragment {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         day = (Spinner) view.findViewById(R.id.day);
+        colour = (Spinner) view.findViewById(R.id.colour);
         lesson = (EditText) view.findViewById(R.id.lesson);
         room = (EditText) view.findViewById(R.id.room);
         timeBegin = (EditText) view.findViewById(R.id.timeBegin);
@@ -55,8 +56,13 @@ public class UpdateLesson extends DialogFragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
         day.setAdapter(adapter);
+        ArrayAdapter<CharSequence> adapterCol = ArrayAdapter.createFromResource(this.getContext(),
+                R.array.colours, android.R.layout.simple_spinner_item);
+        adapterCol.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        colour.setAdapter(adapterCol);
 
         day.setSelection(dayToInt(weekday));
+        colour.setSelection(colToInt(colString));
         lesson.setText(sub);
         timeBegin.setText(beg);
         timeTo.setText(end);
@@ -71,7 +77,8 @@ public class UpdateLesson extends DialogFragment {
                         DbHelper dbHelper = new DbHelper(getActivity());
                         dbHelper.updateTimetableObject(id, lesson.getText().toString(),
                                 timeBegin.getText().toString(), timeTo.getText().toString()
-                                , day.getSelectedItem().toString(), room.getText().toString(), teacher.getText().toString());
+                                , day.getSelectedItem().toString(), room.getText().toString(), teacher.getText().toString(),
+                                colour.getSelectedItem().toString());
 
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                                 new TimetableFragment()).commit();
@@ -96,6 +103,28 @@ public class UpdateLesson extends DialogFragment {
 
         // Create the AlertDialog object and return it
         return builder.create();
+    }
+
+    private int colToInt(String colString) {
+        switch (colString){
+            case "Red":
+                return 0;
+            case "Blue":
+                return 1;
+            case "Green":
+                return 2;
+            case "Yellow":
+                return 3;
+            case "Brown":
+                return 4;
+            case "Orange":
+                return 5;
+            case "Pink":
+                return 6;
+            case "Purple":
+                return 7;
+        }
+        return 8;
     }
 
     private int dayToInt(String weekday) {

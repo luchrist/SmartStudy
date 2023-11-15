@@ -15,7 +15,12 @@ import androidx.fragment.app.DialogFragment;
 public class AddLesson extends DialogFragment{
 
     EditText lesson, timeBegin, timeTo, room, teacher;
-    Spinner day;
+    Spinner day, colour;
+    private final String dayOfWeek;
+
+    public AddLesson(String day) {
+        dayOfWeek = day;
+    }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -27,6 +32,7 @@ public class AddLesson extends DialogFragment{
             // Use the Builder class for convenient dialog construction
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             day = (Spinner) view.findViewById(R.id.day);
+            colour = (Spinner) view.findViewById(R.id.colour);
             lesson = (EditText) view.findViewById(R.id.lesson);
             room = (EditText) view.findViewById(R.id.room);
             timeBegin = (EditText) view.findViewById(R.id.timeBegin);
@@ -39,6 +45,11 @@ public class AddLesson extends DialogFragment{
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
             day.setAdapter(adapter);
+            day.setSelection(adapter.getPosition(dayOfWeek));
+            ArrayAdapter<CharSequence> adapterCol = ArrayAdapter.createFromResource(this.getContext(),
+                    R.array.colours, android.R.layout.simple_spinner_item);
+            adapterCol.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            colour.setAdapter(adapterCol);
             builder.setTitle("Add a Lesson")
                     // Pass null as the parent view because its going in the dialog layout
                     .setView(view)
@@ -52,7 +63,8 @@ public class AddLesson extends DialogFragment{
                                     timeTo.getText().toString(),
                                     day.getSelectedItem().toString(),
                                     room.getText().toString(),
-                                    teacher.getText().toString());
+                                    teacher.getText().toString(),
+                                    colour.getSelectedItem().toString());
                             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
                                     new TimetableFragment()).commit();
                         }

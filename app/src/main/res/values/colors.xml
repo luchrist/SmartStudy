@@ -34,4 +34,12 @@
     <color name="reallyBad">#D30000</color>
     <color name="bad">#EA0000</color>
     <color name="medium">#E38700</color>
+    <color name="red">#FF4F42</color>
+    <color name="blueLight">#8DDCFF</color>
+    <color name="green">#97E39A</color>
+    <color name="yellow">#FFF7AF</color>
+    <color name="brown">#D8914B</color>
+    <color name="orange">#FFBC41</color>
+    <color name="pink">#FFB6C1</color>
+    <color name="purple">#D3BFF8</color>
 </resources>
