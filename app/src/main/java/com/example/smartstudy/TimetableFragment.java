@@ -2,7 +2,9 @@ package com.example.smartstudy;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -23,8 +25,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimetableFragment extends Fragment implements TimeTableSelectListener {
+public class TimetableFragment extends Fragment implements TimeTableSelectListener, GestureDetector.OnGestureListener {
 
+    private static final int SWIPE_THRESHOLD = 100;
+    private static final int SWIPE_VELOCITY_THRESHOLD = 100;
     ImageButton next, prev, add;
     TextView day;
     RecyclerView recyclerView;
@@ -170,11 +174,66 @@ public class TimetableFragment extends Fragment implements TimeTableSelectListen
                     break;
             }
         }
+        sortByTime(monday);
+        sortByTime(tuesday);
+        sortByTime(wednesday);
+        sortByTime(thursday);
+        sortByTime(friday);
+        sortByTime(saturday);
+        sortByTime(sunday);
+    }
+
+    private void sortByTime(List<TimeTableElement> elementsOfDay) {
+        elementsOfDay.sort((o1, o2) -> {
+            int o1Begin = Integer.parseInt(o1.getBegin().replace(":", ""));
+            int o2Begin = Integer.parseInt(o2.getBegin().replace(":", ""));
+            return Integer.compare(o1Begin, o2Begin);
+        });
     }
 
     @Override
     public void onElementSelected(TimeTableElement element) {
         UpdateLesson alert = new UpdateLesson(element.getDay(), element.getSubject(), element.getBegin(), element.getEnd(), element.getRoom(), element.getTeacher(), element.getId(), element.getColour());
         alert.show(getParentFragmentManager(), "test");
+    }
+
+    @Override
+    public boolean onDown(@NonNull MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(@NonNull MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(@NonNull MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(@NonNull MotionEvent e1, @NonNull MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(@NonNull MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(@NonNull MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
+        float diffX = e2.getX() - e1.getX();
+        if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+            if (diffX > 0) {
+                day.setText(getPrevDay());
+                showData();
+            } else {
+                day.setText(getNextDay());
+                showData();
+            }
+        }
+        return true;
     }
 }
