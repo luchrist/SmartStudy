@@ -22,6 +22,8 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.smartstudy.adapters.TodosAdapter;
 import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.Group;
@@ -247,6 +249,10 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
         int currentPoints = Integer.parseInt(pointsText.getText().toString().trim());
         currentPoints += points;
         pointsText.setText(String.valueOf(currentPoints));
+        YoYo.with(Techniques.BounceInUp)
+                .duration(500)
+                .repeat(1)
+                .playOn(pointsText);
 
         String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
         db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserEmail)

@@ -13,6 +13,8 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.fragment.app.Fragment;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.smartstudy.models.Card;
 import com.example.smartstudy.models.CardType;
 import com.example.smartstudy.models.Deck;
@@ -360,6 +362,10 @@ public class PractiseFragment extends Fragment {
         int currentPoints = Integer.parseInt(pointsText.getText().toString().trim());
         currentPoints += points;
         pointsText.setText(String.valueOf(currentPoints));
+        YoYo.with(Techniques.Bounce)
+                .duration(500)
+                .repeat(1)
+                .playOn(pointsText);
 
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);

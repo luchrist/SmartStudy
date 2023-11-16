@@ -18,6 +18,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.smartstudy.Builder.EventBuilder;
 import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.Group;
@@ -249,6 +251,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         int points = Integer.parseInt(pointsCount.getText().toString().trim());
         points += 50;
         pointsCount.setText(String.valueOf(points));
+        YoYo.with(Techniques.Bounce)
+                .duration(500)
+                .repeat(1)
+                .playOn(pointsCount);
 
         db.collection(Constants.KEY_COLLECTION_USERS).document(user.getEmail())
                 .update(Constants.KEY_POINTS, FieldValue.increment(50));

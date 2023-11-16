@@ -22,6 +22,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.viewmodel.CreationExtras;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.smartstudy.adapters.TimeTableAdapter;
 import com.example.smartstudy.adapters.TodosAdapter;
 import com.example.smartstudy.models.Event;
@@ -635,6 +637,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         int currentPoints = Integer.parseInt(pointsText.getText().toString().trim());
         currentPoints += points;
         pointsText.setText(String.valueOf(currentPoints));
+        YoYo.with(Techniques.Bounce)
+                .duration(500)
+                .repeat(1)
+                .playOn(pointsText);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
@@ -673,8 +679,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
     @Override
     public void onElementSelected(TimeTableElement element) {
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                new TimetableFragment(spinner.getSelectedItem().toString())).commit();
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container,
+                    new TimetableFragment(spinner.getSelectedItem().toString()))
+                .addSharedElement(lessonsList, "lessons")
+                .commit();
     }
 }
 

@@ -43,6 +43,7 @@
             android:orientation="vertical"
             android:overScrollMode="never"
             android:layout_marginBottom="@dimen/_8sdp"
+            android:transitionName="lessons"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

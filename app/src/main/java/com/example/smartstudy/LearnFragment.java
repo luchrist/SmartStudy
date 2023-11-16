@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.smartstudy.adapters.TodosAdapter;
 import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.Todo;
@@ -234,6 +236,10 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
         int currentPoints = Integer.parseInt(pointsText.getText().toString().trim());
         currentPoints += points;
         pointsText.setText(String.valueOf(currentPoints));
+        YoYo.with(Techniques.Bounce)
+                .duration(500)
+                .repeat(1)
+                .playOn(pointsText);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
