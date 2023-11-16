@@ -7,10 +7,12 @@
     android:gravity="center"
     android:orientation="horizontal">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/constraintLayout6"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background_content_bottom"
+        app:layoutDescription="@xml/timetable_xml_constraintlayout6_scene"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -18,12 +20,12 @@
             android:id="@+id/addElement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_25sdp"
             android:background="@drawable/background_round_icon"
-            android:src="@drawable/baseline_add_24"
             android:padding="@dimen/_8sdp"
+            android:src="@drawable/baseline_add_24"
             app:layout_constraintBottom_toBottomOf="@+id/dayBtn"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="@dimen/_25sdp"
             app:layout_constraintTop_toTopOf="@+id/dayBtn"
             app:tint="@color/white" />
 
@@ -77,5 +79,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dayBtn" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
