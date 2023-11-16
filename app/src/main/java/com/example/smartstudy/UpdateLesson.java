@@ -81,7 +81,7 @@ public class UpdateLesson extends DialogFragment {
                                 colour.getSelectedItem().toString());
 
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                                new TimetableFragment()).commit();
+                                new TimetableFragment(day.getSelectedItem().toString())).commit();
                     }
                 })
                 .setNeutralButton("Delete", new DialogInterface.OnClickListener() {
@@ -90,7 +90,7 @@ public class UpdateLesson extends DialogFragment {
                         DbHelper dbHelper = new DbHelper(getActivity());
                         dbHelper.deleteTimetableObject(id);
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                                new TimetableFragment()).commit();
+                                new TimetableFragment(null)).commit();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

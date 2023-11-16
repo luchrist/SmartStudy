@@ -17,16 +17,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.viewmodel.CreationExtras;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.smartstudy.adapters.TimeTableAdapter;
 import com.example.smartstudy.adapters.TodosAdapter;
 import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.TimeException;
+import com.example.smartstudy.models.TimeTableElement;
 import com.example.smartstudy.models.Todo;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
+import com.example.smartstudy.utilities.TimeTableSelectListener;
 import com.example.smartstudy.utilities.TodoSelectListener;
 import com.example.smartstudy.utilities.Util;
 import com.google.android.material.navigation.NavigationView;
@@ -45,16 +49,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class MainFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, TodoSelectListener {
+public class MainFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, TodoSelectListener, TimeTableSelectListener {
 
-    private TextView title, sub, ty, tim, dueDate, timetableTitle;
+    private TextView title, sub, ty, tim, dueDate, timetableTitle, noElements, noSessions, studyPlanTitle;
     private NavigationView navigationView;
+    private ConstraintLayout studyPlanLayout;
     private Spinner spinner;
-    private LinearLayout lessonsList;
-    private RecyclerView todosList;
-
+    private RecyclerView todosList, lessonsList;
     private DBEventHelper dbEventHelper;
     private DbHelper dbHelper;
+    private List<TimeTableElement> timeTableElements;
+    private List<TimeTableElement> monday, tuesday, wednesday, thursday, friday, saturday, sunday;
+    private TimeTableAdapter monAdapter, tueAdapter, wedAdapter, thuAdapter, friAdapter, satAdapter, sunAdapter;
     private DBTodoHelper dbTodoHelper;
     private DbTimeHelper dbTimeHelper;
     private DBExeptionHelper dbExeptionHelper;
@@ -85,9 +91,132 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
         createDropDownWeekDays();
         selectTodaysWeekDay();
+        showTodaysLessons();
 
         setListeners(view);
         return view;
+    }
+
+    private void showTodaysLessons() {
+        dbHelper = new DbHelper(getActivity());
+        timeTableElements = new ArrayList<>();
+        storeData();
+        sortElements();
+        monAdapter = new TimeTableAdapter(monday, this, false);
+        tueAdapter = new TimeTableAdapter(tuesday, this, false);
+        wedAdapter = new TimeTableAdapter(wednesday, this, false);
+        thuAdapter = new TimeTableAdapter(thursday, this, false);
+        friAdapter = new TimeTableAdapter(friday, this, false);
+        satAdapter = new TimeTableAdapter(saturday, this, false);
+        sunAdapter = new TimeTableAdapter(sunday, this, false);
+
+        showData();
+    }
+
+    void storeData() {
+        Cursor cursor = dbHelper.readAllData();
+        if (cursor.getCount() == 0) {
+            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()) {
+                TimeTableElement timeTableElement = new TimeTableElement(cursor.getString(0), cursor.getString(1),
+                        cursor.getString(2), cursor.getString(3),
+                        cursor.getString(5), cursor.getString(6),
+                        cursor.getString(4), cursor.getString(7));
+                timeTableElements.add(timeTableElement);
+            }
+        }
+    }
+
+    private void sortElements() {
+        monday = new ArrayList<>();
+        tuesday = new ArrayList<>();
+        wednesday = new ArrayList<>();
+        thursday = new ArrayList<>();
+        friday = new ArrayList<>();
+        saturday = new ArrayList<>();
+        sunday = new ArrayList<>();
+        for (TimeTableElement timeTableElement : timeTableElements) {
+            switch (timeTableElement.getDay()) {
+                case "MONDAY":
+                    monday.add(timeTableElement);
+                    break;
+                case "TUESDAY":
+                    tuesday.add(timeTableElement);
+                    break;
+                case "WEDNESDAY":
+                    wednesday.add(timeTableElement);
+                    break;
+                case "THURSDAY":
+                    thursday.add(timeTableElement);
+                    break;
+                case "FRIDAY":
+                    friday.add(timeTableElement);
+                    break;
+                case "SATURDAY":
+                    saturday.add(timeTableElement);
+                    break;
+                case "SUNDAY":
+                    sunday.add(timeTableElement);
+                    break;
+                default:
+                    break;
+            }
+        }
+        sortByTime(monday);
+        sortByTime(tuesday);
+        sortByTime(wednesday);
+        sortByTime(thursday);
+        sortByTime(friday);
+        sortByTime(saturday);
+        sortByTime(sunday);
+    }
+
+    private void sortByTime(List<TimeTableElement> elementsOfDay) {
+        elementsOfDay.sort((o1, o2) -> {
+            int o1Begin = Integer.parseInt(o1.getBegin().replace(":", ""));
+            int o2Begin = Integer.parseInt(o2.getBegin().replace(":", ""));
+            return Integer.compare(o1Begin, o2Begin);
+        });
+    }
+
+    private void showData() {
+        lessonsList.setVisibility(View.VISIBLE);
+        noElements.setVisibility(View.GONE);
+        switch (spinner.getSelectedItem().toString()) {
+            case "MONDAY":
+                setAdapter(monAdapter);
+                break;
+            case "TUESDAY":
+                setAdapter(tueAdapter);
+                break;
+            case "WEDNESDAY":
+                setAdapter(wedAdapter);
+                break;
+            case "THURSDAY":
+                setAdapter(thuAdapter);
+                break;
+            case "FRIDAY":
+                setAdapter(friAdapter);
+                break;
+            case "SATURDAY":
+                setAdapter(satAdapter);
+                break;
+            case "SUNDAY":
+                setAdapter(sunAdapter);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void setAdapter(TimeTableAdapter adapter) {
+        if (adapter.getItemCount() > 0) {
+            lessonsList.setAdapter(adapter);
+        } else {
+            lessonsList.setVisibility(View.GONE);
+            noElements.setVisibility(View.VISIBLE);
+        }
     }
 
     private void plan() {
@@ -115,11 +244,19 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                     if (!isInOneWeek) {
                         boolean isIn2Weeks = showBiggestEventInDays(14, beforeEvents);
                         if (!isIn2Weeks) {
-                            showBiggestEventInDays(30, beforeEvents);
+                          boolean isIn30Days = showBiggestEventInDays(30, beforeEvents);
+                          if (!isIn30Days) {
+                              noSessions.setVisibility(View.VISIBLE);
+                              studyPlanLayout.setVisibility(View.GONE);
+                          }
                         }
                     }
                 }
             }
+        } else {
+            noSessions.setVisibility(View.VISIBLE);
+            noSessions.setText("You have no time left today!");
+            studyPlanLayout.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -249,59 +386,16 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     private void setListeners(View view) {
-        lessonsList.setOnClickListener(this);
         timetableTitle.setOnClickListener(this);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                lessonsList.removeAllViewsInLayout();
-                Cursor cursor = dbHelper.readAllData();
-                if (cursor.getCount() > 0) {
-                    switch (position) {
-                        case 0:
-                            showLessonsForDay(cursor, view, "Monday");
-                            break;
-                        case 1:
-                            showLessonsForDay(cursor, view, "Tuesday");
-                            break;
-                        case 2:
-                            showLessonsForDay(cursor, view, "Wednesday");
-                            break;
-                        case 3:
-                            showLessonsForDay(cursor, view, "Thursday");
-                            break;
-                        case 4:
-                            showLessonsForDay(cursor, view, "Friday");
-                            break;
-                        default:
-                            spinner.setSelection(5);
-                            break;
-                    }
-                }
+                    showData();
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
-    }
-
-    private void showLessonsForDay(Cursor cursor, View view, String weekDay) {
-        while (cursor.moveToNext()) {
-            String text = "";
-            if (cursor.getString(4).equals(weekDay)) {
-                text = cursor.getString(1) + "\n" + cursor.getString(2) + " - " +
-                        cursor.getString(3) + "\n" + cursor.getString(5) + "\n" +
-                        cursor.getString(6);
-            }
-            TextView newLesson = new TextView(view.getContext());
-            newLesson.setText(text);
-            newLesson.setGravity(Gravity.CENTER_HORIZONTAL);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-            lp.setMargins(0, 16, 0, 0);
-            newLesson.setLayoutParams(lp);
-            lessonsList.addView(newLesson);
-        }
     }
 
     private void selectTodaysWeekDay() {
@@ -366,8 +460,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         timetableTitle = view.findViewById(R.id.timetable_title);
         navigationView = requireActivity().findViewById(R.id.nav_view);
         spinner = view.findViewById(R.id.spinner);
-        lessonsList = view.findViewById(R.id.lessonslist);
         todosList = view.findViewById(R.id.todosRecyclerView);
+        lessonsList = view.findViewById(R.id.timetableRecyclerView);
+        noElements = view.findViewById(R.id.noElements);
+        noSessions = view.findViewById(R.id.noSessions);
+        studyPlanLayout = view.findViewById(R.id.studyPlanLayout);
+        studyPlanTitle = view.findViewById(R.id.studyPlanTitle);
         sub = view.findViewById(R.id.subStudyPlan);
         ty = view.findViewById(R.id.typeStudyPlan);
         tim = view.findViewById(R.id.timeNeeded);
@@ -504,9 +602,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
     @Override
     public void onClick(View v) {
-        if (v.equals(lessonsList) || v.equals(timetableTitle)) {
+        if (v.equals(timetableTitle)) {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                    new TimetableFragment()).commit();
+                    new TimetableFragment(spinner.getSelectedItem().toString())).commit();
             title.setText("Timetable");
             navigationView.setCheckedItem(R.id.nav_timetable);
 
@@ -571,6 +669,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     @Override
     public CreationExtras getDefaultViewModelCreationExtras() {
         return super.getDefaultViewModelCreationExtras();
+    }
+
+    @Override
+    public void onElementSelected(TimeTableElement element) {
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                new TimetableFragment(spinner.getSelectedItem().toString())).commit();
     }
 }
 

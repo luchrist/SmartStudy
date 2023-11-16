@@ -320,7 +320,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             case R.id.nav_timetable:
                 getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                        new TimetableFragment()).commit();
+                        new TimetableFragment(null)).commit();
                 title.setText("Timetable");
                 navigationView.setCheckedItem(R.id.nav_timetable);
                 break;

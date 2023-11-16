@@ -18,10 +18,12 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.Time
 
     private final List<TimeTableElement> elements;
     private final TimeTableSelectListener selectListener;
+    private final boolean detailed;
 
-    public TimeTableAdapter(List<TimeTableElement> elements, TimeTableSelectListener selectListener) {
+    public TimeTableAdapter(List<TimeTableElement> elements, TimeTableSelectListener selectListener, boolean detailed) {
         this.elements = elements;
         this.selectListener = selectListener;
+        this.detailed = detailed;
     }
 
     @NonNull
@@ -58,8 +60,13 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.Time
         void setData(TimeTableElement element) {
             binding.subject.setText(element.getSubject());
             binding.time.setText(String.format("%s - %s", element.getBegin(), element.getEnd()));
-            binding.room.setText(element.getRoom());
-            binding.teacher.setText(element.getTeacher());
+            if(detailed) {
+                binding.teacher.setText(element.getTeacher());
+                binding.room.setText(element.getRoom());
+            } else {
+                binding.teacher.setVisibility(View.GONE);
+                binding.room.setVisibility(View.GONE);
+            }
             switch (element.getColour()) {
                 case "red":
                     binding.getRoot().setBackgroundResource(R.drawable.background_input_red);

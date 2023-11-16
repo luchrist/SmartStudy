@@ -119,6 +119,8 @@
     <string name="forgot_pw_title">FORGOT PASSWORD</string>
     <string name="reset_pw">RESET PASSWORD</string>
     <string name="back">back</string>
+    <string name="no_lessons_for_this_weekday">No lessons for this weekday</string>
+    <string name="you_don_t_have_any_study_sessions_for_today_left">You don\'t have any study sessions for today left.</string>
 </resources>
 
     <!---->

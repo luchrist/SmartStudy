@@ -38,6 +38,15 @@ public class TimetableFragment extends Fragment implements TimeTableSelectListen
     List<TimeTableElement> monday, tuesday, wednesday, thursday, friday, saturday, sunday;
     TimeTableAdapter monAdapter, tueAdapter, wedAdapter, thuAdapter, friAdapter, satAdapter, sunAdapter;
 
+    public TimetableFragment(String shownDay) {
+        if(shownDay != null) {
+            dayOfWeek = DayOfWeek.valueOf(shownDay);
+        } else {
+            LocalDate date = LocalDate.now();
+            dayOfWeek = date.getDayOfWeek();
+        }
+    }
+
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
@@ -49,22 +58,19 @@ public class TimetableFragment extends Fragment implements TimeTableSelectListen
         next = view.findViewById(R.id.nextBtn);
         prev = view.findViewById(R.id.prevBtn);
         add = view.findViewById(R.id.addElement);
-
-        LocalDate date = LocalDate.now();
-        dayOfWeek = date.getDayOfWeek();
         day.setText(dayOfWeek.toString());
 
         dbHelper = new DbHelper(getActivity());
         timeTableElements = new ArrayList<>();
         storeData();
         sortElements();
-        monAdapter = new TimeTableAdapter(monday, this);
-        tueAdapter = new TimeTableAdapter(tuesday, this);
-        wedAdapter = new TimeTableAdapter(wednesday, this);
-        thuAdapter = new TimeTableAdapter(thursday, this);
-        friAdapter = new TimeTableAdapter(friday, this);
-        satAdapter = new TimeTableAdapter(saturday, this);
-        sunAdapter = new TimeTableAdapter(sunday, this);
+        monAdapter = new TimeTableAdapter(monday, this, true);
+        tueAdapter = new TimeTableAdapter(tuesday, this, true);
+        wedAdapter = new TimeTableAdapter(wednesday, this, true);
+        thuAdapter = new TimeTableAdapter(thursday, this, true);
+        friAdapter = new TimeTableAdapter(friday, this, true);
+        satAdapter = new TimeTableAdapter(saturday, this, true);
+        sunAdapter = new TimeTableAdapter(sunday, this, true);
 
         showData();
         setListeners();
