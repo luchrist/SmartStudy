@@ -121,6 +121,10 @@
     <string name="back">back</string>
     <string name="no_lessons_for_this_weekday">No lessons for this weekday</string>
     <string name="you_don_t_have_any_study_sessions_for_today_left">You don\'t have any study sessions for today left.</string>
+    <string name="pause">break</string>
+    <string name="generate_exam">Generate Exam</string>
+    <string name="points">Points:</string>
+    <string name="_0">0</string>
 </resources>
 
     <!---->

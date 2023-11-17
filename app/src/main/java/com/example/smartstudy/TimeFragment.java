@@ -33,7 +33,7 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
     DbTimeHelper dbTimeHelper;
     TimeObject mon, tue, wed, thu, fri, sat, sun;
     private DatePickerDialog date_picker_dialog;
-    private Button date_button, save, exeptionTime;
+    private Button date_button, add, exeptionTime;
     private DBExeptionHelper dbExeptionHelper;
     private PreferenceManager preferenceManager;
     SharedPreferences sp;
@@ -94,8 +94,8 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
         date_button.setText(getTodaysDate());
         date_button.setOnClickListener(this);
 
-        save = view.findViewById(R.id.saveException);
-        save.setOnClickListener(this);
+        add = view.findViewById(R.id.addException);
+        add.setOnClickListener(this);
 
         exeptionTime = view.findViewById(R.id.exceptiontime);
         exeptionTime.setOnClickListener(this);
@@ -247,7 +247,8 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
                             }
                             friTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
                             if (fri == null) {
-                                dbTimeHelper.addTimeObject("Friday", stringToMinutes(friTimePicker.getText().toString()));
+                                long id = dbTimeHelper.addTimeObject(DayOfWeek.FRIDAY.toString(), stringToMinutes(friTimePicker.getText().toString()));
+                                fri = new TimeObject(String.valueOf(id), DayOfWeek.FRIDAY.name(), stringToMinutes(friTimePicker.getText().toString()));
                             } else {
                                 dbTimeHelper.updateTimeObject(fri.getId(), fri.getDay(), stringToMinutes(friTimePicker.getText().toString()));
                             }
@@ -256,10 +257,12 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
                                 updateRemainingTime(satTimePicker, sat);
                             }
                             satTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                            int duration = stringToMinutes(satTimePicker.getText().toString());
                             if (sat == null) {
-                                dbTimeHelper.addTimeObject("Saturday", stringToMinutes(satTimePicker.getText().toString()));
+                                long id = dbTimeHelper.addTimeObject(DayOfWeek.SATURDAY.name(), duration);
+                                sat = new TimeObject(String.valueOf(id), DayOfWeek.SATURDAY.name(), duration);
                             }else {
-                                dbTimeHelper.updateTimeObject(sat.getId(), sat.getDay(), stringToMinutes(satTimePicker.getText().toString()));
+                                dbTimeHelper.updateTimeObject(sat.getId(), sat.getDay(), duration);
                             }
                         } else if (view == sunTimePicker) {
                             if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
@@ -287,7 +290,7 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
                     date_picker_dialog.show();
                     exeptionTime.setText(String.format(Locale.getDefault(), "%02d:%02d", 00, 00));
 
-                }else if(view.equals(save)){
+                }else if(view.equals(add)){
                     dbExeptionHelper.addExeptionObject(date_button.getText().toString(), timeToMinutes());
                     Toast.makeText(getContext(), "Saved Succesfully", Toast.LENGTH_SHORT).show();
                 }

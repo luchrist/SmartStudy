@@ -487,7 +487,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
     private int maxTimeToday() {
         int time = getTodayException();
-        if (time < 0) {
+        if (time == -1) {
             String weekday = today.getDayOfWeek().name();
             return getTime(weekday);
         }
@@ -495,12 +495,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     private int getTodayException() {
-        for (int h = 0; h < exceptions.size(); h++) {
-            if (exceptions.get(h).getDate().equals(today)) {
-                return exceptions.get(h).getTime();
+        int time = -1;
+        for (int i = 0; i < exceptions.size(); i++) {
+            if (exceptions.get(i).getDate().equals(today)) {
+                time = exceptions.get(i).getTime();
             }
         }
-        return -1;
+        return time;
     }
 
     private int getTime(String day) {
@@ -510,9 +511,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         } else {
             while (cursor.moveToNext()) {
                 if (cursor.getString(1).equalsIgnoreCase(day)) {
-                    //return sp.getInt(cursor.getString(1), 0);
-                    return 10;
-                    //return cursor.getInt(2);
+                    return cursor.getInt(2);
                 }
             }
         }
@@ -556,7 +555,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
             Toast.makeText(getActivity(), "NO EXEPTION", Toast.LENGTH_SHORT).show();
         } else {
             while (cursor1.moveToNext()) {
-                exceptions.add(new TimeException(getFormattedDate(cursor1.getString(1)), cursor1.getInt(2)));
+                LocalDate date = getFormattedDate(cursor1.getString(1));
+                if (date.isBefore(LocalDate.now())) {
+                    dbExeptionHelper.deleteExeptionObject(String.valueOf(cursor1.getInt(0)));
+                } else {
+                    exceptions.add(new TimeException(date, cursor1.getInt(2)));
+                }
             }
         }
     }

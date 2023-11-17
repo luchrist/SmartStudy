@@ -48,7 +48,7 @@ public class DbTimeHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    void addTimeObject(String day, int duration) {
+    long addTimeObject(String day, int duration) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_DAY, day);
@@ -60,10 +60,9 @@ public class DbTimeHelper extends SQLiteOpenHelper {
             Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show();
             System.out.println("Hier läuft was falsch");
         } else {
-            //Toast.makeText(context, "Added succesfully!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Added", Toast.LENGTH_SHORT).show();
         }
-
-
+        return result;
     }
 
     void updateTimeObject(String id, String day, int duration) {

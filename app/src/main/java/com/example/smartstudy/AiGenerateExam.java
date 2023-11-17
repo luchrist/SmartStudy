@@ -4,12 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageButton;
 
+import com.example.smartstudy.models.User;
 import com.example.smartstudy.utilities.Constants;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,13 +34,17 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class AiGenerateExam extends BaseActivity {
-    private static final String OPENAI_API_KEY = "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";
     EditText topicInput, languageInput;
     Button startExam;
     ProgressBar progressBar;
+    private AppCompatImageButton back;
+    private TextView points;
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient.Builder builder = new OkHttpClient.Builder();
     OkHttpClient client;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
     @Override
@@ -42,8 +53,15 @@ public class AiGenerateExam extends BaseActivity {
         setContentView(R.layout.activity_ai_generate_exam);
         topicInput = findViewById(R.id.topicInput);
         languageInput = findViewById(R.id.languageInput);
-        startExam = findViewById(R.id.startExamBtn);
+        startExam = findViewById(R.id.generateExamBtn);
         progressBar = findViewById(R.id.apiProgress);
+        back = findViewById(R.id.backNavBtn);
+        points = findViewById(R.id.points);
+
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        displayCurrentUserPoints();
+
         setListeners();
         builder.connectTimeout(120, TimeUnit.SECONDS);
         builder.readTimeout(120, TimeUnit.SECONDS);
@@ -51,7 +69,19 @@ public class AiGenerateExam extends BaseActivity {
         client = builder.build();
     }
 
+    private void displayCurrentUserPoints() {
+        db.collection(Constants.KEY_COLLECTION_USERS).document(user.getEmail()).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    User user = documentSnapshot.toObject(User.class);
+                    if (user != null) {
+                        points.setText(String.valueOf(user.points));
+                    }
+                });
+    }
+
     private void setListeners() {
+        back.setOnClickListener(v -> onBackPressed());
+
         startExam.setOnClickListener(v -> {
             progressBar.setVisibility(ProgressBar.VISIBLE);
             String topic = topicInput.getText().toString().trim();
@@ -75,7 +105,7 @@ public class AiGenerateExam extends BaseActivity {
             RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
             Request request = new Request.Builder()
                     .url("https://api.openai.com/v1/chat/completions")
-                    .header("Authorization", "Bearer " + OPENAI_API_KEY)
+                    .header("Authorization", "Bearer " + BuildConfig.OPEN_AI_API_KEY)
                     .post(body)
                     .build();
             client.newCall(request).enqueue(new Callback() {

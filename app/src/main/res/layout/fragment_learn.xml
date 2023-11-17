@@ -2,18 +2,27 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="bold"
+    android:background="@color/primaryVariant"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_content_bottom"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/titleLearn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Focus"
-        android:textColor="@color/blue"
-        android:textSize="40sp"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/_25ssp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,9 +31,9 @@
         android:id="@+id/subj"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textColor="@color/blue"
-        android:textSize="18sp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/_16ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleLearn" />
@@ -33,10 +42,10 @@
         android:id="@+id/countdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="@dimen/_16sdp"
         android:text="00:00"
         android:textColor="@color/black"
-        android:textSize="60sp"
+        android:textSize="@dimen/_50ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/subj" />
@@ -46,8 +55,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="#FFFFFF"
-        android:text="pause"
+        android:background="@drawable/background_icon"
+        android:textColor="@color/white"
+        android:text="@string/pause"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/countdown" />
@@ -58,7 +68,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="total time left"
-        android:textSize="18sp"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/_14ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_pause_resume" />
@@ -69,7 +80,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:textSize="18sp"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/_14ssp"
         app:layout_constraintStart_toEndOf="@+id/textView45"
         app:layout_constraintTop_toBottomOf="@+id/btn_pause_resume" />
 
@@ -77,8 +89,9 @@
         android:id="@+id/textView52"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="todays session time left:"
-        android:textSize="18sp"
+        android:text="session time left:"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/_14ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/totalTimeLeft"
@@ -89,7 +102,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:textSize="18sp"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/_14ssp"
         app:layout_constraintStart_toEndOf="@+id/textView52"
         app:layout_constraintTop_toTopOf="@+id/textView52" />
 
@@ -98,8 +112,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="todays session time focused:"
-        android:textSize="18sp"
+        android:text="session time focused:"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/_14ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView52" />
@@ -109,7 +124,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:textSize="18sp"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/_14ssp"
         app:layout_constraintStart_toEndOf="@+id/textView54"
         app:layout_constraintTop_toTopOf="@+id/textView54" />
 
@@ -119,9 +135,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
-        android:background="#FFFFFF"
+        android:background="@drawable/background_icon_light"
         android:text="Give Up"
-        android:textColor="@android:color/holo_red_dark"
+        android:textColor="@color/remove"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
     <ScrollView
