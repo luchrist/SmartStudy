@@ -269,10 +269,12 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
                                 updateRemainingTime(sunTimePicker, sun);
                             }
                             sunTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                            int duration = stringToMinutes(sunTimePicker.getText().toString());
                             if (sun == null) {
-                                dbTimeHelper.addTimeObject("Sunday", stringToMinutes(sunTimePicker.getText().toString()));
+                                long id = dbTimeHelper.addTimeObject(DayOfWeek.SUNDAY.name(), duration);
+                                sun = new TimeObject(String.valueOf(id), DayOfWeek.SUNDAY.name(), duration);
                             } else {
-                                dbTimeHelper.updateTimeObject(sun.getId(), sun.getDay(), stringToMinutes(sunTimePicker.getText().toString()));
+                                dbTimeHelper.updateTimeObject(sun.getId(), sun.getDay(), duration);
                             }
                         }else if (view == exeptionTime) {
                             exeptionTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
