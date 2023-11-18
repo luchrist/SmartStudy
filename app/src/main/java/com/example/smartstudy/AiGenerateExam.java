@@ -39,7 +39,7 @@ public class AiGenerateExam extends BaseActivity {
     Button startExam;
     ProgressBar progressBar;
     private AppCompatImageView back;
-    private TextView points;
+    private TextView points, progressStatus;
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient.Builder builder = new OkHttpClient.Builder();
     OkHttpClient client;
@@ -56,6 +56,7 @@ public class AiGenerateExam extends BaseActivity {
         languageInput = findViewById(R.id.languageInput);
         startExam = findViewById(R.id.generateExamBtn);
         progressBar = findViewById(R.id.apiProgress);
+        progressStatus = findViewById(R.id.progressStatus);
         back = findViewById(R.id.backNavBtn);
         points = findViewById(R.id.points);
 
@@ -85,6 +86,7 @@ public class AiGenerateExam extends BaseActivity {
 
         startExam.setOnClickListener(v -> {
             progressBar.setVisibility(ProgressBar.VISIBLE);
+            progressStatus.setVisibility(TextView.VISIBLE);
             String topic = topicInput.getText().toString().trim();
             String language = languageInput.getText().toString().trim();
             String prompt = String.format("Create a multiple choice quiz in %s about %s" +
@@ -117,6 +119,7 @@ public class AiGenerateExam extends BaseActivity {
                     runOnUiThread(() -> {
                         Toast.makeText(AiGenerateExam.this, "Connection failed", Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(ProgressBar.INVISIBLE);
+                        progressStatus.setVisibility(TextView.INVISIBLE);
                     });
                     startActivity(new Intent(AiGenerateExam.this, AiGenerateExam.class));
                 }
@@ -128,6 +131,7 @@ public class AiGenerateExam extends BaseActivity {
                                 runOnUiThread(() -> {
                                     Toast.makeText(AiGenerateExam.this, "Successful", Toast.LENGTH_SHORT).show();
                                     progressBar.setVisibility(ProgressBar.INVISIBLE);
+                                    progressStatus.setVisibility(TextView.INVISIBLE);
                                 });
                                 JSONObject jsonObject = new JSONObject(response.body().string());
                                 JSONArray jsonArray = jsonObject.getJSONArray("choices");
@@ -148,6 +152,7 @@ public class AiGenerateExam extends BaseActivity {
                             runOnUiThread(() -> {
                                 Toast.makeText(AiGenerateExam.this, "Response is unsuccessful", Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(ProgressBar.INVISIBLE);
+                                progressStatus.setVisibility(TextView.INVISIBLE);
                             });
                         }
                 }
