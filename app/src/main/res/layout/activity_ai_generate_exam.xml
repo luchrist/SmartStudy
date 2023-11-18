@@ -22,15 +22,15 @@
 
     <TextView
         android:id="@+id/aiExamGen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="160dp"
+        android:layout_height="24dp"
         android:text="AI Exam Generator"
         android:textColor="@color/white"
         android:textSize="@dimen/_14ssp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/backNavBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/pointsContainer"
+        app:layout_constraintStart_toEndOf="@+id/backNavBtn"
         app:layout_constraintTop_toTopOf="@+id/backNavBtn" />
 
     <LinearLayout

@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import com.example.smartstudy.models.User;
 import com.example.smartstudy.utilities.Constants;
@@ -37,7 +38,7 @@ public class AiGenerateExam extends BaseActivity {
     EditText topicInput, languageInput;
     Button startExam;
     ProgressBar progressBar;
-    private AppCompatImageButton back;
+    private AppCompatImageView back;
     private TextView points;
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -86,25 +87,27 @@ public class AiGenerateExam extends BaseActivity {
             progressBar.setVisibility(ProgressBar.VISIBLE);
             String topic = topicInput.getText().toString().trim();
             String language = languageInput.getText().toString().trim();
-            String prompt = String.format("Create an multiple choice Exam about %s with 4 possible answers a,b,c,d per question and provide the right answer. Make Sure that only one answer is correct." +
-                    " The exam should be in the language %s", topic, language);
+            String prompt = String.format("Create a multiple choice quiz in %s about %s" +
+                    " with 4 possible answers a,b,c,d and provide the right answer. " +
+                    "Only pick questions with one correct answer.", language, topic);
 
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("model", "gpt-3.5-turbo");
-                JSONArray promptArray = new JSONArray();
+                jsonObject.put("model", "gpt-3.5-turbo-instruct");
+                /*JSONArray promptArray = new JSONArray();
                 JSONObject obj = new JSONObject();
                 obj.put("role", "user");
                 obj.put("content", prompt);
-                promptArray.put(obj);
-                jsonObject.put(Constants.KEY_PROMPT ,promptArray);
+                promptArray.put(obj);*/
+                jsonObject.put(Constants.KEY_PROMPT , prompt);
+                jsonObject.put("max_tokens", 1000);
             }catch (JSONException e){
                 throw new RuntimeException(e);
             }
 
             RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
             Request request = new Request.Builder()
-                    .url("https://api.openai.com/v1/chat/completions")
+                    .url("https://api.openai.com/v1/completions")
                     .header("Authorization", "Bearer " + BuildConfig.OPEN_AI_API_KEY)
                     .post(body)
                     .build();
@@ -129,8 +132,9 @@ public class AiGenerateExam extends BaseActivity {
                                 JSONObject jsonObject = new JSONObject(response.body().string());
                                 JSONArray jsonArray = jsonObject.getJSONArray("choices");
                                 JSONObject message = jsonArray.getJSONObject(0);
-                                JSONObject message1 = message.getJSONObject("message");
-                                String content = message1.getString("content");
+                                //JSONObject message1 = message.getJSONObject("message");
+                                //String content = message1.getString("content");
+                                String content = message.getString("text");
 
                                 Intent intent = new Intent(AiGenerateExam.this, AiExam.class);
                                 intent.putExtra(Constants.KEY_RESPONSE, content);

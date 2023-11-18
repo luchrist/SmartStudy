@@ -46,7 +46,7 @@ public class Constants {
     public static final String KEY_ANSWERSC = "answersC";
     public static final String KEY_ANSWERSD = "answersD";
     public static final String KEY_CORRECT_ANSWERS = "correctAnswers";
-    public static final String KEY_PROMPT = "messages";
+    public static final String KEY_PROMPT = "prompt";
     public static final String KEY_AVAILABILITY = "availability";
     public static final String REMOTE_MSG_AUTHORIZATION = "Authorization";
     public static final String REMOTE_MSG_CONTENT_TYPE = "Content-Type";

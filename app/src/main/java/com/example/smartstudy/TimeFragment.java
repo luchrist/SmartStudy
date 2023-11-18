@@ -206,40 +206,48 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
                             if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.MONDAY)) {
                                 updateRemainingTime(monTimePicker, mon);
                             }
+                            int duration = stringToMinutes(monTimePicker.getText().toString());
                             if(mon == null){
-                                dbTimeHelper.addTimeObject("Monday", stringToMinutes(monTimePicker.getText().toString()));
+                                long id = dbTimeHelper.addTimeObject(DayOfWeek.MONDAY.name(), duration);
+                                mon = new TimeObject(String.valueOf(id), DayOfWeek.MONDAY.name(), duration);
                             } else {
-                                dbTimeHelper.updateTimeObject(mon.getId(), mon.getDay(), stringToMinutes(monTimePicker.getText().toString()));
+                                dbTimeHelper.updateTimeObject(mon.getId(), mon.getDay(), duration);
                             }
                         } else if (tueTimePicker.equals(view)) {
                             if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.TUESDAY)) {
                                 updateRemainingTime(tueTimePicker, tue);
                             }
                             tueTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                            int duration = stringToMinutes(tueTimePicker.getText().toString());
                             if (tue == null) {
-                                dbTimeHelper.addTimeObject("Tuesday", stringToMinutes(tueTimePicker.getText().toString()));
+                                long id = dbTimeHelper.addTimeObject(DayOfWeek.TUESDAY.name(), duration);
+                                tue = new TimeObject(String.valueOf(id), DayOfWeek.TUESDAY.name(), duration);
                             } else {
-                                dbTimeHelper.updateTimeObject(tue.getId(), tue.getDay(), stringToMinutes(tueTimePicker.getText().toString()));
+                                dbTimeHelper.updateTimeObject(tue.getId(), tue.getDay(), duration);
                             }
                         } else if (view == wedTimePicker) {
                             if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.WEDNESDAY)) {
                                 updateRemainingTime(wedTimePicker, wed);
                             }
                             wedTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                            int duration = stringToMinutes(wedTimePicker.getText().toString());
                             if (wed == null) {
-                                dbTimeHelper.addTimeObject("Wednesday", stringToMinutes(wedTimePicker.getText().toString()));
+                                long id = dbTimeHelper.addTimeObject(DayOfWeek.WEDNESDAY.name(), duration);
+                                wed = new TimeObject(String.valueOf(id), DayOfWeek.WEDNESDAY.name(), duration);
                             } else {
-                                dbTimeHelper.updateTimeObject(wed.getId(), wed.getDay(), stringToMinutes(wedTimePicker.getText().toString()));
+                                dbTimeHelper.updateTimeObject(wed.getId(), wed.getDay(), duration);
                             }
                         } else if (view == thuTimePicker) {
                             if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.THURSDAY)) {
                                 updateRemainingTime(thuTimePicker, thu);
                             }
                             thuTimePicker.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                            int duration = stringToMinutes(thuTimePicker.getText().toString());
                             if (thu == null) {
-                                dbTimeHelper.addTimeObject("Thursday", stringToMinutes(thuTimePicker.getText().toString()));
+                                long id = dbTimeHelper.addTimeObject(DayOfWeek.THURSDAY.name(), duration);
+                                thu = new TimeObject(String.valueOf(id), DayOfWeek.THURSDAY.name(), duration);
                             } else {
-                                dbTimeHelper.updateTimeObject(thu.getId(), thu.getDay(), stringToMinutes(thuTimePicker.getText().toString()));
+                                dbTimeHelper.updateTimeObject(thu.getId(), thu.getDay(), duration);
                             }
                         } else if (view == friTimePicker) {
                             if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.FRIDAY)) {
