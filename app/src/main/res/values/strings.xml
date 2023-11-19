@@ -17,6 +17,11 @@
         <item>SATURDAY</item>
         <item>SUNDAY</item>
     </string-array>
+    <string-array name="difficulty">
+        <item>easy</item>
+        <item>medium</item>
+        <item>difficult</item>
+    </string-array>
     <string-array name="cardCategories">
         <item>"all"</item>
         <item>"new"</item>

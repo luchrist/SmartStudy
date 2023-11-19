@@ -84,6 +84,15 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="@dimen/_8sdp"/>
 
+        <Spinner
+            android:id="@+id/difficultySpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            app:layout_constraintTop_toBottomOf="@+id/topicInput"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <ProgressBar
             android:id="@+id/apiProgress"
             android:layout_width="@dimen/_45sdp"
@@ -109,11 +118,11 @@
             android:id="@+id/languageInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Enter exam language"
+            android:hint="Enter language"
             android:textColor="@color/primaryText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/topicInput"
+            app:layout_constraintTop_toBottomOf="@id/difficultySpinner"
             android:layout_marginTop="@dimen/_8sdp"/>
 
         <Button

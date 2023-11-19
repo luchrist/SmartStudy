@@ -2,10 +2,12 @@ package com.example.smartstudy;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +40,7 @@ public class AiGenerateExam extends BaseActivity {
     EditText topicInput, languageInput;
     Button startExam;
     ProgressBar progressBar;
+    private Spinner difficultySpinner;
     private AppCompatImageView back;
     private TextView points, progressStatus;
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
@@ -59,6 +62,13 @@ public class AiGenerateExam extends BaseActivity {
         progressStatus = findViewById(R.id.progressStatus);
         back = findViewById(R.id.backNavBtn);
         points = findViewById(R.id.points);
+        difficultySpinner = findViewById(R.id.difficultySpinner);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.difficulty, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        difficultySpinner.setAdapter(adapter);
+        difficultySpinner.setSelection(1);
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
@@ -89,9 +99,13 @@ public class AiGenerateExam extends BaseActivity {
             progressStatus.setVisibility(TextView.VISIBLE);
             String topic = topicInput.getText().toString().trim();
             String language = languageInput.getText().toString().trim();
-            String prompt = String.format("Create a multiple choice quiz in %s about %s" +
+            String difficulty = "";
+            if(difficultySpinner.getSelectedItemPosition() != 1) {
+                difficulty = difficultySpinner.getSelectedItem().toString().trim();
+            }
+            String prompt = String.format("Create a %s multiple choice quiz in %s about %s" +
                     " with 4 possible answers a,b,c,d and provide the right answer. " +
-                    "Only pick questions with one correct answer.", language, topic);
+                    "Only pick questions with one correct answer.", difficulty, language, topic);
 
             JSONObject jsonObject = new JSONObject();
             try {
