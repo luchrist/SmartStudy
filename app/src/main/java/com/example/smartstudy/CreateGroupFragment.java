@@ -54,6 +54,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -80,13 +81,20 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
         this.preferenceManager = preferenceManager;
         currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
         currentUserName = preferenceManager.getString(Constants.KEY_USER_NAME);
-        membersAdapter = new MembersAdapter(members, this, currentUserEmail);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
+        db.collection(Constants.KEY_COLLECTION_USERS)
+                .document(currentUserEmail).get().addOnSuccessListener(documentSnapshot -> {
+                    List<String> blockedBy = (List<String>) documentSnapshot.get(Constants.KEY_BLOCKED_BY);
+                    if (blockedBy == null) {
+                        blockedBy = Collections.emptyList();
+                    }
+                    membersAdapter = new MembersAdapter(members, this, currentUserEmail, blockedBy);
+                });
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.smartstudy.R;
 import com.example.smartstudy.databinding.ItemContainerReceivedMessageBinding;
 import com.example.smartstudy.databinding.ItemContainerSentMessageBinding;
 import com.example.smartstudy.models.ChatMessage;
@@ -20,13 +21,17 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<ChatMessage> chatMessages;
     private final String senderId;
+    private final List<String> blockedBy;
+    private final List<String> blockedUsers;
 
     public static final int VIEW_TYPE_SENT = 1;
     public static final int VIEW_TYPE_RECEIVED = 2;
 
-    public ChatAdapter(List<ChatMessage> chatMessages, String senderId) {
+    public ChatAdapter(List<ChatMessage> chatMessages, String senderId, List<String> blockedBy, List<String> blockedUsers) {
         this.chatMessages = chatMessages;
         this.senderId = senderId;
+        this.blockedBy = blockedBy;
+        this.blockedUsers = blockedUsers;
     }
 
     @NonNull
@@ -52,10 +57,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if(getItemViewType(position) == VIEW_TYPE_SENT) {
             ((SentMessageViewHolder) holder).setData(chatMessages.get(position));
         } else {
+            boolean anonymous = blockedUsers.contains(chatMessages.get(position).senderId)
+                    || blockedBy.contains(chatMessages.get(position).senderId);
             if (position > 0) {
-                ((ReceiverMessageViewHolder) holder).setData(chatMessages.get(position), chatMessages.get(position - 1).senderId);
+                ((ReceiverMessageViewHolder) holder).setData(chatMessages.get(position), chatMessages.get(position - 1).senderId, anonymous);
             } else {
-                ((ReceiverMessageViewHolder) holder).setData(chatMessages.get(position), "");
+                ((ReceiverMessageViewHolder) holder).setData(chatMessages.get(position), "", anonymous);
             }
         }
     }
@@ -98,12 +105,18 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             binding = itemContainerReceivedMessageBinding;
         }
 
-        void setData(ChatMessage chatMsg, String beforeSenderId) {
-            binding.textMessage.setText(chatMsg.message);
+        void setData(ChatMessage chatMsg, String beforeSenderId, boolean anonymous) {
+            String senderName = chatMsg.senderName;
+            if (anonymous) {
+                senderName = binding.getRoot().getResources().getString(R.string.anonymous);
+                binding.textMessage.setText(R.string.this_message_is_hidden_for_you);
+            } else {
+                binding.textMessage.setText(chatMsg.message);
+                binding.imageProfile.setImageBitmap(decodeString(chatMsg.senderImage));
+            }
             binding.msgDateTime.setText(chatMsg.dateTime);
-            binding.imageProfile.setImageBitmap(decodeString(chatMsg.senderImage));
             if(!chatMsg.senderId.equals(beforeSenderId)) {
-                binding.msgSenderName.setText(chatMsg.senderName);
+                binding.msgSenderName.setText(senderName);
             }else {
                 binding.msgSenderName.setVisibility(View.GONE);
             }

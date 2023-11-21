@@ -13,6 +13,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,10 +31,12 @@ import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
 import com.example.smartstudy.utilities.SelectListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,6 +76,7 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
         currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
         groupId = preferenceManager.getString(Constants.KEY_GROUP_ID);
         groupName.setText(preferenceManager.getString(Constants.KEY_GROUP_NAME));
+
         setCheckbox();
         showUsers();
         setListeners();
@@ -84,7 +88,7 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
                 .collection(Constants.KEY_COLLECTION_GROUPS)
                 .document(groupId).get().addOnSuccessListener(documentSnapshot -> {
                     Boolean addExamsToPlan = (Boolean) documentSnapshot.get(Constants.KEY_ADD_EXAMS_TO_PLAN);
-                    if(addExamsToPlan != checkBox.isChecked()) {
+                    if (addExamsToPlan != checkBox.isChecked()) {
                         changedOnCreate = true;
                         checkBox.setChecked(addExamsToPlan);
                     }
@@ -322,19 +326,26 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
                     if (group != null) {
                         members = group.members;
                         if (members.size() > 0) {
-                            membersAdapter = new MembersAdapter(members, this, currentUserEmail);
-                            recyclerView.setAdapter(membersAdapter);
-                            recyclerView.setVisibility(View.VISIBLE);
-                            createdInfo.setText(String.format("Created %s by %s", group.createdTime, group.createdBy));
-                            for (Member member : members) {
-                                if (member.email.equals(currentUserEmail)) {
-                                    currentUserIsAdmin = member.isAdmin;
-                                }
-                            }
-                            if (!currentUserIsAdmin) {
-                                memberInput.setVisibility(View.GONE);
-                                addMember.setVisibility(View.GONE);
-                            }
+                            db.collection(Constants.KEY_COLLECTION_USERS)
+                                    .document(currentUserEmail).get().addOnSuccessListener(documentSnapshot -> {
+                                        List<String> blockedBy = (List<String>) documentSnapshot.get(Constants.KEY_BLOCKED_BY);
+                                        if (blockedBy == null) {
+                                            blockedBy = Collections.emptyList();
+                                        }
+                                        membersAdapter = new MembersAdapter(members, this, currentUserEmail, blockedBy);
+                                        recyclerView.setAdapter(membersAdapter);
+                                        recyclerView.setVisibility(View.VISIBLE);
+                                        createdInfo.setText(String.format("Created %s by %s", group.createdTime, group.createdBy));
+                                        for (Member member : members) {
+                                            if (member.email.equals(currentUserEmail)) {
+                                                currentUserIsAdmin = member.isAdmin;
+                                            }
+                                        }
+                                        if (!currentUserIsAdmin) {
+                                            memberInput.setVisibility(View.GONE);
+                                            addMember.setVisibility(View.GONE);
+                                        }
+                                            });
                         } else {
                             showErrorMsg();
                         }
@@ -368,6 +379,30 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.bottom_sheet_layout);
+        TextView block = dialog.findViewById(R.id.block);
+        DocumentReference currentUserDoc = db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserEmail);
+        currentUserDoc.get().addOnSuccessListener(documentSnapshot -> {
+            List<String> blockedUsers = (List<String>) documentSnapshot.get(Constants.KEY_BLOCKED_USERS);
+            if (blockedUsers != null) {
+                if (blockedUsers.contains(member.email)) {
+                    block.setText(R.string.unblock);
+                    int positivColor = ContextCompat.getColor(this, R.color.accentBlue);
+                    block.setTextColor(positivColor);
+                    block.getCompoundDrawables()[0].setTint(positivColor);
+                }
+            }
+        });
+
+        TextView report = dialog.findViewById(R.id.report);
+        report.setOnClickListener(v -> {
+            dialog.dismiss();
+            reportUser(member);
+            showToast("Reported");
+        });
+        block.setOnClickListener(v -> {
+            dialog.dismiss();
+            blockUser(member);
+        });
         if (currentUserIsAdmin) {
             if (member.isAdmin) {
                 showAdminDialog(member, dialog);
@@ -379,8 +414,35 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
         }
     }
 
+    private void blockUser(Member member) {
+        DocumentReference currentUserDoc = db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserEmail);
+        DocumentReference memberDoc = db.collection(Constants.KEY_COLLECTION_USERS).document(member.email);
+        currentUserDoc.get().addOnSuccessListener(documentSnapshot -> {
+            List<String> blockedUsers = (List<String>) documentSnapshot.get(Constants.KEY_BLOCKED_USERS);
+            if (blockedUsers != null) {
+                if (blockedUsers.contains(member.email)) {
+                    currentUserDoc.update(Constants.KEY_BLOCKED_USERS, FieldValue.arrayRemove(member.email));
+                    memberDoc.update(Constants.KEY_BLOCKED_BY, FieldValue.arrayRemove(currentUserEmail));
+                    showToast("Unblocked");
+                    showUsers();
+                    return;
+                }
+            }
+            currentUserDoc.update(Constants.KEY_BLOCKED_USERS, FieldValue.arrayUnion(member.email));
+            memberDoc.update(Constants.KEY_BLOCKED_BY, FieldValue.arrayUnion(currentUserEmail));
+            showToast("Blocked");
+            showUsers();
+        });
+    }
+
+    private void reportUser(Member member) {
+
+    }
+
     private void showBaseDialog(Member member, Dialog dialog) {
-        findViewById(R.id.adminPart).setVisibility(View.GONE);
+        dialog.findViewById(R.id.adminPart).setVisibility(View.GONE);
+        prepareDialog(member, dialog);
+        showDialog(dialog);
     }
 
     private void showStandardDialog(Member member, Dialog dialog) {
@@ -425,7 +487,7 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
     }
 
     private void prepareDialog(Member member, Dialog dialog) {
-        TextView name = dialog.findViewById(R.id.username);
+        TextView name = dialog.findViewById(R.id.user);
         name.setText(member.name);
         TextView removeMember = dialog.findViewById(R.id.remove);
         TextView cancel = dialog.findViewById(R.id.cancel);

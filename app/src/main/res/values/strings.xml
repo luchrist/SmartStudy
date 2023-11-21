@@ -192,13 +192,18 @@
     <string name="volume">volume</string>
     <string name="progress">progress</string>
     <string name="estimated_time_in_minutes">Estimated time in minutes</string>
-    <string name="type_in_a_todo">type in a Todo...</string>
+    <string name="type_in_a_todo">type in a Todo…</string>
     <string name="startdate">startdate</string>
     <string name="due_day">due day</string>
     <string name="your_coupons">Your Coupons</string>
     <string name="no_coupons_in_possession">no coupons in possession</string>
     <string name="available_coupons">Available Coupons</string>
     <string name="no_available_coupons">no available coupons</string>
+    <string name="report_user">Report User</string>
+    <string name="block_user">Block User</string>
+    <string name="unblock">Unblock User</string>
+    <string name="anonymous">Anonymous</string>
+    <string name="this_message_is_hidden_for_you">this message is hidden for you</string>
     <string-array name="languages">
         <item>Afrikaans</item>
         <item>Albanian</item>

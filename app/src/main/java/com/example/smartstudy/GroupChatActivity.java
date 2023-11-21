@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +75,6 @@ public class GroupChatActivity extends BaseActivity {
         loadReceiver();
         setListeners();
         init();
-        listenMessages();
     }
 
     private void listenReceiversAvailability() {
@@ -110,11 +110,26 @@ public class GroupChatActivity extends BaseActivity {
         db = FirebaseFirestore.getInstance();
 
         chatMessages = new ArrayList<>();
-        chatAdapter = new ChatAdapter(
-                chatMessages,
-                currentUserMail
-        );
-        chatRecyclerView.setAdapter(chatAdapter);
+        db.collection(Constants.KEY_COLLECTION_USERS)
+                .document(currentUserMail).get().addOnSuccessListener(documentSnapshot -> {
+                            List<String> blockedBy = (List<String>) documentSnapshot.get(Constants.KEY_BLOCKED_BY);
+                            List<String> blockedUsers = (List<String>) documentSnapshot.get(Constants.KEY_BLOCKED_USERS);
+                            if (blockedBy == null) {
+                                blockedBy = Collections.emptyList();
+                            }
+                            if (blockedUsers == null) {
+                                blockedUsers = Collections.emptyList();
+                            }
+                            chatAdapter = new ChatAdapter(
+                                    chatMessages,
+                                    currentUserMail,
+                                    blockedBy,
+                                    blockedUsers
+                            );
+                            chatRecyclerView.setAdapter(chatAdapter);
+                            listenMessages();
+                        });
+
         db.collection(Constants.KEY_COLLECTION_GROUPS).document(groupId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     Group group = documentSnapshot.toObject(Group.class);

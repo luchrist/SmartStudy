@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.smartstudy.R;
 import com.example.smartstudy.databinding.ItemContainerMemberBinding;
 import com.example.smartstudy.models.Member;
 import com.example.smartstudy.utilities.SelectListener;
@@ -21,11 +22,13 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberVi
     private final List<Member> members;
     private final SelectListener selectListener;
     private final String currentUserEmail;
+    private final List<String> blockedBy;
 
-    public MembersAdapter(List<Member> members, SelectListener selectListener, String currentUserEmail) {
+    public MembersAdapter(List<Member> members, SelectListener selectListener, String currentUserEmail, List<String> blockedBy) {
         this.members = members;
         this.selectListener = selectListener;
         this.currentUserEmail = currentUserEmail;
+        this.blockedBy = blockedBy;
     }
 
     @NonNull
@@ -59,9 +62,13 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberVi
             binding = itemContainerMemberBinding;
         }
         void setMemberData(Member member) {
-            binding.textName.setText(member.name);
-            binding.textEmail.setText(member.email);
-            binding.imageProfile.setImageBitmap(getMemberImage(member.image));
+            if (blockedBy.contains(member.email)) {
+                binding.textName.setText(R.string.anonymous);
+            } else {
+                binding.textName.setText(member.name);
+                binding.textEmail.setText(member.email);
+                binding.imageProfile.setImageBitmap(getMemberImage(member.image));
+            }
             if (member.email.equals(currentUserEmail)) {
                 binding.memberMenu.setVisibility(View.GONE);
             }

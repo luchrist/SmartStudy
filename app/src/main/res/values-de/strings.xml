@@ -119,11 +119,16 @@
     <string name="volume">Aufwand</string>
     <string name="progress">Fortschritt</string>
     <string name="estimated_time_in_minutes">Erwartete Zeit in Minuten</string>
-    <string name="type_in_a_todo">Gib ein Todo ein...</string>
+    <string name="type_in_a_todo">Gib ein Todo ein…</string>
     <string name="startdate">Startdatum</string>
     <string name="due_day">Enddatum</string>
     <string name="your_coupons">Deine Coupons</string>
     <string name="no_coupons_in_possession">Du besitzt keine Coupons</string>
     <string name="available_coupons">Verfügbare Coupons</string>
     <string name="no_available_coupons">keine verfügbaren Coupons</string>
+    <string name="report_user">Nutzer melden</string>
+    <string name="block_user">Nutzer blockieren</string>
+    <string name="unblock">Nutzer entsperren</string>
+    <string name="anonymous">Anonym</string>
+    <string name="this_message_is_hidden_for_you">Diese Nachricht wird dir nicht angezeigt</string>
 </resources>
