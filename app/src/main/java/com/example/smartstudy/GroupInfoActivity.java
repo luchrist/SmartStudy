@@ -1,5 +1,6 @@
 package com.example.smartstudy;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -397,7 +398,6 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
         report.setOnClickListener(v -> {
             dialog.dismiss();
             reportUser(member);
-            showToast("Reported");
         });
         block.setOnClickListener(v -> {
             dialog.dismiss();
@@ -436,7 +436,17 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
     }
 
     private void reportUser(Member member) {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(R.layout.report_dialog)
+                .setTitle(getString(R.string.report) + member.name)
+                // Pass null as the parent view because its going in the dialog layout
+                .setPositiveButton("Report", null)
+                .setNegativeButton("Cancel", null)
+                .create();
+        dialog.setOnShowListener(dialogInterface -> {
 
+        });
+        dialog.show();
     }
 
     private void showBaseDialog(Member member, Dialog dialog) {

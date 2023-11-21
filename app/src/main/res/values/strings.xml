@@ -204,6 +204,15 @@
     <string name="unblock">Unblock User</string>
     <string name="anonymous">Anonymous</string>
     <string name="this_message_is_hidden_for_you">this message is hidden for you</string>
+    <string name="report">"Report "</string>
+    <string name="where_did_a_violation_occur">Where did a violation occur?</string>
+    <string name="messages">Messages</string>
+    <string name="files">Files</string>
+    <string name="events">Events</string>
+    <string name="report_reason">Report Reason</string>
+    <string name="content">Content</string>
+    <string name="spam">Spam</string>
+    <string name="description_optional">Description (optional)</string>
     <string-array name="languages">
         <item>Afrikaans</item>
         <item>Albanian</item>
