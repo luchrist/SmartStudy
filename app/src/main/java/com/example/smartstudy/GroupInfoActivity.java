@@ -365,19 +365,25 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
         if (member.email.equals(currentUserEmail)) {
             return;
         }
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.bottom_sheet_layout);
         if (currentUserIsAdmin) {
-            final Dialog dialog = new Dialog(this);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.bottom_sheet_layout);
             if (member.isAdmin) {
                 showAdminDialog(member, dialog);
             } else {
-                showStandartDialog(member, dialog);
+                showStandardDialog(member, dialog);
             }
+        } else {
+            showBaseDialog(member, dialog);
         }
     }
 
-    private void showStandartDialog(Member member, Dialog dialog) {
+    private void showBaseDialog(Member member, Dialog dialog) {
+        findViewById(R.id.adminPart).setVisibility(View.GONE);
+    }
+
+    private void showStandardDialog(Member member, Dialog dialog) {
         TextView makeAdmin = dialog.findViewById(R.id.makeGroupAdmin);
         prepareDialog(member, dialog);
 

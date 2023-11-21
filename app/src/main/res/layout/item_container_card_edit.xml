@@ -15,7 +15,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/_8sdp"
-        android:text="Card Front"
         android:textColor="@color/primaryText"
         android:textSize="@dimen/_12ssp"
         android:textStyle="bold"

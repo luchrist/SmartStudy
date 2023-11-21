@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="@dimen/_10sdp"
+    android:layout_marginEnd="@dimen/_10sdp"
+    android:layout_marginBottom="@dimen/_3sdp"
+    android:background="@drawable/dialog_bg"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/username"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10sdp"
+        android:textAlignment="center"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/_9ssp" />
+
+    <TextView
+        android:id="@+id/makeGroupAdmin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/make_group_admin"
+        android:textAlignment="center"
+        android:textColor="@color/add"
+        android:textSize="@dimen/_13ssp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/remove"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/remove_from_group"
+        android:textAlignment="center"
+        android:textColor="@color/remove"
+        android:textSize="@dimen/_13ssp"
+        android:textStyle="bold" />
+</LinearLayout>
+

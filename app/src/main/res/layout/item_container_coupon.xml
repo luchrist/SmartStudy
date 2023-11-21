@@ -22,7 +22,7 @@
         android:id="@+id/btnRedeem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Redeem"
+        android:text="@string/redeem"
         android:paddingEnd="@dimen/_4sdp"
         android:paddingStart="@dimen/_4sdp"
         android:textColor="@color/white"

@@ -85,7 +85,6 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/_18sdp"
                 android:layout_marginEnd="@dimen/_8sdp"
-                android:text="Group-ID: 1234567890"
                 android:textColor="@color/primaryText"
                 android:textSize="@dimen/_12ssp"
                 app:layout_constraintEnd_toStartOf="@+id/copyId"
@@ -142,6 +141,7 @@
                 android:ems="10"
                 android:gravity="start|top"
                 android:hint="@string/add_most_important_information"
+                android:autofillHints="description"
                 android:inputType="textMultiLine"
                 android:textColor="@color/white"
                 android:textColorHint="@color/secondaryText"
@@ -191,6 +191,7 @@
                             <EditText
                                 android:id="@+id/typeInput"
                                 android:hint="@string/type"
+                                android:autofillHints="exam type"
                                 android:imeOptions="actionNext"
                                 android:inputType="text"
                                 android:padding="@dimen/_8sdp"
@@ -203,6 +204,7 @@
                                 android:id="@+id/subjectInput"
                                 android:hint="@string/subject"
                                 android:imeOptions="actionNext"
+                                android:autofillHints="subject"
                                 android:inputType="text"
                                 android:padding="@dimen/_8sdp"
                                 android:textColor="@color/primaryVariant"
@@ -228,7 +230,6 @@
                                 android:layout_marginEnd="@dimen/_8sdp"
                                 android:padding="@dimen/_8sdp"
                                 android:src="@drawable/baseline_description_24" />
-                            />
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/addEvent"

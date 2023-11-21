@@ -30,6 +30,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -258,6 +259,7 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
     }
 
     private void showAdminDialog(Member member, Dialog dialog) {
+
         TextView dismissAdmin = dialog.findViewById(R.id.makeGroupAdmin);
         dismissAdmin.setText(R.string.dismiss_as_admin);
         int removeColor =  ContextCompat.getColor(getActivity(), R.color.remove);
@@ -298,7 +300,10 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
 
     private void prepareDialog(Member member, Dialog dialog) {
         TextView name = dialog.findViewById(R.id.username);
+        name.setVisibility(View.VISIBLE);
         name.setText(member.name);
+        LinearLayout basics = dialog.findViewById(R.id.basics);
+        basics.setVisibility(View.GONE);
         TextView removeMember = dialog.findViewById(R.id.remove);
         TextView cancel = dialog.findViewById(R.id.cancel);
         removeMember.setOnClickListener(v -> {

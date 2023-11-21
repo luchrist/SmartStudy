@@ -47,7 +47,6 @@
             android:layout_marginTop="@dimen/_8sdp"
             android:background="@drawable/background_icon"
             android:padding="@dimen/_8sdp"
-            android:text="Monday"
             android:textColor="@color/white"
             android:textSize="@dimen/_14ssp"
             app:layout_constraintEnd_toEndOf="parent"

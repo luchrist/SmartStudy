@@ -37,7 +37,7 @@
         android:id="@+id/correctAnswersRatio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0/0"
+        android:text="@string/_0_0"
         android:textColor="@color/white"
         android:textSize="@dimen/_14ssp"
         android:textStyle="bold"
@@ -66,7 +66,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="Was ist 1*1?"
                 android:layout_margin="@dimen/_12sdp"
                 android:textColor="@color/primaryVariant"
                 android:textStyle="bold"
@@ -77,7 +76,6 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_icon"
                 android:padding="@dimen/_8sdp"
-                android:text="A: 3"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/white"
                 android:layout_marginTop="@dimen/_12sdp"/>
@@ -87,7 +85,6 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_icon"
                 android:padding="@dimen/_8sdp"
-                android:text="A: 2"
                 android:textColor="@color/white"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/_8sdp"/>
@@ -97,7 +94,6 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_icon"
                 android:padding="@dimen/_8sdp"
-                android:text="A: 1"
                 android:textColor="@color/white"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/_8sdp"/>
@@ -107,16 +103,9 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_icon"
                 android:padding="@dimen/_8sdp"
-                android:text="A: 10"
                 android:textColor="@color/white"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/_8sdp"/>
-            <ImageView
-                android:layout_width="@dimen/_45sdp"
-                android:layout_height="@dimen/_45sdp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/_8sdp"
-                android:visibility="gone"/>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

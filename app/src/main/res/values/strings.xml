@@ -1,11 +1,12 @@
 <resources>
-    <string name="app_name">SmartStudy</string>
-    <string name="open_drawer">Open navigation drawer</string>
-    <string name="close_drawer">Close navigation drawer</string>
+    <string name="app_name" translatable="false">StudyFellow</string>
+    <string name="open_drawer" translatable="false">Open navigation drawer</string>
+    <string name="close_drawer" translatable="false">Close navigation drawer</string>
     <string name="luckbad">, Good luck today! You will need it :).</string>
     <string name="luckgood">, Good luck today! You are well prepared.</string>
     <string name="good">, Good Job!</string>
     <string name="bad">, Get up and study!</string>
+    <string name="_00_00" translatable="false">00:00</string>
     <string name="facebook_application_id" translatable="false">1:1030104945757:android:5c5eb6eea4135a866829b4</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb1:1030104945757:android:5c5eb6eea4135a866829b4</string>
     <string-array name="weekdays">
@@ -64,19 +65,18 @@
         <item>10.0</item>
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="username">username</string>
     <string name="password">Password</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="log_in">LOG IN</string>
     <string name="new_user_sign_up">NEW USER? SIGN UP!</string>
     <string name="sign_in_to_continue">Sign in to continue</string>
-    <string name="welcome_gymbro">Welcome Gymbro!</string>
+    <string name="welcome_gymbro">Welcome Fellow!</string>
     <string name="sign_up">Sign Up</string>
-    <string name="register">REGISTER</string>
-    <string name="email">Email</string>
+    <string name="email" translatable="false">Email</string>
     <string name="alreadyHaveAccountLogin">Already have an Account? Click to Login</string>
-    <string name="appicon">appIcon</string>
+    <string name="appicon" translatable="false">appIcon</string>
     <string name="search_hint">Search Group Name</string>
     <string name="welcome_back">Welcome Back!</string>
     <string name="login_to_continue">Login to continue</string>
@@ -90,7 +90,7 @@
     <string name="no_user_available">No user available</string>
     <string name="your_groups">Your Groups</string>
     <string name="no_groups_available">No Groups Added Yet</string>
-    <string name="logo">logo</string>
+    <string name="logo" translatable="false">logo</string>
     <string name="create_group">Create Group</string>
     <string name="join_group">Join Group</string>
     <string name="group_id">Group ID</string>
@@ -101,7 +101,7 @@
     <string name="make_group_admin">Make Group Admin</string>
     <string name="remove_from_group">Remove from Group</string>
     <string name="cancel">Cancel</string>
-    <string name="admin">Admin</string>
+    <string name="admin" translatable="false">Admin</string>
     <string name="dismiss_as_admin">Dismiss as Admin</string>
     <string name="groupImage">Group Image</string>
     <string name="add_group_exams_to_plan">Add Group-Exams to Plan</string>
@@ -116,8 +116,8 @@
     <string name="description_focal_points">Description / Focal Points</string>
     <string name="add_description">Add description...</string>
     <string name="upload_file">Upload any File</string>
-    <string name="add_new_file_group_name">Add New File Group Name</string>
-    <string name="if_file_group_does_not_exist_yet_enter_its_name_here">If file-group does not exist yet, enter its name here</string>
+    <string name="add_new_file_group_name" translatable="false">Add New File Group Name</string>
+    <string name="if_file_group_does_not_exist_yet_enter_its_name_here" translatable="false">If file-group does not exist yet, enter its name here</string>
     <string name="shared_files">Shared Files</string>
     <string name="time_left">Time Left:</string>
     <string name="exam_name">Exam Name</string>
@@ -129,7 +129,186 @@
     <string name="pause">break</string>
     <string name="generate_exam">Generate Exam</string>
     <string name="points">Points:</string>
-    <string name="_0">0</string>
+    <string name="_0" translatable="false">0</string>
+    <string name="_0_0" translatable="false">0/0</string>
+    <string name="ai_exam_generator">AI Exam Generator</string>
+    <string name="enter_any_topic">Enter any Topic</string>
+    <string name="waiting_for_ai_response">WAITING FOR AI RESPONSE ...</string>
+    <string name="enter_language">Enter language</string>
+    <string name="provide_your_accounts_email_address_and_we_will_send_you_a_link_to_reset_your_password">Provide your accounts email address and we will send you a link to reset your password.</string>
+    <string name="back_of_card">back of card</string>
+    <string name="check_yourself">Check Yourself</string>
+    <string name="front_of_card">front of card</string>
+    <string name="type_answer">Type Answer</string>
+    <string name="lesson">Lesson</string>
+    <string name="room">Room</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="teacher">Teacher</string>
+    <string name="delete_mode" translatable="false">Delete Mode</string>
+    <string name="practise">Practise</string>
+    <string name="test">Test</string>
+    <string name="create_new_cards">Create New Cards</string>
+    <string name="cards">Cards</string>
+    <string name="create_sub_deck">create Sub Deck</string>
+    <string name="edit">Edit</string>
+    <string name="statistics">statistics</string>
+    <string name="sub_decks">Sub Decks</string>
+    <string name="study">Study</string>
+    <string name="deck_name">Deck Name</string>
+    <string name="redeem">Redeem</string>
+    <string name="total_requests">Total Requests:</string>
+    <string name="type_your_guess_here">Type your guess here...</string>
+    <string name="_0_5_point">0.5 point</string>
+    <string name="_10" translatable="false">10</string>
+    <string name="_90" translatable="false">90</string>
+    <string name="save">save</string>
+    <string name="how_much_time_do_you_want_to_study_without_breaks">How much time do you want to study without breaks?</string>
+    <string name="many_believe_in_the_pomodoro_technic_where_you_learn_25min_and_then_have_a_5_min_break_we_personally_and_also_the_average_our_clients_recommend_to_learn_longer_to_get_in_a_flow_90min">Many believe in the Pomodoro technic, where you learn 25min and then have a 5 min break. We personally and also the average our clients recommend to learn longer, to get in a flow. (90min!)</string>
+    <string name="how_long_do_you_want_to_have_a_break_between_learning_sessions">How long do you want to have a break between learning sessions?</string>
+    <string name="almost_correct_struggled">Almost correct / Struggled</string>
+    <string name="start_studying">Start studying</string>
+    <string name="completed">Completed</string>
+    <string name="start_timer">Start Timer</string>
+    <string name="studyplan">STUDYPLAN</string>
+    <string name="tasks">Tasks</string>
+    <string name="time_needed">Time needed:</string>
+    <string name="timetable">TIMETABLE</string>
+    <string name="ai_test">AI Test</string>
+    <string name="regular_time_for_studying_per_day">Regular Time for Studying per Day</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="friday">Friday</string>
+    <string name="thursday">Thursday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="add_exception">Add Exception</string>
+    <string name="add">Add</string>
+    <string name="home">Home</string>
+    <string name="create_deck">create Deck</string>
+    <string name="new_event">+ new event</string>
+    <string name="type_of_exam">type of exam</string>
+    <string name="volume">volume</string>
+    <string name="progress">progress</string>
+    <string name="estimated_time_in_minutes">Estimated time in minutes</string>
+    <string name="type_in_a_todo">type in a Todo...</string>
+    <string name="startdate">startdate</string>
+    <string name="due_day">due day</string>
+    <string name="your_coupons">Your Coupons</string>
+    <string name="no_coupons_in_possession">no coupons in possession</string>
+    <string name="available_coupons">Available Coupons</string>
+    <string name="no_available_coupons">no available coupons</string>
+    <string-array name="languages">
+        <item>Afrikaans</item>
+        <item>Albanian</item>
+        <item>Amharic</item>
+        <item>Arabic</item>
+        <item>Armenian</item>
+        <item>Azerbaijani</item>
+        <item>Basque</item>
+        <item>Belarusian</item>
+        <item>Bengali</item>
+        <item>Bosnian</item>
+        <item>Bulgarian</item>
+        <item>Catalan</item>
+        <item>Cebuano</item>
+        <item>Chichewa</item>
+        <item>Chinese</item>
+        <item>Corsican</item>
+        <item>Croatian</item>
+        <item>Czech</item>
+        <item>Danish</item>
+        <item>Dutch</item>
+        <item>English</item>
+        <item>Esperanto</item>
+        <item>Estonian</item>
+        <item>Filipino</item>
+        <item>Finnish</item>
+        <item>French</item>
+        <item>Frisian</item>
+        <item>Galician</item>
+        <item>Georgian</item>
+        <item>German</item>
+        <item>Greek</item>
+        <item>Gujarati</item>
+        <item>Haitian</item>
+        <item>Hausa</item>
+        <item>Hawaiian</item>
+        <item>Hebrew</item>
+        <item>Hindi</item>
+        <item>Hmong</item>
+        <item>Hungarian</item>
+        <item>Icelandic</item>
+        <item>Igbo</item>
+        <item>Indonesian</item>
+        <item>Irish</item>
+        <item>Italian</item>
+        <item>Japanese</item>
+        <item>Javanese</item>
+        <item>Kannada</item>
+        <item>Kazakh</item>
+        <item>Khmer</item>
+        <item>Kinyarwanda</item>
+        <item>Korean</item>
+        <item>Kurdish</item>
+        <item>Kyrgyz</item>
+        <item>Lao</item>
+        <item>Latin</item>
+        <item>Latvian</item>
+        <item>Lithuanian</item>
+        <item>Luxembourgish</item>
+        <item>Macedonian</item>
+        <item>Malagasy</item>
+        <item>Malaysian</item>
+        <item>Malayalam</item>
+        <item>Maltese</item>
+        <item>Maori</item>
+        <item>Marathi</item>
+        <item>Mongolian</item>
+        <item>Myanmar (Burmese)</item>
+        <item>Nepali</item>
+        <item>Norwegian</item>
+        <item>Odia (Oriya)</item>
+        <item>Pashto</item>
+        <item>Persian</item>
+        <item>Polish</item>
+        <item>Portuguese</item>
+        <item>Punjabi</item>
+        <item>Romanian</item>
+        <item>Russian</item>
+        <item>Samoan</item>
+        <item>Scots Gaelic</item>
+        <item>Serbian</item>
+        <item>Sesotho</item>
+        <item>Shona</item>
+        <item>Sindhi</item>
+        <item>Sinhala</item>
+        <item>Slovak</item>
+        <item>Slovenian</item>
+        <item>Somali</item>
+        <item>Spanish</item>
+        <item>Sundanese</item>
+        <item>Swahili</item>
+        <item>Swedish</item>
+        <item>Tajik</item>
+        <item>Tamil</item>
+        <item>Tatar</item>
+        <item>Telugu</item>
+        <item>Thai</item>
+        <item>Turkish</item>
+        <item>Turkmen</item>
+        <item>Ukrainian</item>
+        <item>Urdu</item>
+        <item>Uyghur</item>
+        <item>Uzbek</item>
+        <item>Vietnamese</item>
+        <item>Welsh</item>
+        <item>Xhosa</item>
+        <item>Yiddish</item>
+        <item>Yoruba</item>
+        <item>Zulu</item>
+    </string-array>
 </resources>
 
     <!---->

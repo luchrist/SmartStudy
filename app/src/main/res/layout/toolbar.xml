@@ -22,7 +22,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/_80sdp"
         android:padding="@dimen/_10sdp"
-        android:text="Home"
+        android:text="@string/home"
         android:textColor="@color/primary"
         android:textSize="20sp"
         />
@@ -42,7 +42,7 @@
             android:layout_marginStart="@dimen/_12sdp"
             android:layout_marginEnd="-12dp"
             android:padding="@dimen/_10sdp"
-            android:text="Points:"
+            android:text="@string/points"
             android:textColor="@color/primary"
             android:textSize="20sp" />
 
@@ -54,7 +54,6 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="0dp"
             android:padding="16dp"
-            android:text="0"
             android:textColor="@color/primary"
             android:textSize="20sp" />
     </LinearLayout>

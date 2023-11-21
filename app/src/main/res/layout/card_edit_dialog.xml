@@ -7,6 +7,8 @@
         android:id="@+id/frontOfCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/front_of_card"
+        android:inputType="text"
         android:layout_marginStart="@dimen/_12sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_12sdp"
@@ -22,6 +24,8 @@
         android:id="@+id/backOfCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="@string/back_of_card"
         android:layout_marginStart="@dimen/_12sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_12sdp"
@@ -48,12 +52,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_8sdp"
             android:checked="true"
-            android:text="Check Yourself" />
+            android:text="@string/check_yourself" />
 
         <RadioButton
             android:id="@+id/matchType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Type Answer" />
+            android:text="@string/type_answer" />
     </RadioGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>
