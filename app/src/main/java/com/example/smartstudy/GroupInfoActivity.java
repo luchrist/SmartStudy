@@ -442,7 +442,7 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
     private void reportUser(Member member) {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(R.layout.report_dialog)
-                .setTitle(getString(R.string.report) + member.name)
+                .setTitle(String.format("%s %s",getString(R.string.report),member.name))
                 // Pass null as the parent view because its going in the dialog layout
                 .setPositiveButton("Report", null)
                 .setNegativeButton("Cancel", null)

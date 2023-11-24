@@ -185,7 +185,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     private void showData() {
         lessonsList.setVisibility(View.VISIBLE);
         noElements.setVisibility(View.GONE);
-        switch (spinner.getSelectedItem().toString()) {
+        switch (getDayOfSpinner()) {
             case "MONDAY":
                 setAdapter(monAdapter);
                 break;
@@ -610,7 +610,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     public void onClick(View v) {
         if (v.equals(timetableTitle)) {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                    new TimetableFragment(spinner.getSelectedItem().toString())).commit();
+                    new TimetableFragment(getDayOfSpinner()));
             title.setText("Timetable");
             navigationView.setCheckedItem(R.id.nav_timetable);
 
@@ -633,6 +633,27 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
             preferenceManager.putInt("remainingTimeToday", remainingTimeToday);
             addPoints(Integer.parseInt(tim.getText().toString()));
             plan();
+        }
+    }
+
+    private String getDayOfSpinner() {
+        switch (spinner.getSelectedItem().toString()) {
+            case "MONTAG":
+                return "MONDAY";
+            case "DIENSTAG":
+                return "TUESDAY";
+            case "MITTWOCH":
+                return "WEDNESDAY";
+            case "DONNERSTAG":
+                return "THURSDAY";
+            case "FREITAG":
+                return "FRIDAY";
+            case "SAMSTAG":
+                return "SATURDAY";
+            case "SONNTAG":
+                return "SUNDAY";
+            default:
+                return spinner.getSelectedItem().toString();
         }
     }
 
@@ -685,7 +706,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     public void onElementSelected(TimeTableElement element) {
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container,
-                    new TimetableFragment(spinner.getSelectedItem().toString()))
+                    new TimetableFragment(getDayOfSpinner()))
                 .addSharedElement(lessonsList, "lessons")
                 .commit();
     }
