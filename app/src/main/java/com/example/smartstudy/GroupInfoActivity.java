@@ -28,6 +28,7 @@ import com.example.smartstudy.adapters.MembersAdapter;
 import com.example.smartstudy.models.Event;
 import com.example.smartstudy.models.Group;
 import com.example.smartstudy.models.Member;
+import com.example.smartstudy.models.Report;
 import com.example.smartstudy.utilities.Constants;
 import com.example.smartstudy.utilities.PreferenceManager;
 import com.example.smartstudy.utilities.SelectListener;
@@ -37,7 +38,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -444,7 +448,31 @@ public class GroupInfoActivity extends BaseActivity implements SelectListener {
                 .setNegativeButton("Cancel", null)
                 .create();
         dialog.setOnShowListener(dialogInterface -> {
+            Button report = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            report.setTextColor(getResources().getColor(R.color.remove));
+            Button cancel = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            cancel.setTextColor(getResources().getColor(R.color.primaryVariant));
 
+            report.setOnClickListener(v -> {
+                CheckBox messages = dialog.findViewById(R.id.messagesBox);
+                CheckBox files = dialog.findViewById(R.id.filesBox);
+                CheckBox events = dialog.findViewById(R.id.eventsBox);
+                CheckBox content = dialog.findViewById(R.id.contentBox);
+                CheckBox spam = dialog.findViewById(R.id.spamBox);
+                EditText description = dialog.findViewById(R.id.descriptionInput);
+                String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+                Report currentReport = new Report(currentUserEmail, description.getText().toString(), member, timeStamp, false,
+                        messages.isChecked(), content.isChecked(), files.isChecked(), events.isChecked(), spam.isChecked());
+                db.collection(Constants.KEY_COLLECTION_REPORTS).add(currentReport)
+                        .addOnSuccessListener(documentReference -> {
+                            showToast("Reported");
+                            dialog.dismiss();
+                        })
+                        .addOnFailureListener(e -> {
+                            showToast("Failed to report");
+                            dialog.dismiss();
+                        });
+            });
         });
         dialog.show();
     }

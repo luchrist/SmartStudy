@@ -1,6 +1,7 @@
 package com.example.smartstudy;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -59,7 +60,40 @@ public class GroupFragment extends Fragment implements GroupSelectListener {
         recyclerView.setAdapter(groupsAdapter);
         showGroups();
         setListeners();
+        checkIfUserPolicyAccepted();
         return view;
+    }
+
+    private void checkIfUserPolicyAccepted() {
+        DocumentReference documentReference = db.collection(Constants.KEY_COLLECTION_USERS).document(preferenceManager.getString(Constants.KEY_EMAIL));
+        documentReference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DocumentSnapshot document = task.getResult();
+                Boolean isAccepted = document.getBoolean(Constants.KEY_IS_POLICY_ACCEPTED);
+                if (isAccepted != null) {
+                    if (!isAccepted) {
+                        AlertDialog policyDialog = new AlertDialog.Builder(getContext())
+                                .setView(R.layout.policy_dialog)
+                                .setTitle(R.string.terms_of_use)
+                                .setPositiveButton(R.string.accept, (dialog, which) -> {
+                                    documentReference.update(Constants.KEY_IS_POLICY_ACCEPTED, true);
+                                    FirebaseMessaging.getInstance().subscribeToTopic(Constants.KEY_COLLECTION_GROUPS);
+                                })
+                                .setNegativeButton(R.string.decline, (dialog, which) -> {
+                                    getActivity().getSupportFragmentManager().beginTransaction()
+                                            .replace(R.id.container, new MainFragment())
+                                            .commit();
+                                })
+                                .create();
+                        policyDialog.setOnShowListener(dialog -> {
+                            policyDialog.findViewById(R.id.link_nutzungsbedingungen).setOnClickListener(v -> {
+                                startActivity(new Intent(getContext(), TermsActivity.class));
+                            });
+                        });
+                    }
+                }
+            }
+        });
     }
 
     private void setListeners() {

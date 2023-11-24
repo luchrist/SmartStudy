@@ -11,7 +11,7 @@
         android:text="@string/where_did_a_violation_occur"
         android:textColor="@color/primaryText"
         android:textSize="@dimen/_12ssp"
-        android:layout_margin="@dimen/_6sdp"
+        android:layout_marginTop="@dimen/_6sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -21,7 +21,8 @@
         android:layout_height="wrap_content"
         android:text="@string/messages"
         android:textColor="@color/primaryText"
-        android:layout_margin="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_6sdp"
         android:textSize="@dimen/_11ssp"
         app:layout_constraintEnd_toStartOf="@+id/filesBox"
         app:layout_constraintTop_toBottomOf="@+id/where_did_a_violation_occur"/>
@@ -32,7 +33,7 @@
         android:text="@string/files"
         android:textColor="@color/primaryText"
         android:textSize="@dimen/_11ssp"
-        android:layout_margin="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_12sdp"
         app:layout_constraintTop_toBottomOf="@+id/where_did_a_violation_occur"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -43,7 +44,8 @@
         android:text="@string/events"
         android:textColor="@color/primaryText"
         android:textSize="@dimen/_11ssp"
-        android:layout_margin="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginStart="@dimen/_6sdp"
         app:layout_constraintStart_toEndOf="@+id/filesBox"
         app:layout_constraintTop_toBottomOf="@+id/where_did_a_violation_occur"/>
     <TextView
@@ -53,7 +55,7 @@
         android:text="@string/report_reason"
         android:textColor="@color/primaryText"
         android:textSize="@dimen/_12ssp"
-        android:layout_margin="@dimen/_6sdp"
+        android:layout_marginTop="@dimen/_12sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/filesBox"/>
@@ -65,7 +67,8 @@
         android:text="@string/content"
         android:textColor="@color/primaryText"
         android:textSize="@dimen/_11ssp"
-        android:layout_margin="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_6sdp"
         app:layout_constraintTop_toBottomOf="@+id/report_reason"
         app:layout_constraintEnd_toStartOf="@+id/centerHelp"/>
     <TextView
@@ -82,14 +85,17 @@
         android:text="@string/spam"
         android:textColor="@color/primaryText"
         android:textSize="@dimen/_11ssp"
-        android:layout_margin="@dimen/_4sdp"
-        app:layout_constraintStart_toEndOf="@+id/contentBox"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginStart="@dimen/_6sdp"
+        app:layout_constraintStart_toEndOf="@+id/centerHelp"
         app:layout_constraintTop_toBottomOf="@+id/report_reason"/>
     <EditText
         android:id="@+id/descriptionInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_8sdp"
+        android:background="@drawable/background_icon_light"
+        android:padding="@dimen/_6sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contentBox"

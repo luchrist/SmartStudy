@@ -62,6 +62,8 @@ public class Constants {
     public static final String KEY_TUTORIAL = "tutorial";
     public static final String KEY_BLOCKED_USERS = "blockedUsers";
     public static final String KEY_BLOCKED_BY = "blockedBy";
+    public static final String KEY_COLLECTION_REPORTS = "reports";
+    public static final String KEY_IS_POLICY_ACCEPTED = "isPolicyAccepted";
     public static HashMap<String, String> remoteMsgHeaders = null;
     public static HashMap<String, String> getRemoteMsgHeaders() {
         if (remoteMsgHeaders == null) {

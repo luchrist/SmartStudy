@@ -131,4 +131,215 @@
     <string name="unblock">Nutzer entsperren</string>
     <string name="anonymous">Anonym</string>
     <string name="this_message_is_hidden_for_you">Diese Nachricht wird dir nicht angezeigt</string>
+    <string name="report">Melden</string>
+    <string name="where_did_a_violation_occur">Wo ist der Verstoß aufgetreten?</string>
+    <string name="messages">Nachrichten</string>
+    <string name="files">Dokumente</string>
+    <string name="events">Ereignisse</string>
+    <string name="report_reason">Meldungsgrund</string>
+    <string name="content">Inhalt</string>
+    <string name="description_optional">Beschreibung (optional)</string>
+    <string name="ai_disclaimer">Achtung:\nDie Richtigkeit kann nicht gewährleistet werden!\n-Die KI kann falsche \"richtige\" Antworten liefern.\n-Fragen können mehrere eigentlich richtige Antworten haben. Die Ki bestimmt aber nur eine.\n-Die KI bezieht sich auf Daten bis zum Septemper 2021.</string>
+    <string name="nutzungsbedingungen"><u>Nutzungsbedingungen</u></string>
+    <string name="info_user_policies">Um das reibungslose Interagieren aller Nutzer zu gewährleisten, fordern wir alle Nutzer auf unseren Nutzungsbedingungen zu zustimmen.</string>
+    <string name="accept_terms">Indem du auf \'Zustimmen\' klickst, bestätigst du, dass du diese Nutzungsbedingungen gelesen, verstanden und akzeptiert hast.</string>
+    <string-array name="weekdays">
+        <item>MONTAG</item>
+        <item>DIENSTAG</item>
+        <item>MITTWOCH</item>
+        <item>DONNERSTAG</item>
+        <item>FREITAG</item>
+        <item>SAMSTAG</item>
+        <item>SONTAG</item>
+    </string-array>
+    <string-array name="difficulty">
+        <item>LEICHT</item>
+        <item>MITTEL</item>
+        <item>SCHWER</item>
+    </string-array>
+    <string-array name="cardCategories">
+        <item>"ALLE"</item>
+        <item>"NEUE"</item>
+        <item>"SCHWERE"</item>
+        <item>"MITTELERE"</item>
+        <item>"EINFACHE"</item>
+    </string-array>
+    <string-array name="colours">
+        <item>ROT</item>
+        <item>BLAU</item>
+        <item>GRÜN</item>
+        <item>GELB</item>
+        <item>BRAUN</item>
+        <item>ORANGE</item>
+        <item>ROSA</item>
+        <item>LILA</item>
+        <item>GRAU</item>
+    </string-array>
+    <string name="accept">Zustimmen</string>
+    <string name="terms_of_use">Nutzungsbedingungen</string>
+    <string name="decline">Ablehnen</string>
+    <string name="terms_content"> Vertragsgegenstand: Nutzung von StudyFellow
+StudyFellow (im Folgenden "App" genannt) stellt eine Plattform bereit, die es den Nutzern ermöglicht,  eine Vielzahl von Lerninhalten, wichtigen Informationen und Dokumente unter verschiedenen Nutzern auszutauschen. Die Nutzung der Gruppen in der App ist an die uneingeschränkte Akzeptanz dieser Nutzungsbedingungen gebunden.
+Durch die Nutzung der App erklärt sich der Nutzer damit einverstanden, die bereitgestellten Dienste ausschließlich zu Bildungszwecken zu nutzen. Die App behält sich das Recht vor, den Inhalt und die Funktionalität der Dienste zu aktualisieren, zu ändern oder zu erweitern, um die Nutzererfahrung zu verbessern.
+Die App wird "wie besehen" bereitgestellt, ohne Garantien für spezifische Ergebnisse oder Leistungen. Die Nutzung erfolgt auf eigenes Risiko des Nutzers, und die App ist nicht für etwaige Schäden oder Verluste verantwortlich, die sich aus der Nutzung ergeben könnten.
+Die Nutzung der App kann die Erhebung und Verarbeitung von Daten gemäß den Datenschutzrichtlinien der App umfassen, um die Dienste bereitzustellen und zu verbessern. Durch die Nutzung der App stimmt der Nutzer der Datenerhebung und -verarbeitung gemäß diesen Richtlinien zu.
+2. Kontoverantwortung:
+Der Nutzer ist verantwortlich für die Geheimhaltung seiner Zugangsdaten und dafür, dass der Zugang zu seinem Konto eingeschränkt bleibt. Jegliche Aktivitäten, die über das Konto des Nutzers erfolgen, gelten als von diesem autorisiert, es sei denn, der Nutzer meldet einen Missbrauch oder eine nicht autorisierte Nutzung seines Kontos.
+
+3. Kontoauflösung und -löschung:
+Der Nutzer kann sein Konto jederzeit löschen oder auflösen. Inaktive Konten können unter Umständen nach einer gewissen Zeit deaktiviert werden. Die App behält sich das Recht vor, Konten zu schließen oder zu deaktivieren, die gegen die Nutzungsbedingungen verstoßen.
+
+4.Zulässige Nutzung
+4.1. Bildungszwecke:
+Die Lern-App ist ausschließlich für Bildungszwecke konzipiert. Die Nutzung der App sollte darauf abzielen, Lerninhalte zu suchen, zu erstellen, zu teilen und zu diskutieren, die den Bildungszielen der Plattform entsprechen.
+4.2. Angemessenes Verhalten:
+Die Nutzung der App erfordert ein angemessenes und respektvolles Verhalten gegenüber anderen Nutzern. Jegliche Aktivitäten, die zu Belästigung, Diskriminierung, Bedrohung oder Missbrauch anderer Nutzer führen könnten, sind strengstens untersagt.
+4.3. Einhaltung geltender Gesetze und Vorschriften:
+Nutzer sind verpflichtet, die geltenden Gesetze, Vorschriften und Rechte Dritter einzuhalten, insbesondere in Bezug auf Urheberrechte, geistiges Eigentum, Datenschutz und Vertraulichkeit.
+4.4. Verbotene Aktivitäten:
+Es ist untersagt, die App für Zwecke zu nutzen, die gegen geltendes Recht verstoßen oder die Sicherheit, Integrität oder Funktionalität der App beeinträchtigen könnten. Dies schließt die Verbreitung von Spam, Viren, Malware oder anderer schädlicher Inhalte ein.
+4.5. Konto- und Zugangsdaten:
+Die Nutzung der App erfordert die ausschließliche Verwendung der eigenen Kontoinformationen.
+4.6. Einhaltung der Community-Richtlinien:
+Nutzer sind verpflichtet, sich an die von der App festgelegten Community-Richtlinien zu halten. Verstöße gegen diese Richtlinien können zur Einschränkung der Kontofunktionen oder zur Sperrung des Kontos führen.
+5.Verbotene Aktivitäten
+5.1.Gefährdung von Kindern
+Unangemessene, auf ein Kind gerichtete Handlungen, z. B. Grapschen oder Streicheln
+Cyber-Grooming, z. B. Onlinefreundschaft mit einem Kind, um online oder offline sexuellen Kontakt herzustellen und/oder sexuelle Bilder mit diesem Kind auszutauschen
+Sexualisierung von Minderjährigen, z. B. Bilder, die den sexuellen Missbrauch von Kindern zeigen, propagieren oder dazu animieren oder Kinder auf eine Weise darstellen, die zur sexuellen Ausbeutung von Kindern führen könnte
+Sexuelle Erpressung, z. B. Bedrohung oder Erpressung eines Kindes durch echten oder vermeintlichen Zugriff auf intime Bilder dieses Kindes
+Kinderhandel, z. B. das Anbieten oder die Anwerbung von Kindern mit dem Ziel des kommerziellen sexuellen Missbrauchs
+
+5.2 Pornografische Inhalte und vulgäre Sprache
+Darstellungen von Nacktheit sexueller Natur oder sexuell anzüglichen Posen, in denen eine Person gänzlich unbekleidet, weichgezeichnet oder nur minimal bekleidet ist und/oder die Art der Kleidung in einem öffentlichen Rahmen unangemessen wäre
+Darstellungen, Animationen oder Illustrationen sexueller Handlungen oder sexuell anzüglicher Posen oder die sexuelle Darstellung von Körperteilen
+Inhalte, die Sexspielzeug, Sexanleitungen, illegale sexuelle Themen und Fetische darstellen oder an sich als sexuelle Hilfsmittel dienen
+Anstößige oder vulgäre Inhalte, einschließlich, aber nicht beschränkt auf Obszönitäten, Beleidigungen, anstößige Texte oder nicht jugendfreie oder sexuelle Suchbegriffe im Store-Eintrag oder in der App
+Inhalte, die Sodomie darstellen, beschreiben oder dazu aufrufen
+Apps, in denen sexuelle Unterhaltung, Begleitservices oder andere Dienste beworben werden, die als Angebot sexueller Handlungen im Austausch gegen Bezahlung oder als Aufruf dazu angesehen werden können, einschließlich, aber nicht beschränkt auf Enjokōsai oder andere sexuelle Vereinbarungen, bei denen von einer der Parteien erwartet wird, dass sie der anderen Partei Geld, Geschenke oder finanzielle Unterstützung zukommen lässt („Sugardating“)
+Apps, die Personen entwürdigen oder vergegenständlichen, z. B. Apps, in denen behauptet wird, sie würden Personen entkleiden oder durch Kleidung hindurchsehen können, auch wenn die Apps als „Scherz“- oder Unterhaltungs-Apps gekennzeichnet sind
+ Inhalte oder Verhaltensweisen, die darauf abzielen, Menschen auf sexuelle Weise zu bedrohen oder auszubeuten, wie z. B. Creepshots, versteckte Kameras, nicht einvernehmliche sexuelle Inhalte, die mit Deepfake- oder ähnlichen Technologien erstellt wurden, oder Inhalte, in denen es zu sexuellen Übergriffen kommt.
+5.3 Hassrede/Volksverhetzung
+Inhalte oder Äußerungen, denen zufolge eine geschützte Gruppe unmenschlich, minderwertig oder hassenswert ist
+Apps, die hasserfüllte Verunglimpfungen, Stereotype oder Theorien enthalten, denen zufolge eine geschützte Gruppe negative Eigenschaften hat – z. B. niederträchtig, korrupt, böse usw. – oder die direkt oder indirekt behaupten, dass die Gruppe eine Bedrohung darstellt
+Inhalte oder Aussagen, mit denen andere Personen davon überzeugt werden sollen, dass bestimmte Menschen gehasst oder diskriminiert werden sollten, weil sie zu einer geschützten Gruppe gehören
+Inhalte, die für Materialien, Verhaltensweisen oder Symbole wie Flaggen und Abzeichen werben, die im Zusammenhang mit Hassgruppen stehen
+5.4 Gewalt
+Grafische Darstellungen oder Beschreibungen von realistischer Gewalt oder Gewaltandrohungen gegenüber Personen oder Tieren
+Apps, die zu Selbstverletzung, Suizid, Essstörungen, Würgespielen oder anderen Aktivitäten, die gesundheitliche Folgen bis hin zum Tod haben können, anleiten
+5.4.1 Terroristische Inhalte
+Inhalte, die in Verbindung zu Terrorismus stehen, sind nicht zulässig. Dazu zählen Inhalte, in denen zu Terrorakten bzw. Gewalt aufgerufen wird oder Terroranschläge verherrlicht werden. Wenn Sie Inhalte, die sich auf jegliche Form von Terrorismus beziehen, im Kontext von Bildung, Dokumentation, Wissenschaft oder Kunst posten, sollten Sie darauf achten, genügend entsprechende Hintergrundinformationen zu liefern.
+5.4.2 Gefährliche Organisationen und Bewegungen
+Wir gestatten keine Inhalte, in denen Gewalt gegen die Zivilbevölkerung geplant, vorbereitet oder verherrlicht wird. Wenn Ihre Inhalte für einen pädagogischen, dokumentarischen, wissenschaftlichen oder künstlerischen Zweck sind, muss gemeinsam mit diesen Inhalten auch der relevante Kontext angegeben werden.
+5.5 Sensible Ereignisse
+Mangelnde Sensibilität in Bezug auf den Tod einer echten Person oder Personengruppe durch Suizid, Überdosis, natürliche Todesursache usw.
+Leugnen eines gut dokumentierten, bedeutenden tragischen Ereignisses
+Profitieren von einem sensiblen Ereignis ohne erkennbaren Vorteil für die Opfer
+5.6 Mobbing und Belästigung
+Mobben von Opfern internationaler oder religiöser Konflikte
+Inhalte, durch die Dritte ausgebeutet werden, z. B. Erpressung, Chantage usw.
+Posten von Inhalten mit dem Ziel, Dritte öffentlich zu demütigen
+Belästigen von Opfern tragischer Vorfälle oder deren Freunden oder Angehörigen
+5.7 Drogen, Tabak und Alkohol
+Darstellungen des Konsums oder Verkaufs von Alkohol oder Tabak durch bzw. an Minderjährige oder entsprechende Aufrufe sind nicht gestattet.
+Es darf nicht der Eindruck erweckt werden, dass der Konsum von Tabak zu einem höheren Ansehen in sozialer, sexueller, beruflicher, intellektueller oder sportlicher Hinsicht verhilft.
+Die vorteilhafte Darstellung von übermäßigem Alkoholkonsum, einschließlich der positiven Darstellung von übermäßigem Alkoholkonsum, Trinkgelagen oder Trinkwettbewerben ist nicht gestattet.
+Die Bewerbung, Promotion oder auffällige Platzierung von Tabakprodukten (z. B. durch Werbung, Banner, Kategorien und Links zu Websites, auf denen Tabak verkauft wird) ist nicht gestattet.
+Darstellung des Konsums oder Verkaufs von Drogen, Alkohol oder Tabak durch bzw. an Minderjährige oder Aufruf dazu
+Anleitung zum Anbau oder zur Herstellung illegaler Drogen
+5.8 Verletzung geistiger Eigentumsrechte:
+Es ist strengstens untersagt, Inhalte hochzuladen, zu teilen oder zu verbreiten, die gegen Urheberrechte, Markenrechte, Patente oder andere geistige Eigentumsrechte Dritter verstoßen. Dies schließt das Hochladen von Material ein, für das der Nutzer nicht über die erforderlichen Rechte verfügt.
+5.9 Unzulässige Inhalte:
+Die Verbreitung von Inhalten, die illegal, beleidigend, diffamierend, obszön, diskriminierend, bedrohlich oder auf andere Weise unangemessen sind, ist untersagt. Dies umfasst auch Inhalte, die Hassreden, Gewalt, Pornografie oder illegale Aktivitäten jeglicher Art fördern.
+5.10 Störende Aktivitäten:
+Nutzer dürfen die App nicht für den Versand von Spam, Kettenbriefen, betrügerischen Mitteilungen oder anderen unerwünschten oder störenden Inhalten nutzen. Das Erstellen von Accounts mit betrügerischen Absichten oder die Belästigung anderer Nutzer ist strengstens untersagt.
+5.11 Sicherheitsverletzungen:
+Jegliche Handlungen, die die Sicherheit der App oder anderer Nutzer gefährden könnten, sind untersagt. Dazu gehören Versuche, Sicherheitsmechanismen zu umgehen, das Eindringen in Systeme oder das Verbreiten von schädlicher Software wie Viren, Würmern oder Trojanern.
+5.12 Verletzung der Nutzungsbedingungen:
+Die bewusste Missachtung der in den Nutzungsbedingungen festgelegten Regeln und Richtlinien der App kann zur sofortigen Sperrung des Kontos oder anderen Sanktionen führen.
+5.13 Nutzung zu kommerziellen Zwecken:
+Die App darf nicht für kommerzielle Zwecke, wie Werbung, Verkaufsförderung oder Vermarktung von Produkten oder Dienstleistungen, ohne ausdrückliche Genehmigung durch die Plattformbetreiber verwendet werden.
+6. Haftungsausschlüsse
+6.1. Haftungsbegrenzung:
+Die Nutzung der Lern-App erfolgt auf eigenes Risiko des Nutzers. Die Plattform und ihre Betreiber übernehmen keine ausdrückliche oder stillschweigende Garantie für die Richtigkeit, Vollständigkeit, Zuverlässigkeit oder Verfügbarkeit der bereitgestellten Dienste oder Inhalte.
+6.2. Inhaltliche Verantwortung:
+Die Lern-App bietet Zugang zu verschiedenen Lerninhalten, die von verschiedenen Nutzern erstellt oder bereitgestellt werden. Die Plattform und ihre Betreiber übernehmen keine Verantwortung für die Richtigkeit, Qualität, Sicherheit oder Angemessenheit dieser Inhalte. Jegliche Nutzung von Informationen oder Ratschlägen aus der App liegt in der Verantwortung des Nutzers.
+6.3. Unterbrechungen und Ausfälle:
+Die Betreiber der App bemühen sich nach bestem Wissen und Gewissen um einen störungsfreien Betrieb der Plattform. Jedoch können Unterbrechungen, Ausfälle oder Verzögerungen in der Bereitstellung der Dienste auftreten, für die keine Haftung übernommen wird. Die Plattform kann nicht für Verluste oder Schäden infolge solcher Unterbrechungen haftbar gemacht werden.
+6.4. Externe Links und Inhalte:
+Die Lern-App kann Links zu externen Websites oder Ressourcen Dritter enthalten. Die Plattform und ihre Betreiber übernehmen keine Verantwortung für die Verfügbarkeit, Genauigkeit oder Inhalte solcher externen Seiten. Die Nutzung externer Links geschieht auf eigenes Risiko des Nutzers.
+6.5. Haftungsausschluss für Schäden:
+In keinem Fall haften die Betreiber der Lern-App für direkte, indirekte, zufällige, besondere oder Folgeschäden, einschließlich entgangener Gewinne oder Datenverlusten, die sich aus der Nutzung oder Unmöglichkeit der Nutzung der App ergeben.
+6.6 Rechtliche Verantwortung:
+Die Haftungsausschlüsse gelten im gesetzlich zulässigen Umfang. Sofern lokale Gesetze dies nicht erlauben, können einige oder alle Haftungsausschlüsse für den Nutzer möglicherweise nicht gelten.
+7.Geistiges Eigentum
+7.1. Urheberrechte:
+Alle Inhalte, einschließlich Texte, Grafiken, Logos, Bilder, Videos, Audiodateien und andere Materialien, die in der Lern-App bereitgestellt werden, sind urheberrechtlich geschützt und Eigentum der Plattform oder ihrer Lizenzgeber. Die Nutzung dieser Inhalte durch die Nutzer erfolgt ausschließlich zu Bildungszwecken gemäß den Nutzungsbedingungen.
+7.2. Lizenzierung von Nutzerbeiträgen:
+Durch das Hochladen oder Bereitstellen von Inhalten in der Lern-App erteilt der Nutzer der Plattform eine nicht-exklusive, übertragbare, unterlizenzierbare Lizenz zur Nutzung, Anzeige, Vervielfältigung, Änderung und Verbreitung der bereitgestellten Inhalte im Rahmen der Dienste der App.
+7.3. Markenrechte:
+Alle Marken, Logos, Slogans und Produktbezeichnungen, die in der Lern-App verwendet werden, sind Eigentum der Plattform oder ihrer Lizenzgeber. Die Nutzung dieser Marken durch die Nutzer ohne ausdrückliche Genehmigung der Plattform ist untersagt.
+7.4. Schutz geistigen Eigentums der Nutzer:
+Die Lern-App respektiert die geistigen Eigentumsrechte anderer und ermutigt die Nutzer, dies ebenfalls zu tun. Die Plattform behält sich das Recht vor, Inhalte zu entfernen, die gegen Urheberrechte oder andere geistige Eigentumsrechte Dritter verstoßen.
+7.5. Meldung von Urheberrechtsverletzungen:
+Wenn ein Nutzer der Meinung ist, dass seine Urheberrechte verletzt wurden, kann er dies der Plattform melden. Die Plattform wird solche Meldungen ernsthaft prüfen und gegebenenfalls angemessene Maßnahmen ergreifen, einschließlich der Entfernung von fraglichen Inhalten.
+8.Datenschutz und Sicherheit
+8.1. Datenerhebung und -verwendung:
+Die Lern-App erhebt und verwendet bestimmte Informationen und Daten der Nutzer gemäß den Datenschutzrichtlinien der Plattform. Dies kann persönliche Daten wie Name, E-Mail-Adresse und Nutzungsinformationen umfassen. Die Art und Weise der Datenerhebung, -speicherung und -verwendung wird in den Datenschutzrichtlinien detailliert beschrieben.
+8.2. Zweck der Datennutzung:
+Die gesammelten Daten werden verwendet, um die Dienste der App bereitzustellen, zu verbessern, zu warten und anzupassen. Dies kann die Personalisierung von Inhalten, die Bereitstellung von Unterstützung und die Analyse von Nutzungsverhalten umfassen, um die App-Erfahrung zu optimieren.
+8.3. Datenschutzmaßnahmen:
+Die Plattform ergreift angemessene technische und organisatorische Maßnahmen, um die Sicherheit und Vertraulichkeit der gesammelten Daten zu gewährleisten. Dennoch kann keine absolute Sicherheit der übertragenen oder gespeicherten Daten garantiert werden.
+8.4. Datenweitergabe:
+Die Lern-App kann Daten an Dritte weitergeben, jedoch nur unter Einhaltung der Datenschutzbestimmungen und nur zu legitimen Zwecken wie der Verbesserung der Dienste, der Verarbeitung von Zahlungen oder der Einhaltung gesetzlicher Anforderungen.
+8.6. Zustimmung zur Datennutzung:
+Durch die Nutzung der Lern-App erklärt sich der Nutzer mit der Datenerhebung, -speicherung und -verwendung gemäß den Datenschutzrichtlinien der Plattform einverstanden.
+9.Änderungen der Bedingungen
+9.1. Aktualisierungen der Nutzungsbedingungen:
+Die Betreiber der Lern-App behalten sich das Recht vor, diese Nutzungsbedingungen von Zeit zu Zeit zu aktualisieren oder zu ändern, um den rechtlichen Anforderungen, technologischen Entwicklungen oder Änderungen der Dienstleistungen Rechnung zu tragen. Die aktualisierten Bedingungen werden auf der Plattform veröffentlicht und sind ab dem Datum ihrer Veröffentlichung gültig.
+9.2. Benachrichtigung über Änderungen:
+Im Falle von wesentlichen Änderungen der Nutzungsbedingungen wird die App die Nutzer über diese Änderungen informieren. Die Benachrichtigung kann durch Mitteilungen in der App, per E-Mail oder durch andere angemessene Kommunikationsmittel erfolgen. Die Nutzer werden dazu aufgefordert, die aktualisierten Bedingungen zu lesen und zu akzeptieren.
+9.3. Fortgesetzte Nutzung als Zustimmung:
+Die fortgesetzte Nutzung der Lern-App nach Inkrafttreten der aktualisierten Nutzungsbedingungen gilt als Zustimmung zu diesen Änderungen. Sollte ein Nutzer mit den aktualisierten Bedingungen nicht einverstanden sein, besteht die Möglichkeit, das Konto zu löschen und die App nicht weiter zu nutzen.
+9.4. Überprüfung der Bedingungen:
+Es wird den Nutzern empfohlen, regelmäßig die Nutzungsbedingungen der Lern-App zu überprüfen, um über etwaige Änderungen informiert zu bleiben. Die Nutzung der Dienste nach Veröffentlichung von Änderungen bedeutet die Zustimmung zu diesen geänderten Bedingungen.
+10.Beendigung des Vertrags
+
+10.1. Kündigung durch den Nutzer:
+Der Nutzer kann den Vertrag mit der Lern-App jederzeit kündigen, indem er sein Konto schließt oder die Nutzung der Dienste einstellt. Die Kündigung erfolgt durch das Löschen des Kontos oder die Deinstallation der App.
+10.2. Kündigung durch die App:
+Die Betreiber der Lern-App behalten sich das Recht vor, den Vertrag mit einem Nutzer zu kündigen oder den Zugang zu den Diensten zu beschränken, wenn der Nutzer gegen die Nutzungsbedingungen verstößt oder wenn die Betreiber der Ansicht sind, dass die weitere Nutzung der App die Rechte anderer Nutzer oder die Sicherheit der Plattform gefährdet.
+10.3. Folgen der Vertragsbeendigung:
+Nach Beendigung des Vertrags hat der Nutzer keinen weiteren Zugang zu den Diensten der Lern-App. Inhalte, die mit dem Konto des Nutzers verbunden sind, können gelöscht oder entfernt werden, und der Nutzer kann möglicherweise nicht mehr auf seine früheren Aktivitäten oder Daten zugreifen.
+10.4. Restriktionen nach Vertragsende:
+Bestimmte Bestimmungen, wie Haftungsausschlüsse, geistiges Eigentum oder Verbotene Aktivitäten, können auch nach der Beendigung des Vertrags weiterhin gelten, um die Interessen der Plattform und anderer Nutzer zu schützen.
+10.5. Recht auf Schadensersatz:
+Die Beendigung des Vertrags entbindet den Nutzer nicht von etwaigen Verpflichtungen oder Haftungen, die vor der Kündigung entstanden sind. Die Betreiber der Lern-App behalten sich das Recht vor, Schadensersatz oder andere rechtliche Schritte im Falle eines Verstoßes gegen die Nutzungsbedingungen zu verfolgen.
+11.Streitbeilegung und anwendbares Recht
+11.1. Anwendbares Recht:
+Diese Nutzungsbedingungen und alle damit verbundenen Streitigkeiten unterliegen den Gesetzen des Landes oder Staates, in dem die Betreiber der Lern-App ihren Hauptsitz haben.
+11.2. Zuständige Gerichtsbarkeit:
+Für alle Streitigkeiten, die sich aus diesen Nutzungsbedingungen oder der Nutzung der Lern-App ergeben, wird die ausschließliche Zuständigkeit bei den Gerichten des Landes oder Staates liegen, in dem die Betreiber der Lern-App ihren Hauptsitz haben.
+11.3. Alternative Streitbeilegung:
+Bevor rechtliche Schritte eingeleitet werden, stimmen die Parteien zu, sich um eine außergerichtliche Einigung zu bemühen. Dies kann durch Mediation, Schlichtung oder andere alternative Streitbeilegungsverfahren geschehen.
+11.4. Verzicht auf Sammelklagen:
+Nutzer erklären sich damit einverstanden, auf das Recht, eine Sammelklage oder eine Klage im Namen einer Gruppe oder Klasse von Personen einzureichen, zu verzichten.
+11.5. Unwirksamkeit einzelner Klauseln:
+Sollte eine der Bestimmungen dieser Streitbeilegungsklausel als ungültig oder nicht durchsetzbar erachtet werden, bleiben die übrigen Bestimmungen weiterhin in vollem Umfang wirksam.
+11.6. Verständigung über Rechtsstreitigkeiten:
+Die Betreiber der Lern-App und der Nutzer stimmen zu, sich im Falle von Streitigkeiten im Zusammenhang mit diesen Nutzungsbedingungen oder der App in erster Linie auf eine außergerichtliche Einigung zu einigen.
+12.Schlussbestimmungen
+
+12.1. Gesamte Vereinbarung:
+Diese Nutzungsbedingungen stellen die gesamte Vereinbarung zwischen den Nutzern und den Betreibern der Lern-App dar und ersetzen alle vorherigen Vereinbarungen oder Absprachen, sei es schriftlich oder mündlich.
+12.2. Übertragung von Rechten und Pflichten:
+Die Nutzer dürfen ihre Rechte oder Pflichten gemäß diesen Nutzungsbedingungen nicht ohne vorherige schriftliche Zustimmung der Betreiber der Lern-App übertragen oder abtreten.
+12.3. Salvatorische Klausel:
+Sollten einzelne Bestimmungen dieser Nutzungsbedingungen ganz oder teilweise unwirksam sein oder werden, berührt dies nicht die Wirksamkeit der übrigen Bestimmungen. Anstelle der unwirksamen Bestimmung tritt eine Regelung, die dem wirtschaftlichen Zweck der unwirksamen Bestimmung am nächsten kommt.
+12.4. Verzicht auf Rechte:
+Ein Verzicht auf die Ausübung eines Rechts oder einer Bestimmung dieser Nutzungsbedingungen durch die Betreiber der Lern-App stellt keinen dauerhaften Verzicht auf dieses Recht oder diese Bestimmung dar.
+12.5. Kontaktinformationen:
+Für Fragen, Anfragen oder Hinweise im Zusammenhang mit diesen Nutzungsbedingungen oder der Lern-App können sich die Nutzer an die angegebenen Kontaktinformationen der Plattformbetreiber wenden.
+12.6. Aktualisierung der Bedingungen:
+Die Betreiber der Lern-App behalten sich das Recht vor, diese Nutzungsbedingungen zu aktualisieren oder zu ändern. Die Nutzer werden auf angemessene Weise über solche Änderungen informiert.</string>
 </resources>

@@ -19,27 +19,27 @@
         <item>SUNDAY</item>
     </string-array>
     <string-array name="difficulty">
-        <item>easy</item>
-        <item>medium</item>
-        <item>difficult</item>
+        <item>EASY</item>
+        <item>MEDIUM</item>
+        <item>DIFFICULT</item>
     </string-array>
     <string-array name="cardCategories">
-        <item>"all"</item>
-        <item>"new"</item>
-        <item>"hard"</item>
-        <item>"medium"</item>
-        <item>"easy"</item>
+        <item>"ALL"</item>
+        <item>"NEW"</item>
+        <item>"HARD"</item>
+        <item>"MEDIUM"</item>
+        <item>"EASY"</item>
     </string-array>
     <string-array name="colours">
-        <item>red</item>
-        <item>blue</item>
-        <item>green</item>
-        <item>yellow</item>
-        <item>brown</item>
-        <item>orange</item>
-        <item>pink</item>
-        <item>purple</item>
-        <item>grey</item>
+        <item>RED</item>
+        <item>BLUE</item>
+        <item>GREEN</item>
+        <item>YELLOW</item>
+        <item>BROWN</item>
+        <item>ORANGE</item>
+        <item>PINK</item>
+        <item>PURPLE</item>
+        <item>GREY</item>
     </string-array>
     <string-array name="times">
         <item>0.0</item>
@@ -211,8 +211,180 @@
     <string name="events">Events</string>
     <string name="report_reason">Report Reason</string>
     <string name="content">Content</string>
-    <string name="spam">Spam</string>
+    <string name="spam" translatable="false">Spam</string>
     <string name="description_optional">Description (optional)</string>
+    <string name="ai_disclaimer">Attention:\nCorrectness cannot be guaranteed!\n-The AI can provide incorrect \"correct\" answers.\n-Questions may have several correct answers. However, the AI determines only one.\n-The AI refers to data up to September 2021.</string>
+    <string name="nutzungsbedingungen"><u>User Policies</u></string>
+    <string name="info_user_policies">To ensure the smooth interaction of all users, we ask all users to agree to our Terms of Use.</string>
+    <string name="accept_terms">By clicking on \'Agree\', you confirm that you have read, understood and accepted these terms of use.</string>
+    <string name="accept">Accept</string>
+    <string name="terms_of_use">Terms of Use</string>
+    <string name="decline">Decline</string>
+    <string name="terms_content">Subject matter of the contract: Use of StudyFellow
+StudyFellow (hereinafter referred to as "App") provides a platform that enables users to exchange a variety of learning content, important information and documents between different users. The use of the groups in the App is subject to the unreserved acceptance of these Terms of Use.
+By using the app, the user agrees to use the services provided exclusively for educational purposes. The app reserves the right to update, change or expand the content and functionality of the services in order to improve the user experience.
+The app is provided "as is" with no guarantees of specific results or performance. Use is at the user\'s own risk and the App is not responsible for any damages or losses that may result from such use.
+Use of the App may involve the collection and processing of data in accordance with the Apps Privacy Policy in order to provide and improve the Services. By using the app, the user consents to the collection and processing of data in accordance with these guidelines.
+2. account responsibility:
+Users are responsible for maintaining the confidentiality of their account credentials and for ensuring that access to their account remains restricted. Any activities that take place via the users account are deemed to be authorized by the user, unless the user reports misuse or unauthorized use of their account.
+
+3. account termination and deletion:
+The user may delete or terminate their account at any time. Inactive accounts may be deactivated after a certain period of time. The app reserves the right to close or deactivate accounts that violate the terms of use.
+
+4 Permitted use
+4.1 Educational purposes:
+The Learning App is designed for educational purposes only. Use of the app should be aimed at finding, creating, sharing and discussing educational content that meets the educational objectives of the platform.
+4.2 Appropriate behavior:
+Use of the app requires appropriate and respectful behavior towards other users. Any activities that could lead to harassment, discrimination, threats or abuse of other users are strictly prohibited.
+4.3 Compliance with applicable laws and regulations:
+Users are obliged to comply with applicable laws, regulations and third party rights, in particular with regard to copyright, intellectual property, data protection and confidentiality.
+4.4 Prohibited activities:
+It is prohibited to use the App for purposes that violate applicable law or could impair the security, integrity or functionality of the App. This includes the distribution of spam, viruses, malware or other harmful content.
+4.5 Account and access data:
+Use of the App requires the exclusive use of your own account information.
+4.6 Compliance with the community guidelines:
+Users are required to adhere to the community guidelines established by the App. Violations of these guidelines may result in the restriction of account functions or the blocking of the account.
+5 Prohibited activities
+5.1 Endangering children
+Inappropriate actions directed at a child, e.g. groping or fondling
+Cyber-grooming, e.g. online friendship with a child in order to establish sexual contact online or offline and/or exchange sexual images with this child
+Sexualization of minors, e.g. images that show, promote or encourage the sexual abuse of children or depict children in a way that could lead to the sexual exploitation of children
+Sexual blackmail, e.g. threatening or blackmailing a child through real or alleged access to intimate images of that child
+Child trafficking, e.g. offering or recruiting children for the purpose of commercial sexual abuse
+5.2 Pornographic content and vulgar language
+Depictions of nudity of a sexual nature or sexually suggestive poses in which a person is completely unclothed, soft-focused or only minimally clothed and/or the type of clothing would be inappropriate in a public setting
+Depictions, animations or illustrations of sexual acts or sexually suggestive poses or the sexual depiction of body parts
+Content that depicts sex toys, sex manuals, illicit sexual themes and fetishes or that serves as a sexual aid in itself
+Offensive or vulgar content, including but not limited to profanity, insults, offensive text or adult or sexual keywords in the store entry or app
+Content that depicts, describes or encourages bestiality
+Apps that advertise sexual entertainment, escort services or other services that may be considered as offering or soliciting sexual acts in exchange for payment, including but not limited to enjokōsai or other sexual arrangements where one of the parties is expected to provide money, gifts or financial support to the other party ("sugardating")
+Apps that degrade or objectify people, e.g. apps that claim to be able to undress people or see through clothing, even if the apps are labeled as "joke" or entertainment apps
+ Content or behavior that is intended to threaten or exploit people in a sexual manner, such as creepshots, hidden cameras, non-consensual sexual content created using deepfake or similar technologies, or content that involves sexual assault.
+5.3 Hate speech/incitement to hatred
+Content or statements according to which a protected group is inhuman, inferior or hateful
+Apps that contain hateful slurs, stereotypes or theories that a protected group has negative characteristics - e.g. vile, corrupt, evil, etc. - or that directly or indirectly claim that the group is a threat
+Content or statements intended to persuade others that certain people should be hated or discriminated against because they belong to a protected group
+Content that promotes materials, behaviors or symbols, such as flags and badges, associated with hate groups
+5.4 Violence
+Graphic depictions or descriptions of realistic violence or threats of violence towards people or animals
+Apps that encourage self-harm, suicide, eating disorders, choking games or other activities that can have health consequences, including death
+5.4.1 Terrorist content
+Content related to terrorism is not permitted. This includes content that calls for acts of terrorism or violence or glorifies terrorist attacks. If you post content relating to any form of terrorism in the context of education, documentation, science or art, you should ensure that you provide sufficient background information.
+5.4.2 Dangerous organizations and movements
+We do not allow content that plans, prepares or glorifies violence against the civilian population. If your content is for an educational, documentary, scientific or artistic purpose, the relevant context must be provided along with this content.
+5.5 Sensitive events
+Lack of sensitivity regarding the death of a real person or group of people by suicide, overdose, natural causes, etc.
+Denial of a well-documented, significant tragic event
+Profiting from a sensitive event with no discernible benefit to the victims
+5.6 Bullying and harassment
+Bullying of victims of international or religious conflicts
+Content that exploits third parties, e.g. blackmail, chanting, etc.
+Posting content with the aim of publicly humiliating third parties
+Harassing victims of tragic incidents or their friends or relatives
+    5.7 Drugs, tobacco and alcohol
+    Depictions of the consumption or sale of alcohol or tobacco by or to minors or corresponding appeals are not permitted.
+    The impression may not be created that the consumption of tobacco will lead to a higher social, sexual, professional, intellectual or sporting standing.
+    The favorable depiction of excessive alcohol consumption, including the positive depiction of excessive alcohol consumption, drinking bouts or drinking competitions is not permitted.
+    The advertising, promotion or conspicuous placement of tobacco products (e.g. through advertisements, banners, categories and links to websites selling tobacco) is not permitted.
+    Depiction of the consumption or sale of drugs, alcohol or tobacco by or to minors or incitement to do so
+    Instructions for the cultivation or production of illegal drugs
+    5.8 Infringement of intellectual property rights:
+    It is strictly prohibited to upload, share or distribute content that infringes copyrights, trademark rights, patents or other intellectual property rights of third parties. This includes uploading material for which the user does not have the necessary rights.
+    5.9 Illegal content:
+    The dissemination of content that is illegal, offensive, defamatory, obscene, discriminatory, threatening or otherwise inappropriate is prohibited. This also includes content that promotes hate speech, violence, pornography or illegal activities of any kind.
+    5.10 Disruptive activities:
+    Users may not use the App to send spam, chain letters, fraudulent messages or other unwanted or disruptive content. The creation of fraudulent accounts or the harassment of other users is strictly prohibited.
+    5.11 Security breaches:
+    Any actions that could jeopardize the security of the app or other users are prohibited. This includes attempts to circumvent security mechanisms, intrusion into systems or the distribution of harmful software such as viruses, worms or Trojans.
+    5.12 Violation of the terms of use:
+    Deliberate disregard of the apps rules and guidelines set out in the Terms of Use may result in immediate account suspension or other sanctions.
+    5.13 Use for commercial purposes:
+    The App may not be used for commercial purposes, such as advertising, sales promotion or marketing of products or services, without the express permission of the platform operators.
+    6 Exclusion of liability
+    6.1 Limitation of liability:
+    The use of the learning app is at the users own risk. The platform and its operators make no express or implied warranty as to the accuracy, completeness, reliability or availability of the services or content provided.
+    6.2 Responsibility for content:
+    The learning app provides access to various learning content created or provided by various users. The platform and its operators assume no responsibility for the accuracy, quality, safety or appropriateness of this content. Any use of information or advice from the app is the responsibility of the user.
+    6.3 Interruptions and outages:
+    The operators of the App will use their best endeavors to ensure that the platform operates without disruption. However, interruptions, failures or delays in the provision of services may occur, for which no liability is assumed. The Platform cannot be held liable for any loss or damage resulting from such interruptions.
+    6.4 External links and content:
+    The Learning App may contain links to external websites or resources of third parties. The Platform and its operators accept no responsibility for the availability, accuracy or content of such external sites. The use of external links is at the users own risk.
+    6.5 Exclusion of liability for damages:
+    In no event shall the operators of the learning app be liable for any direct, indirect, incidental, special or consequential damages, including lost profits or loss of data, arising out of the use or inability to use the app.
+    6.6 Legal responsibility:
+    The disclaimers apply to the extent permitted by law. If local laws do not allow it, some or all of the disclaimers may not apply to the user.
+    7 Intellectual property
+    7.1 Copyrights:
+    All content, including text, graphics, logos, images, videos, audio files and other materials provided in the Learning App are protected by copyright and are the property of the Platform or its licensors. The use of this content by users is exclusively for educational purposes in accordance with the Terms of Use.
+7.2 Licensing of user contributions:
+By uploading or providing content to the Learning App, the User grants the Platform a non-exclusive, transferable, sublicensable license to use, display, reproduce, modify and distribute the content provided as part of the Apps services.
+7.3 Trademark rights:
+All trademarks, logos, slogans and product names used in the Learning App are the property of the Platform or its licensors. The use of these trademarks by users without the express permission of the platform is prohibited.
+7.4 Protection of users intellectual property:
+The Learning App respects the intellectual property rights of others and encourages Users to do the same. The platform reserves the right to remove content that violates copyrights or other intellectual property rights of third parties.
+7.5 Reporting copyright infringements:
+If a user believes that his/her copyrights have been infringed, he/she may report this to the Platform. The platform will seriously investigate such reports and, if necessary, take appropriate action, including the removal of the content in question.
+8 Data protection and security
+8.1 Data collection and use:
+The Learning App collects and uses certain user information and data in accordance with the Platforms Privacy Policy. This may include personal data such as name, e-mail address and usage information. The way in which data is collected, stored and used is described in detail in the privacy policy.
+8.2 Purpose of data use:
+The data collected is used to provide, improve, maintain and customize the Apps services. This may include personalizing content, providing support and analyzing user behavior to optimize the app experience.
+8.3 Data protection measures:
+The Platform takes appropriate technical and organizational measures to ensure the security and confidentiality of the data collected. Nevertheless, no absolute security of the transmitted or stored data can be guaranteed.
+8.4 Data transfer:
+The Learning App may share data with third parties, but only in compliance with data protection regulations and only for legitimate purposes such as improving services, processing payments or complying with legal requirements.
+8.6 Consent to the use of data:
+By using the Learning App, the User consents to the collection, storage and use of data in accordance with the Platforms Privacy Policy.
+9. changes to the terms and conditions
+9.1 Updates to the terms of use:
+The operators of the Learning App reserve the right to update or amend these Terms of Use from time to time in order to take account of legal requirements, technological developments or changes to the services. The updated terms and conditions will be published on the platform and are valid from the date of their publication.
+9.2 Notification of changes:
+In the event of significant changes to the Terms of Use, the App will notify users of these changes. Notification may be made by means of messages in the App, by e-mail or by other appropriate means of communication. Users will be asked to read and accept the updated terms and conditions.
+9.3 Continued use as consent:
+Continued use of the Learning App after the updated Terms of Use come into force shall be deemed to constitute acceptance of these changes. If a user does not agree to the updated terms and conditions, they have the option of deleting their account and no longer using the app.
+9.4 Review of the Terms:
+Users are advised to regularly review the Terms of Use of the Learning App to stay informed of any changes. Use of the services after changes have been published constitutes acceptance of these amended terms.
+10 Termination of the contract
+
+10.1 Termination by the user:
+The User may terminate the contract with the Learning App at any time by closing its account or ceasing to use the Services. Termination is effected by deleting the account or uninstalling the app.
+10.2 Termination by the app:
+The operators of the learning app reserve the right to terminate the contract with a user or restrict access to the services if the user violates the terms of use or if the operators are of the opinion that the continued use of the app jeopardizes the rights of other users or the security of the platform.
+10.3 Consequences of termination of the contract:
+After termination of the contract, the user will no longer have access to the services of the learning app. Content associated with the Users account may be deleted or removed and the User may no longer be able to access their previous activities or data.
+10.4 Restrictions after the end of the contract:
+Certain provisions, such as disclaimers, intellectual property or Prohibited Activities, may continue to apply after the termination of the Agreement in order to protect the interests of the Platform and other Users.
+10.5 Right to compensation:
+Termination of the contract does not release the user from any obligations or liabilities that may have arisen prior to termination. The operators of the learning app reserve the right to pursue damages or other legal action in the event of a breach of the terms of use.
+11 Dispute resolution and applicable law
+11.1 Applicable law:
+These Terms of Use and all related disputes shall be governed by the laws of the country or state in which the operators of the Learning App are headquartered.
+11.2 Competent jurisdiction:
+The courts of the country or state in which the operators of the Learning App have their headquarters will have exclusive jurisdiction over all disputes arising out of these Terms of Use or the use of the Learning App.
+11.3 Alternative dispute resolution:
+Before taking legal action, the parties agree to try to reach an out-of-court settlement. This can be done through mediation, arbitration or other alternative dispute resolution procedures.
+11.4 Waiver of class actions:
+Users agree to waive the right to bring a class action or lawsuit on behalf of a group or class of persons.
+11.5 Invalidity of individual clauses:
+If any provision of this dispute resolution clause is held to be invalid or unenforceable, the remaining provisions shall remain in full force and effect.
+11.6 Agreement on legal disputes:
+The operators of the Learning App and the User agree to settle any disputes arising in connection with these Terms of Use or the App primarily by out-of-court settlement.
+12 Final provisions
+
+
+12.1 Entire agreement:
+These Terms of Use constitute the entire agreement between the Users and the operators of the Learning App and supersede all prior agreements or understandings, whether written or oral.
+12.2 Transfer of rights and obligations:
+Users may not transfer or assign their rights or obligations under these Terms of Use without the prior written consent of the Learning App Operators.
+12.3 Severability clause:
+Should individual provisions of these Terms of Use be or become invalid in whole or in part, this shall not affect the validity of the remaining provisions. The invalid provision shall be replaced by a provision that comes closest to the economic purpose of the invalid provision.
+12.4 Waiver of rights:
+Any waiver by the operators of the Learning App of the exercise of any right or provision of these Terms of Use shall not constitute a permanent waiver of such right or provision.
+12.5 Contact information:
+For questions, inquiries or notices in connection with these Terms of Use or the Learning App, Users may contact the Platform Operators using the contact information provided.
+12.6 Updating the terms and conditions:
+The operators of the Learning App reserve the right to update or amend these Terms of Use. Users will be informed of such changes in an appropriate manner.
+    </string>
     <string-array name="languages">
         <item>Afrikaans</item>
         <item>Albanian</item>
