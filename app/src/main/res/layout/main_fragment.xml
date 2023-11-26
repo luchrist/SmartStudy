@@ -5,21 +5,23 @@
     android:background="@color/primaryVariant"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background_content_bottom"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
         <TextView
             android:id="@+id/timetable_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_8sdp"
             android:text="@string/timetable"
+            android:textColor="@color/primaryText"
             android:textSize="@dimen/_14ssp"
             android:textStyle="bold"
-            android:textColor="@color/primaryText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -42,13 +44,13 @@
             android:clipToPadding="false"
             android:orientation="vertical"
             android:overScrollMode="never"
-            android:layout_marginBottom="@dimen/_8sdp"
             android:transitionName="lessons"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/studyPlanTitle"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinner"
-            app:layout_constraintBottom_toTopOf="@+id/studyPlanTitle"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinner" />
+
         <TextView
             android:id="@+id/noElements"
             android:layout_width="wrap_content"
@@ -67,12 +69,13 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/_8sdp"
             android:text="@string/studyplan"
+            android:textColor="@color/primaryText"
             android:textSize="@dimen/_14ssp"
             android:textStyle="bold"
-            android:textColor="@color/primaryText"
+            app:layout_constraintBottom_toTopOf="@+id/studyPlanLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/studyPlanLayout" />
+            app:layout_constraintStart_toStartOf="parent"/>
+
         <TextView
             android:id="@+id/noSessions"
             android:layout_width="wrap_content"
@@ -92,38 +95,39 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/_8sdp"
             app:layout_constraintBottom_toBottomOf="parent">
+
             <TextView
                 android:id="@+id/subStudyPlan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_4sdp"
-                android:textSize="@dimen/_13ssp"
                 android:textColor="@color/primaryText"
+                android:textSize="@dimen/_13ssp"
+                app:layout_constraintBottom_toTopOf="@+id/typeStudyPlan"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/typeStudyPlan"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/typeStudyPlan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_4sdp"
-                android:textSize="@dimen/_13ssp"
                 android:textColor="@color/primaryText"
+                android:textSize="@dimen/_13ssp"
+                app:layout_constraintBottom_toTopOf="@+id/dueDate"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/dueDate"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/dueDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_4sdp"
-                android:textSize="@dimen/_13ssp"
                 android:textColor="@color/primaryText"
+                android:textSize="@dimen/_13ssp"
+                app:layout_constraintBottom_toTopOf="@+id/progressBar"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/progressBar"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -131,13 +135,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_4sdp"
-                android:padding="@dimen/_4sdp"
                 android:max="100"
+                android:padding="@dimen/_4sdp"
                 android:progress="0"
                 android:progressTint="@color/blue"
+                app:layout_constraintBottom_toTopOf="@+id/textView38"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/textView38"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/textView38"
@@ -145,76 +149,78 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_2sdp"
                 android:text="@string/tasks"
-                android:textStyle="bold"
                 android:textColor="@color/primaryText"
                 android:textSize="@dimen/_12ssp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/todosRecyclerView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/todosRecyclerView"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/todosRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_100sdp"
+                android:layout_marginBottom="@dimen/_4sdp"
                 android:clipToPadding="false"
                 android:orientation="vertical"
                 android:overScrollMode="never"
-                android:layout_marginBottom="@dimen/_4sdp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toTopOf="@+id/timeNeeded"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
             <TextView
                 android:id="@+id/centerSupport"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/textView39"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/time_needed"
-                android:textSize="@dimen/_13ssp"
                 android:textColor="@color/primaryText"
-                app:layout_constraintEnd_toStartOf="@+id/centerSupport"
+                android:textSize="@dimen/_13ssp"
                 app:layout_constraintBottom_toBottomOf="@+id/timeNeeded"
-                app:layout_constraintTop_toTopOf="@+id/timeNeeded"/>
+                app:layout_constraintEnd_toStartOf="@+id/centerSupport"
+                app:layout_constraintTop_toTopOf="@+id/timeNeeded" />
 
             <TextView
                 android:id="@+id/timeNeeded"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_10sdp"
-                android:textSize="@dimen/_13ssp"
                 android:textColor="@color/primaryText"
+                android:textSize="@dimen/_13ssp"
                 app:layout_constraintBottom_toTopOf="@+id/completed"
-                app:layout_constraintStart_toEndOf="@+id/centerSupport"/>
+                app:layout_constraintStart_toEndOf="@+id/centerSupport" />
 
             <Button
                 android:id="@+id/start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_icon"
-                android:text="@string/start_timer"
                 android:padding="@dimen/_8sdp"
+                android:text="@string/start_timer"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/completed"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
             <Button
                 android:id="@+id/completed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_icon"
-                android:text="@string/completed"
                 android:padding="@dimen/_8sdp"
+                android:text="@string/completed"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/start"/>
+                app:layout_constraintStart_toEndOf="@+id/start" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

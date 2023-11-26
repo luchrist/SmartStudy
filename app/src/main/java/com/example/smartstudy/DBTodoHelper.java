@@ -62,8 +62,6 @@ public class DBTodoHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_COLLECTION, todo.getCollection());
         contentValues.put(COLUMN_CHECKED, todo.getChecked());
 
-
-
         try{
             long result = db.insertOrThrow(TABLE, null, contentValues);
             if (result == -1) {

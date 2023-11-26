@@ -13,6 +13,8 @@ import android.widget.Spinner;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.smartstudy.utilities.Util;
+
 public class UpdateLesson extends DialogFragment {
     EditText lesson, timeBegin, timeTo, room, teacher;
     Spinner day, colour;
@@ -74,14 +76,15 @@ public class UpdateLesson extends DialogFragment {
                 .setView(view)
                 .setPositiveButton("Save Changes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int i) {
+                        String dayOfSpinner = Util.getDayOfSpinner(day.getSelectedItem().toString());
                         DbHelper dbHelper = new DbHelper(getActivity());
                         dbHelper.updateTimetableObject(id, lesson.getText().toString(),
                                 timeBegin.getText().toString(), timeTo.getText().toString()
-                                , day.getSelectedItem().toString(), room.getText().toString(), teacher.getText().toString(),
-                                colour.getSelectedItem().toString());
+                                , dayOfSpinner, room.getText().toString(), teacher.getText().toString(),
+                                Util.getColorOfSpinner(colour.getSelectedItemPosition()));
 
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                                new TimetableFragment(day.getSelectedItem().toString())).commit();
+                                new TimetableFragment(dayOfSpinner)).commit();
                     }
                 })
                 .setNeutralButton("Delete", new DialogInterface.OnClickListener() {

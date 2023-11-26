@@ -150,7 +150,7 @@
         <item>DONNERSTAG</item>
         <item>FREITAG</item>
         <item>SAMSTAG</item>
-        <item>SONTAG</item>
+        <item>SONNTAG</item>
     </string-array>
     <string-array name="difficulty">
         <item>LEICHT</item>

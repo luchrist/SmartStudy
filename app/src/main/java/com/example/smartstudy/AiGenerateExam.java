@@ -101,7 +101,7 @@ public class AiGenerateExam extends BaseActivity {
             String language = languageInput.getText().toString().trim();
             String difficulty = "";
             if(difficultySpinner.getSelectedItemPosition() != 1) {
-                difficulty = difficultySpinner.getSelectedItem().toString().trim();
+                difficulty = difficultySpinner.getSelectedItemPosition() == 0 ? "easy" : "difficult";
             }
             String prompt = String.format("Create a %s multiple choice quiz in %s about %s" +
                     " with 4 possible answers a,b,c,d and provide the right answer. " +

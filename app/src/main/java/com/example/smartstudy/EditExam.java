@@ -148,7 +148,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
                     shownEvent.setType(type.getText().toString());
                     shownEvent.setEndDate(Util.getFormattedDateForDB(dueDay.getText().toString()));
                     shownEvent.setStartDate(Util.getFormattedDateForDB(startDate.getText().toString()));
-                    shownEvent.setColor(colour.getSelectedItem().toString());
+                    shownEvent.setColor(Util.getColorOfSpinner(colour.getSelectedItemPosition()));
                     shownEvent.setVolume((int) volume.getRating() * 2);
 
                     if (shownEvent.getStartDate().equals("")) {
@@ -162,7 +162,8 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
                             currentEventId = dbHelper.addEventObject(shownEvent);
                             addPoints();
                         } else {
-                            currentEventId = dbHelper.updateEventObject(shownEvent);
+                            dbHelper.updateEventObject(shownEvent);
+                            currentEventId = Long.parseLong(shownEvent.getId());
                         }
                         for (int i = 0; i < todosForEvent.size(); i++) {
                             boolean newTodo = true;
@@ -194,6 +195,9 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
                                 new PlanFragment()).commit();
                     } else {
                         dbHelper.deleteEventObject(shownEvent);
+                        for (Todo todo : todosForEvent) {
+                            dbTodoHelper.deleteTodoObject(todo);
+                        }
                         if (shownEvent.getGroupId() != null) {
                             DocumentReference groupDoc = db.collection(Constants.KEY_COLLECTION_GROUPS)
                                     .document(shownEvent.getGroupId());
@@ -229,7 +233,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
                         } else {
                             emptyEvent = true;
                             shownEvent = new Event();
-                            showEvent();
+                            emptyFormular();
                         }
                     }
                 });

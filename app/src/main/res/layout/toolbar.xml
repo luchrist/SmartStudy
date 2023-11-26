@@ -32,6 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_gravity="center_vertical"
         >
 
 
@@ -52,8 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="0dp"
-            android:padding="16dp"
+            android:layout_marginStart="@dimen/_2sdp"
             android:textColor="@color/primary"
             android:textSize="20sp" />
     </LinearLayout>

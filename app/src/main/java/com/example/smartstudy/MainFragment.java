@@ -249,7 +249,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
                           boolean isIn30Days = showBiggestEventInDays(30, beforeEvents);
                           if (!isIn30Days) {
                               noSessions.setVisibility(View.VISIBLE);
-                              studyPlanLayout.setVisibility(View.GONE);
+                              studyPlanLayout.setVisibility(View.INVISIBLE);
                           }
                         }
                     }
@@ -610,10 +610,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     public void onClick(View v) {
         if (v.equals(timetableTitle)) {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                    new TimetableFragment(getDayOfSpinner()));
+                    new TimetableFragment(getDayOfSpinner())).commit();
             title.setText("Timetable");
             navigationView.setCheckedItem(R.id.nav_timetable);
-
         } else if (v.equals(startTimer)) {
             if (sub.getText().toString() != "") {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,

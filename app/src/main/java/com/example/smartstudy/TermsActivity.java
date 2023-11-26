@@ -18,7 +18,7 @@ public class TermsActivity extends AppCompatActivity {
         openInWebBtn = findViewById(R.id.openInWebBtn);
         exitBtn.setOnClickListener(v -> onBackPressed());
         openInWebBtn.setOnClickListener(v -> {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://sites.google.com/view/study-fellow/"));
             startActivity(browserIntent);
         });
     }

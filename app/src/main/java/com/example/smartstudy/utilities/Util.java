@@ -32,6 +32,51 @@ public class Util {
         return LocalDate.parse(date,germanFormatter).format(dbFormatter);
     }
 
+    public static String getColorOfSpinner(int selectedItem) {
+        switch (selectedItem) {
+            case 0:
+                return "red";
+            case 1:
+                return "blue";
+            case 2:
+                return "green";
+            case 3:
+                return "yellow";
+            case 4:
+                return "brown";
+            case 5:
+                return "orange";
+            case 6:
+                return "pink";
+            case 7:
+                return "purple";
+            case 8:
+                return "grey";
+        }
+        return null;
+    }
+
+    public static String getDayOfSpinner(String selectedItem) {
+        switch (selectedItem) {
+            case "MONTAG":
+                return "MONDAY";
+            case "DIENSTAG":
+                return "TUESDAY";
+            case "MITTWOCH":
+                return "WEDNESDAY";
+            case "DONNERSTAG":
+                return "THURSDAY";
+            case "FREITAG":
+                return "FRIDAY";
+            case "SAMSTAG":
+                return "SATURDAY";
+            case "SONNTAG":
+                return "SUNDAY";
+            default:
+                return selectedItem;
+        }
+    }
+
     public static LocalDate convertStringToLocalDate(String date) {
         return LocalDate.parse(date);
     }

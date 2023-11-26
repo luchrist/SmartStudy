@@ -70,27 +70,26 @@ public class GroupFragment extends Fragment implements GroupSelectListener {
             if (task.isSuccessful() && task.getResult() != null) {
                 DocumentSnapshot document = task.getResult();
                 Boolean isAccepted = document.getBoolean(Constants.KEY_IS_POLICY_ACCEPTED);
-                if (isAccepted != null) {
-                    if (!isAccepted) {
-                        AlertDialog policyDialog = new AlertDialog.Builder(getContext())
-                                .setView(R.layout.policy_dialog)
-                                .setTitle(R.string.terms_of_use)
-                                .setPositiveButton(R.string.accept, (dialog, which) -> {
-                                    documentReference.update(Constants.KEY_IS_POLICY_ACCEPTED, true);
-                                    FirebaseMessaging.getInstance().subscribeToTopic(Constants.KEY_COLLECTION_GROUPS);
-                                })
-                                .setNegativeButton(R.string.decline, (dialog, which) -> {
-                                    getActivity().getSupportFragmentManager().beginTransaction()
-                                            .replace(R.id.container, new MainFragment())
-                                            .commit();
-                                })
-                                .create();
-                        policyDialog.setOnShowListener(dialog -> {
-                            policyDialog.findViewById(R.id.link_nutzungsbedingungen).setOnClickListener(v -> {
-                                startActivity(new Intent(getContext(), TermsActivity.class));
-                            });
+                if (isAccepted == null || !isAccepted) {
+                    AlertDialog policyDialog = new AlertDialog.Builder(getContext())
+                            .setView(R.layout.policy_dialog)
+                            .setTitle(R.string.terms_of_use)
+                            .setPositiveButton(R.string.accept, (dialog, which) -> {
+                                documentReference.update(Constants.KEY_IS_POLICY_ACCEPTED, true);
+                                FirebaseMessaging.getInstance().subscribeToTopic(Constants.KEY_COLLECTION_GROUPS);
+                            })
+                            .setNegativeButton(R.string.decline, (dialog, which) -> {
+                                getActivity().getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.container, new MainFragment())
+                                        .commit();
+                            })
+                            .create();
+                    policyDialog.setOnShowListener(dialog -> {
+                        policyDialog.findViewById(R.id.link_nutzungsbedingungen).setOnClickListener(v -> {
+                            startActivity(new Intent(getContext(), TermsActivity.class));
                         });
-                    }
+                    });
+                    policyDialog.show();
                 }
             }
         });
@@ -129,17 +128,17 @@ public class GroupFragment extends Fragment implements GroupSelectListener {
                     .get().addOnCompleteListener(task -> {
                         if (task.isSuccessful() && task.getResult() != null) {
                             DocumentSnapshot document = task.getResult();
-                                Group group = new Group();
-                                group.name = document.getString(Constants.KEY_GROUP_NAME);
-                                group.image = document.getString(Constants.KEY_IMAGE);
-                                group.id = document.getId();
-                                groups.add(group);
-                                recyclerView.setVisibility(View.VISIBLE);
-                                groupsAdapter.notifyItemInserted(groups.size() - 1);
+                            Group group = new Group();
+                            group.name = document.getString(Constants.KEY_GROUP_NAME);
+                            group.image = document.getString(Constants.KEY_IMAGE);
+                            group.id = document.getId();
+                            groups.add(group);
+                            recyclerView.setVisibility(View.VISIBLE);
+                            groupsAdapter.notifyItemInserted(groups.size() - 1);
                         } else {
                             showErrorMsg();
                         }
-                                loading(false);
+                        loading(false);
                     });
         }
 
@@ -162,7 +161,7 @@ public class GroupFragment extends Fragment implements GroupSelectListener {
     private void loading(boolean isLoading) {
         if (isLoading) {
             progressBar.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             progressBar.setVisibility(View.INVISIBLE);
         }
     }
