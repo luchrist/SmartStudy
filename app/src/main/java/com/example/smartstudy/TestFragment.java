@@ -146,7 +146,7 @@ public class TestFragment extends Fragment {
         double ratio = correctAnswers / cardCount;
         double grade = getGrade(ratio);
         addPoints(ratio);
-        String recommendation = getRecommendation(grade);
+        String recommendation = getString(getRecommendation(grade));
 
         frontCard.setText(String.format("Your Grade: %s \nPoints: %s of %s \n%s", grade, correctAnswers, cardCount, recommendation));
         repeatBtn.setVisibility(View.VISIBLE);

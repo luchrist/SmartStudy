@@ -1,5 +1,7 @@
 package com.example.smartstudy;
 
+import static com.example.smartstudy.utilities.StudyUtilities.getRecommendation;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
@@ -208,7 +210,7 @@ public class AiExam extends BaseActivity {
             double ratio = (double) correctAnswers / questionNumber;
             double grade = getGrade(ratio);
             addPoints(ratio);
-            String recommendation = getRecommendation(grade);
+            String recommendation = getString(getRecommendation(grade));
 
             question.setText(String.format("Your Grade: %s \nPoints: %s of %s \n%s", grade, correctAnswers, questionNumber, recommendation));
             repeatBtn.setVisibility(View.VISIBLE);
@@ -223,20 +225,6 @@ public class AiExam extends BaseActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(Constants.KEY_COLLECTION_USERS)
                 .document(currentUserEmail).update(Constants.KEY_POINTS, FieldValue.increment(points));
-    }
-
-    private String getRecommendation(double grade) {
-        if(grade <= 1.5) {
-            return "Großartig! Bereite dich darauf vor als Streber bezeichnet zu werden!";
-        } else if (grade <= 2.5) {
-            return "Gut! Du bist bereit für die Prüfung!";
-        } else if (grade <= 3.5) {
-            return "ok! Ruh dich nicht darauf aus";
-        } else if (grade <= 4.5) {
-            return "Naja! Du solltest nochmal lernen oder beten";
-        } else {
-            return "Kataststrophe, Renn zum Arzt und schreib dich krank!";
-        }
     }
 
     private double getGrade(double ratio) {

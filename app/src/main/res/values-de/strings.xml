@@ -342,4 +342,9 @@ Ein Verzicht auf die Ausübung eines Rechts oder einer Bestimmung dieser Nutzung
 Für Fragen, Anfragen oder Hinweise im Zusammenhang mit diesen Nutzungsbedingungen oder der Lern-App können sich die Nutzer an die angegebenen Kontaktinformationen der Plattformbetreiber wenden.
 12.6. Aktualisierung der Bedingungen:
 Die Betreiber der Lern-App behalten sich das Recht vor, diese Nutzungsbedingungen zu aktualisieren oder zu ändern. Die Nutzer werden auf angemessene Weise über solche Änderungen informiert.</string>
+    <string name="excellent_get_ready_to_get_called_a_nerd">Großartig! Bereite dich darauf vor als Streber bezeichnet zu werden!</string>
+    <string name="good_job_you_are_ready_for_the_test">Gut! Du bist bereit für die Prüfung!</string>
+    <string name="ok_but_you_can_do_better">ok! Ruh dich nicht darauf aus</string>
+    <string name="not_eneugh_you_need_to_study_more_or_start_praying">Naja! Du solltest nochmal lernen oder beten</string>
+    <string name="horrible_grade_consider_staying_at_home_for_that_test">Kataststrophe, Renn zum Arzt und schreib dich krank!</string>
 </resources>

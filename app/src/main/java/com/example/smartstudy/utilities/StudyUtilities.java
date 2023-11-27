@@ -1,18 +1,20 @@
 package com.example.smartstudy.utilities;
 
+import com.example.smartstudy.R;
+
 public class StudyUtilities {
 
-    public static String getRecommendation(double grade) {
+    public static int getRecommendation(double grade) {
         if(grade <= 1.5) {
-            return "Großartig! Bereite dich darauf vor als Streber bezeichnet zu werden!";
+            return R.string.excellent_get_ready_to_get_called_a_nerd;
         } else if (grade <= 2.5) {
-            return "Gut! Du bist bereit für die Prüfung!";
+            return R.string.good_job_you_are_ready_for_the_test;
         } else if (grade <= 3.5) {
-            return "ok! Ruh dich nicht darauf aus";
+            return R.string.ok_but_you_can_do_better;
         } else if (grade <= 4.5) {
-            return "Naja! Du solltest nochmal lernen oder beten";
+            return R.string.not_eneugh_you_need_to_study_more_or_start_praying;
         } else {
-            return "Kataststrophe, Renn zum Arzt und schreib dich krank!";
+            return R.string.horrible_grade_consider_staying_at_home_for_that_test;
         }
     }
 
