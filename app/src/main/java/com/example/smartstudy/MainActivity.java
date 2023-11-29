@@ -291,11 +291,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void setHeaderText(String username) {
         if(headertext!=null) {
-            if (!sp.getBoolean("studyNeed", false)) {
+            headertext.setText("Hello " + username);
+           /* if (!sp.getBoolean("studyNeed", false)) {
                 headertext.setText("Hello " + username + ", no need to study anymore today");
             } else {
                 headertext.setText("Let's get to study, " + username);
-            }
+            }*/
         }
     }
 
