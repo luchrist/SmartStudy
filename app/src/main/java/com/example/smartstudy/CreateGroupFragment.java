@@ -87,14 +87,6 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
-        db.collection(Constants.KEY_COLLECTION_USERS)
-                .document(currentUserEmail).get().addOnSuccessListener(documentSnapshot -> {
-                    List<String> blockedBy = (List<String>) documentSnapshot.get(Constants.KEY_BLOCKED_BY);
-                    if (blockedBy == null) {
-                        blockedBy = Collections.emptyList();
-                    }
-                    membersAdapter = new MembersAdapter(members, this, currentUserEmail, blockedBy);
-                });
     }
 
     @Override
@@ -109,11 +101,18 @@ public class CreateGroupFragment extends Fragment implements SelectListener {
         addMemberImage = view.findViewById(R.id.addMemberBtn);
         allowJoiningCheck = view.findViewById(R.id.joiningAllowedCheckbox);
         membersRecyclerView = view.findViewById(R.id.memberRecyclerView);
-        membersRecyclerView.setAdapter(membersAdapter);
         createGroupButton = view.findViewById(R.id.createGroupBtn);
-
+        db.collection(Constants.KEY_COLLECTION_USERS)
+                .document(currentUserEmail).get().addOnSuccessListener(documentSnapshot -> {
+                    List<String> blockedBy = (List<String>) documentSnapshot.get(Constants.KEY_BLOCKED_BY);
+                    if (blockedBy == null) {
+                        blockedBy = Collections.emptyList();
+                    }
+                    membersAdapter = new MembersAdapter(members, this, currentUserEmail, blockedBy);
+                    findMemberByEmail(currentUserEmail, true);
+                    membersRecyclerView.setAdapter(membersAdapter);
+                });
         setListeners();
-        findMemberByEmail(currentUserEmail, true);
 
         return view;
     }
