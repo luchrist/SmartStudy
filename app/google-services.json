@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "1030104945757",
-    "project_id": "gymbro-1e3ee",
-    "storage_bucket": "gymbro-1e3ee.appspot.com"
+    "project_number": "306043785226",
+    "project_id": "studyfellow-support",
+    "storage_bucket": "studyfellow-support.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1030104945757:android:5c5eb6eea4135a866829b4",
+        "mobilesdk_app_id": "1:306043785226:android:00511f3c0a30f4cbbc0ff3",
         "android_client_info": {
           "package_name": "com.example.smartstudy"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "1030104945757-dfofoa6isc7kjmi3jdvmb1tme35r42gl.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD8mP1JmDfRZUK0sy3bYkqEfx1DsEmJJvU"
+          "current_key": "AIzaSyAmN3mKE5PMFkDh9ptTnBk8U-3v6JnljaY"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1030104945757-dfofoa6isc7kjmi3jdvmb1tme35r42gl.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
