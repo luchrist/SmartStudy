@@ -17,16 +17,16 @@
         android:gravity="center_horizontal">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
             android:contentDescription="@string/logo"
-            android:src="@drawable/bodybuilding"
+            android:src="@drawable/app_logo"
             android:transitionName="logo" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_1sdp"
             android:text="@string/create_new_account"
             android:textColor="@color/primaryText"
             android:textSize="@dimen/_18ssp"
