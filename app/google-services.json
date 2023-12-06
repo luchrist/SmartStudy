@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:306043785226:android:00511f3c0a30f4cbbc0ff3",
+        "mobilesdk_app_id": "1:306043785226:android:0f68a6d47b5386c0bc0ff3",
         "android_client_info": {
-          "package_name": "com.example.smartstudy"
+          "package_name": "de.christcoding.smartstudy"
         }
       },
       "oauth_client": [],

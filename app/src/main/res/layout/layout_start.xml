@@ -5,7 +5,7 @@
     android:id="@+id/constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StartActivity">
+    tools:context="de.christcoding.smartstudy.StartActivity">
 
     <TextView
         android:id="@+id/textView2"

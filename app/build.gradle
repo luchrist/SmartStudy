@@ -8,7 +8,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.example.smartstudy"
+        applicationId "de.christcoding.smartstudy"
         minSdkVersion 26
         targetSdkVersion 33
         versionCode 1
@@ -28,7 +28,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    namespace 'com.example.smartstudy'
+    namespace 'de.christcoding.smartstudy'
     buildFeatures {
         viewBinding true
     }

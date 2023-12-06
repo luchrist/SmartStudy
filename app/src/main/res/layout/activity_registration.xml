@@ -8,7 +8,7 @@
     android:overScrollMode="never"
     android:padding="@dimen/_24sdp"
     android:scrollbars="none"
-    tools:context=".Login">
+    tools:context="de.christcoding.smartstudy.Login">
 
     <LinearLayout
         android:layout_width="match_parent"

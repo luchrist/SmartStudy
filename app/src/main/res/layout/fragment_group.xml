@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
-    tools:context=".GroupFragment"
+    tools:context="de.christcoding.smartstudy.GroupFragment"
     android:background="@color/primaryVariant">
     <FrameLayout
         android:layout_width="match_parent"
