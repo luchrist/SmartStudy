@@ -159,30 +159,28 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
     }
     private void storeDatainObjects() {
         Cursor cursor = dbTimeHelper.readAllData();
-        if (cursor.getCount() == 0) {
-            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
-        } else {
+        if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
                 switch(cursor.getString(1)){
-                    case "Monday":
+                    case "MONDAY":
                         mon = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
                         break;
-                    case "Tuesday":
+                    case "TUESDAY":
                         tue = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
                         break;
-                    case "Wednesday":
+                    case "WEDNESDAY":
                         wed = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
                         break;
-                    case "Thursday":
+                    case "THURSDAY":
                         thu = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
                         break;
-                    case "Friday":
+                    case "FRIDAY":
                         fri = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
                         break;
-                    case "Saturday":
+                    case "SATURDAY":
                         sat = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
                         break;
-                    case "Sunday":
+                    case "SUNDAY":
                         sun = new TimeObject(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
                         break;
 
@@ -297,11 +295,11 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
 
                 if (view.equals(date_button)) {
                     date_picker_dialog.show();
-                    exeptionTime.setText(String.format(Locale.getDefault(), "%02d:%02d", 00, 00));
+                    //exeptionTime.setText(String.format(Locale.getDefault(), "%02d:%02d", 00, 00));
 
                 }else if(view.equals(add)){
                     dbExeptionHelper.addExeptionObject(date_button.getText().toString(), timeToMinutes());
-                    Toast.makeText(getContext(), "Saved Succesfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Saved Successfully", Toast.LENGTH_SHORT).show();
                 }
 
 

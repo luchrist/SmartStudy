@@ -107,14 +107,11 @@ public class CollectionFragment extends Fragment implements View.OnClickListener
         Cursor cursor = dbLanguageHelper.readAllData();
         ArrayList<Translation> translations = new ArrayList<Translation>();
         ArrayList<Translation> collectionTranslations = new ArrayList<Translation>();
-        if (cursor.getCount() == 0) {
-            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
-        } else {
+        if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
                 Translation translation = new Translation(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),cursor.getInt(4));
                 translations.add(translation);
             }
-
         }
 
         for (Translation t : translations){

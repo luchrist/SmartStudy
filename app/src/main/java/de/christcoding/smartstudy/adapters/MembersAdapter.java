@@ -67,7 +67,11 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberVi
             } else {
                 binding.textName.setText(member.name);
                 binding.textEmail.setText(member.email);
-                binding.imageProfile.setImageBitmap(getMemberImage(member.image));
+                if(member.image != null) {
+                    binding.imageProfile.setImageBitmap(getMemberImage(member.image));
+                } else {
+                    binding.imageProfile.setImageResource(R.drawable.baseline_person_24);
+                }
             }
             if (member.email.equals(currentUserEmail)) {
                 binding.memberMenu.setVisibility(View.GONE);

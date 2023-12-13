@@ -133,7 +133,6 @@ public class GroupActivity extends BaseActivity implements DatePickerDialog.OnDa
                 })
                 .addOnFailureListener(e -> {
                     uploadProgress.setVisibility(View.GONE);
-                    showToast("Failed to load files");
                 });
 
         db.collection(Constants.KEY_COLLECTION_GROUPS).document(currentGroupId).get().addOnSuccessListener(

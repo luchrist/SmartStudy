@@ -36,12 +36,7 @@ public class CreateGroupActivity extends BaseActivity {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void setListeners() {
-        cancelButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CreateGroupActivity.this, MainActivity.class);
-            intent.putExtra("fragment", "group");
-            startActivity(intent);
-            finish();
-        });
+        cancelButton.setOnClickListener(v -> onBackPressed());
         createGroupButton.setOnClickListener(v -> {
             getSupportFragmentManager().beginTransaction().replace(R.id.frame, new CreateGroupFragment(preferenceManager)).commit();
             createGroupButton.setBackground(getDrawable(R.drawable.button_background_selected_left));

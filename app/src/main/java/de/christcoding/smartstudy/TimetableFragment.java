@@ -132,9 +132,7 @@ public class TimetableFragment extends Fragment implements TimeTableSelectListen
 
     void storeData() {
         Cursor cursor = dbHelper.readAllData();
-        if (cursor.getCount() == 0) {
-            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
-        } else {
+        if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
                 TimeTableElement timeTableElement = new TimeTableElement(cursor.getString(0), cursor.getString(1),
                         cursor.getString(2), cursor.getString(3),

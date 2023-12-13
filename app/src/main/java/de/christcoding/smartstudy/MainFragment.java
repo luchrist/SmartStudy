@@ -117,9 +117,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
     void storeData() {
         Cursor cursor = dbHelper.readAllData();
-        if (cursor.getCount() == 0) {
-            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
-        } else {
+        if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
                 TimeTableElement timeTableElement = new TimeTableElement(cursor.getString(0), cursor.getString(1),
                         cursor.getString(2), cursor.getString(3),
@@ -506,9 +504,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
     private int getTime(String day) {
         Cursor cursor = dbTimeHelper.readAllData();
-        if (cursor.getCount() == 0) {
-            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
-        } else {
+        if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
                 if (cursor.getString(1).equalsIgnoreCase(day)) {
                     return cursor.getInt(2);
@@ -520,9 +516,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
     private void loadData() {
         Cursor cursor1 = dbEventHelper.readAllData();
-        if (cursor1.getCount() == 0) {
-            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
-        } else {
+        if (cursor1.getCount() != 0) {
             while (cursor1.moveToNext()) {
                 Event event = new Event();
                 event.setId(cursor1.getString(0));
@@ -537,9 +531,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
             }
         }
         cursor1 = dbTodoHelper.readAllData();
-        if (cursor1.getCount() == 0) {
-            Toast.makeText(getActivity(), "NO TODO", Toast.LENGTH_SHORT).show();
-        } else {
+        if (cursor1.getCount() != 0) {
             while (cursor1.moveToNext()) {
                 Todo todo = new Todo();
                 todo.setId(cursor1.getString(0));
@@ -551,9 +543,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
             }
         }
         cursor1 = dbExeptionHelper.readAllData();
-        if (cursor1.getCount() == 0) {
-            Toast.makeText(getActivity(), "NO EXEPTION", Toast.LENGTH_SHORT).show();
-        } else {
+        if (cursor1.getCount() != 0) {
             while (cursor1.moveToNext()) {
                 LocalDate date = getFormattedDate(cursor1.getString(1));
                 if (date.isBefore(LocalDate.now())) {

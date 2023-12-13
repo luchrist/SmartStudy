@@ -17,6 +17,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -60,7 +61,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     Toolbar toolbar;
     TextView title, headertext, pointsCount;
     LinearLayout points;
-    SharedPreferences sp;
     private boolean studyneed = false;
 
 
@@ -90,50 +90,52 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             this.finish();
         } else {
             preferenceManager.putString(Constants.KEY_EMAIL, user.getEmail());
-            //super.onCreate(savedInstanceState);
-            if(getIntent() != null && getIntent().getExtras() != null) {
-            String notificationType = getIntent().getExtras().getString("notificationType");
-            switch (notificationType) {
-                case "flashcards":
-                    getSupportFragmentManager().beginTransaction().replace(R.id.container, new StudyFragment()).commit();
-                    title.setText("Study");
-                    navigationView.setCheckedItem(R.id.nav_study);
-                    break;
-                case "testExam":
-                    startActivity(new Intent(MainActivity.this, AiGenerateExam.class));
-                    break;
-                case "chatMessage":
-                    Intent intent = new Intent(MainActivity.this, GroupChatActivity.class);
-                    String groupId = getIntent().getExtras().getString(Constants.KEY_GROUP_ID);
-                    preferenceManager.putString(Constants.KEY_GROUP_NAME, getIntent().getExtras().getString(Constants.KEY_GROUP_NAME));
-                    preferenceManager.putString(Constants.KEY_GROUP_ID, groupId);
-                    FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_GROUPS).document(groupId).get()
-                            .addOnSuccessListener(document -> {
-                                Group group = document.toObject(Group.class);
-                                for(Member member : group.members) {
-                                    if (member.email.equals(user.getEmail())) {
-                                        intent.putExtra(Constants.KEY_SENDER, member);
-                                        break;
-                                    }
-                                }
-                                startActivity(intent);
-                            });
-                    break;
-                case "newExamAdded":
-                    getSupportFragmentManager().beginTransaction().replace(R.id.container, new PlanFragment()).commit();
-                    title.setText("Plan");
-                    navigationView.setCheckedItem(R.id.nav_plan);
-                    break;
-                default:
-                    break;
-               }
-            }
-            sp = this.getSharedPreferences("SP", 0);
             drawerLayout = findViewById(R.id.drawer);
             toolbar = findViewById(R.id.toolbar);
             title = findViewById(R.id.variabel_text);
             pointsCount = findViewById(R.id.points);
             points = findViewById(R.id.pointsContainer);
+            //super.onCreate(savedInstanceState);
+            if(getIntent() != null && getIntent().getExtras() != null) {
+                String notificationType = getIntent().getExtras().getString("notificationType");
+                String fragment = getIntent().getExtras().getString("fragment");
+                if (notificationType != null) {
+                    switch (notificationType) {
+                        case "flashcards":
+                            getSupportFragmentManager().beginTransaction().replace(R.id.container, new StudyFragment()).commit();
+                            title.setText("Study");
+                            navigationView.setCheckedItem(R.id.nav_study);
+                            break;
+                        case "testExam":
+                            startActivity(new Intent(MainActivity.this, AiGenerateExam.class));
+                            break;
+                        case "chatMessage":
+                            Intent intent = new Intent(MainActivity.this, GroupChatActivity.class);
+                            String groupId = getIntent().getExtras().getString(Constants.KEY_GROUP_ID);
+                            preferenceManager.putString(Constants.KEY_GROUP_NAME, getIntent().getExtras().getString(Constants.KEY_GROUP_NAME));
+                            preferenceManager.putString(Constants.KEY_GROUP_ID, groupId);
+                            FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_GROUPS).document(groupId).get()
+                                    .addOnSuccessListener(document -> {
+                                        Group group = document.toObject(Group.class);
+                                        for (Member member : group.members) {
+                                            if (member.email.equals(user.getEmail())) {
+                                                intent.putExtra(Constants.KEY_SENDER, member);
+                                                break;
+                                            }
+                                        }
+                                        startActivity(intent);
+                                    });
+                            break;
+                        case "newExamAdded":
+                            getSupportFragmentManager().beginTransaction().replace(R.id.container, new PlanFragment()).commit();
+                            title.setText("Plan");
+                            navigationView.setCheckedItem(R.id.nav_plan);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
 
             points.setOnClickListener(view -> {
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, new PointsFragment()).commit();
@@ -165,7 +167,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             toggle.syncState();
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                        new MainFragment()).commit();
+                        new MainFragment(), "home").commit();
                 navigationView.setCheckedItem(R.id.nav_home);
             }
             navigationView.setNavigationItemSelectedListener(this);
@@ -286,7 +288,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         DocumentReference documentReference = db.collection(Constants.KEY_COLLECTION_USERS)
                 .document(user.getEmail());
         documentReference.update(Constants.KEY_FCM_TOKEN, token)
-                .addOnSuccessListener(unused -> showToast("Token updated successfully"))
                 .addOnFailureListener(e -> showToast("Unable to update token"));
     }
 
@@ -303,9 +304,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public void onBackPressed() {
+        Fragment home = getSupportFragmentManager().findFragmentByTag("home");
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
+        } else if(home == null || !home.isVisible()) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                    new MainFragment(), "home").commit();
+            title.setText("Home");
+            navigationView.setCheckedItem(R.id.nav_home);
+        }else {
             super.onBackPressed();
         }
 
@@ -316,7 +323,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         switch (item.getItemId()) {
             case R.id.nav_home:
                 getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                        new MainFragment()).commit();
+                        new MainFragment(), "home").commit();
                 title.setText("Home");
                 navigationView.setCheckedItem(R.id.nav_home);
                 break;

@@ -55,9 +55,7 @@ public class Language extends Fragment implements View.OnClickListener {
         Cursor cursor = dbLanguageHelper.readAllData();
         ArrayList<String> collections = new ArrayList<String>();
         ArrayList<String> all = new ArrayList<String>();
-        if (cursor.getCount() == 0) {
-            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
-        } else {
+        if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
                 all.add(cursor.getString(1));
             }

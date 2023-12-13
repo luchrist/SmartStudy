@@ -341,18 +341,14 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
 
     private void loadData() {
         Cursor cursor = dbHelper.readAllData();
-        if (cursor.getCount() == 0) {
-            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
-        } else {
+        if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
                 Event event = new Event(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getInt(3), cursor.getInt(7));
                 events.add(event);
             }
         }
         cursor = dbTodoHelper.readAllData();
-        if (cursor.getCount() == 0) {
-            Toast.makeText(getActivity(), "NO DATA", Toast.LENGTH_SHORT).show();
-        } else {
+        if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
                 Todo todo = new Todo(cursor.getString(0), cursor.getString(3), cursor.getString(1), cursor.getInt(2), cursor.getInt(4));
                 allTodos.add(todo);
