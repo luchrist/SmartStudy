@@ -160,11 +160,11 @@
     <string name="total_requests">Total Requests:</string>
     <string name="type_your_guess_here">Type your guess here...</string>
     <string name="_0_5_point">0.5 point</string>
-    <string name="_10" translatable="false">10</string>
-    <string name="_90" translatable="false">90</string>
+    <string name="_5" translatable="false">5</string>
+    <string name="_45" translatable="false">45</string>
     <string name="save">save</string>
     <string name="how_much_time_do_you_want_to_study_without_breaks">How much time do you want to study without breaks?</string>
-    <string name="many_believe_in_the_pomodoro_technic_where_you_learn_25min_and_then_have_a_5_min_break_we_personally_and_also_the_average_our_clients_recommend_to_learn_longer_to_get_in_a_flow_90min">Many believe in the Pomodoro technic, where you learn 25min and then have a 5 min break. We personally and also the average our clients recommend to learn longer, to get in a flow. (90min!)</string>
+    <string name="many_believe_in_the_pomodoro_technic_where_you_learn_25min_and_then_have_a_5_min_break_we_personally_and_also_the_average_our_clients_recommend_to_learn_longer_to_get_in_a_flow_90min">Many believe in the Pomodoro technic, where you learn 25min and then have a 5 min break. We personally and also the average our clients recommend to learn longer, to get in a flow. (45min!)</string>
     <string name="how_long_do_you_want_to_have_a_break_between_learning_sessions">How long do you want to have a break between learning sessions?</string>
     <string name="almost_correct_struggled">Almost correct / Struggled</string>
     <string name="start_studying">Start studying</string>

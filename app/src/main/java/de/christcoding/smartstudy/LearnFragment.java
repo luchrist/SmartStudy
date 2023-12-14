@@ -85,7 +85,7 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
         preferenceManager = new PreferenceManager(getContext());
         int timerInMinutes = preferenceManager.getInt("timer");
         if (timerInMinutes == 0) {
-            timerInMinutes = 90;
+            timerInMinutes = 45;
         }
         timerInMillis = timerInMinutes * 60000;
         String lastSessionId = preferenceManager.getString("sessionId");
@@ -253,7 +253,7 @@ public class LearnFragment extends Fragment implements View.OnClickListener, Tod
             titleLearn.setText("PAUSE");
             timerInMinutes = preferenceManager.getInt("break");
             if (timerInMinutes == 0){
-                timerInMinutes = 10;
+                timerInMinutes = 5;
             }
             timerLeftInMillis = (timerInMinutes*60)*1000;
             resumeTimer();

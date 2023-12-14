@@ -8,16 +8,16 @@
     android:layout_marginStart="@dimen/_22sdp"
     android:padding="@dimen/_8sdp"
     android:background="@drawable/background_input">
+
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/companyLogo"
-        android:layout_width="@dimen/_35sdp"
-        android:layout_height="@dimen/_35sdp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/background_image"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
         android:layout_marginStart="@dimen/_8sdp"
-        android:layout_marginEnd="@dimen/_12sdp"/>
+        android:background="@drawable/background_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnRedeem"
         android:layout_width="wrap_content"

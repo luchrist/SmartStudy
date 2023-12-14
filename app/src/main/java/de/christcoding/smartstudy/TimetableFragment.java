@@ -2,6 +2,7 @@ package de.christcoding.smartstudy;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -9,34 +10,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.GestureDetectorCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-
-import de.christcoding.smartstudy.adapters.TimeTableAdapter;
-import de.christcoding.smartstudy.models.TimeTableElement;
-import de.christcoding.smartstudy.utilities.TimeTableSelectListener;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimetableFragment extends Fragment implements TimeTableSelectListener, GestureDetector.OnGestureListener {
+import de.christcoding.smartstudy.adapters.TimeTableAdapter;
+import de.christcoding.smartstudy.models.TimeTableElement;
+import de.christcoding.smartstudy.utilities.TimeTableSelectListener;
 
+public class TimetableFragment extends Fragment implements TimeTableSelectListener, View.OnTouchListener, GestureDetector.OnGestureListener {
+
+    private static final String DEBUG_TAG = "TimeTable";
     private static final int SWIPE_THRESHOLD = 100;
     private static final int SWIPE_VELOCITY_THRESHOLD = 100;
     ImageButton next, prev, add;
     TextView day;
     RecyclerView recyclerView;
+    ConstraintLayout swipeContainer;
     DbHelper dbHelper;
     private DayOfWeek dayOfWeek;
     List<TimeTableElement> timeTableElements;
     List<TimeTableElement> monday, tuesday, wednesday, thursday, friday, saturday, sunday;
     TimeTableAdapter monAdapter, tueAdapter, wedAdapter, thuAdapter, friAdapter, satAdapter, sunAdapter;
+    private GestureDetectorCompat gestureDetector;
 
     public TimetableFragment(String shownDay) {
         if(shownDay != null) {
@@ -59,6 +64,7 @@ public class TimetableFragment extends Fragment implements TimeTableSelectListen
         prev = view.findViewById(R.id.prevBtn);
         add = view.findViewById(R.id.addElement);
         day.setText(dayOfWeek.toString());
+        swipeContainer = view.findViewById(R.id.swipeContainer);
 
         dbHelper = new DbHelper(getActivity());
         timeTableElements = new ArrayList<>();
@@ -74,12 +80,14 @@ public class TimetableFragment extends Fragment implements TimeTableSelectListen
 
         showData();
         setListeners();
+        gestureDetector = new GestureDetectorCompat(getContext(), this);
+        swipeContainer.setOnTouchListener(this);
         return view;
     }
 
     private void setListeners() {
         add.setOnClickListener(v -> {
-            AddLesson alert = new AddLesson(day.getText().toString());
+            AddLesson alert = new AddLesson(convertToEnglish(day.getText().toString()));
             alert.show(getParentFragmentManager(), "test");
         });
         prev.setOnClickListener(v -> {
@@ -90,6 +98,27 @@ public class TimetableFragment extends Fragment implements TimeTableSelectListen
             day.setText(getNextDay());
             showData();
         });
+    }
+
+    private String convertToEnglish(String weekday) {
+        switch (weekday) {
+            case "MONTAG":
+                return "MONDAY";
+            case "DIENSTAG":
+                return "TUESDAY";
+            case "MITTWOCH":
+                return "WEDNESDAY";
+            case "DONNERSTAG":
+                return "THURSDAY";
+            case "FREITAG":
+                return "FRIDAY";
+            case "SAMSTAG":
+                return "SATURDAY";
+            case "SONNTAG":
+                return "SUNDAY";
+            default:
+                return weekday;
+        }
     }
 
     private String getPrevDay() {
@@ -202,28 +231,32 @@ public class TimetableFragment extends Fragment implements TimeTableSelectListen
     }
 
     @Override
-    public boolean onDown(@NonNull MotionEvent e) {
-        return false;
+    public boolean onDown(MotionEvent event) {
+        Log.d(DEBUG_TAG,"onDown: " + event.toString());
+        return true;
     }
 
     @Override
-    public void onShowPress(@NonNull MotionEvent e) {
-
+    public void onLongPress(MotionEvent event) {
+        Log.d(DEBUG_TAG, "onLongPress: " + event.toString());
     }
 
     @Override
-    public boolean onSingleTapUp(@NonNull MotionEvent e) {
-        return false;
+    public boolean onScroll(MotionEvent event1, MotionEvent event2, float distanceX,
+                            float distanceY) {
+        Log.d(DEBUG_TAG, "onScroll: " + event1.toString() + event2.toString());
+        return true;
     }
 
     @Override
-    public boolean onScroll(@NonNull MotionEvent e1, @NonNull MotionEvent e2, float distanceX, float distanceY) {
-        return false;
+    public void onShowPress(MotionEvent event) {
+        Log.d(DEBUG_TAG, "onShowPress: " + event.toString());
     }
 
     @Override
-    public void onLongPress(@NonNull MotionEvent e) {
-
+    public boolean onSingleTapUp(MotionEvent event) {
+        Log.d(DEBUG_TAG, "onSingleTapUp: " + event.toString());
+        return true;
     }
 
     @Override
@@ -239,5 +272,10 @@ public class TimetableFragment extends Fragment implements TimeTableSelectListen
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
     }
 }
