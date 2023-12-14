@@ -73,7 +73,7 @@ public class DbTimeHelper extends SQLiteOpenHelper {
         if (result == -1) {
             Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(context, "Saved succesfully!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
         }
 
 

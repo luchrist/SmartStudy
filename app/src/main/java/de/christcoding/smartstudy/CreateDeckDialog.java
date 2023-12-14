@@ -115,58 +115,7 @@ public class CreateDeckDialog extends DialogFragment {
                         next.setText("Add Card");
                     }
                 } else {
-                    String subDeck = subDeckName.getText().toString().trim();
-                    String frontString = front.getText().toString().trim();
-                    String backString = back.getText().toString().trim();
-                    boolean reversedBool = reversed.isChecked();
-                    boolean matchBool = match.isChecked();
-                    CardType cardType = CardType.BASIC;
-                    if (matchBool) {
-                        cardType = CardType.MATCHING;
-                    }
-                    Card card = new Card(frontString, backString, cardType, false);
-                    if (subDeck.isEmpty()) {
-                        cards.add(card);
-                        if(reversedBool) {
-                            Card reversedCard = new Card(backString, frontString, cardType, true);
-                            cards.add(reversedCard);
-                        }
-                    } else {
-                        boolean foundExisting = false;
-                        for (Deck deck : subDecks) {
-                            if (deck.getName().equals(subDeck)) {
-                                deck.addCard(card);
-                                if(reversedBool) {
-                                    Card reversedCard = new Card(backString, frontString, cardType, true);
-                                    deck.addCard(reversedCard);
-                                }
-                                foundExisting = true;
-                            }
-                        }
-                        if (!foundExisting) {
-                            List<Card> newCards = new ArrayList<>();
-                            newCards.add(card);
-                            if(reversedBool) {
-                                Card reversedCard = new Card(backString, frontString, cardType, true);
-                                newCards.add(reversedCard);
-                            }
-                            Deck newDeck;
-                            if(parentDeck == null) {
-                                newDeck = new Deck(subDeck, newCards, new ArrayList<>(), String.format("%s:%s", deckNameString, subDeck));
-                            } else {
-                                newDeck = new Deck(subDeck, newCards, new ArrayList<>(), String.format("%s:%s:%s", parentDeck.getPath(), deckNameString, subDeck));
-                            }
-                            subDecks.add(newDeck);
-                            subDeckNames.add(subDeck);
-                            setUpSupDeckNameAutoComplete();
-                        }
-                    }
-                    subDeckName.setText("");
-                    front.setText("");
-                    back.setText("");
-                    reversed.setChecked(false);
-                    basic.setChecked(true);
-                    match.setChecked(false);
+                    addCardToCorrectDeck();
                 }
             });
             create.setOnClickListener(v -> {
@@ -176,6 +125,7 @@ public class CreateDeckDialog extends DialogFragment {
                 if(deckNameString.isEmpty()) {
                     deckName.setError("Deck name cannot be empty");
                 } else {
+                    checkIfInputIsAddableCard();
                     if (parentDeck == null) {
                         Deck deck = new Deck(deckNameString, cards, subDecks, deckNameString);
                         deckCollection.document(deckNameString).set(deck);
@@ -214,6 +164,69 @@ public class CreateDeckDialog extends DialogFragment {
         });
         dialog.show();
         return dialog;
+    }
+
+    private void addCardToCorrectDeck() {
+        String subDeck = subDeckName.getText().toString().trim();
+        String frontString = front.getText().toString().trim();
+        String backString = back.getText().toString().trim();
+        boolean reversedBool = reversed.isChecked();
+        boolean matchBool = match.isChecked();
+        CardType cardType = CardType.BASIC;
+        if (matchBool) {
+            cardType = CardType.MATCHING;
+        }
+        Card card = new Card(frontString, backString, cardType, false);
+        if (subDeck.isEmpty()) {
+            cards.add(card);
+            if(reversedBool) {
+                Card reversedCard = new Card(backString, frontString, cardType, true);
+                cards.add(reversedCard);
+            }
+        } else {
+            boolean foundExisting = false;
+            for (Deck deck : subDecks) {
+                if (deck.getName().equals(subDeck)) {
+                    deck.addCard(card);
+                    if(reversedBool) {
+                        Card reversedCard = new Card(backString, frontString, cardType, true);
+                        deck.addCard(reversedCard);
+                    }
+                    foundExisting = true;
+                }
+            }
+            if (!foundExisting) {
+                List<Card> newCards = new ArrayList<>();
+                newCards.add(card);
+                if(reversedBool) {
+                    Card reversedCard = new Card(backString, frontString, cardType, true);
+                    newCards.add(reversedCard);
+                }
+                Deck newDeck;
+                if(parentDeck == null) {
+                    newDeck = new Deck(subDeck, newCards, new ArrayList<>(), String.format("%s:%s", deckNameString, subDeck));
+                } else {
+                    newDeck = new Deck(subDeck, newCards, new ArrayList<>(), String.format("%s:%s:%s", parentDeck.getPath(), deckNameString, subDeck));
+                }
+                subDecks.add(newDeck);
+                subDeckNames.add(subDeck);
+                setUpSupDeckNameAutoComplete();
+            }
+        }
+        subDeckName.setText("");
+        front.setText("");
+        back.setText("");
+        reversed.setChecked(false);
+        basic.setChecked(true);
+        match.setChecked(false);
+    }
+
+    private void checkIfInputIsAddableCard() {
+        String frontString = front.getText().toString().trim();
+        String backString = back.getText().toString().trim();
+        if(!frontString.isEmpty() && !backString.isEmpty()) {
+            addCardToCorrectDeck();
+        }
     }
 
     private void updateDeckInSubDeck(Deck lowestDeck, String[] pathParts, DocumentReference deckDoc) {

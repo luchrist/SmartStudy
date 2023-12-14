@@ -141,20 +141,21 @@
             app:layout_constraintTop_toBottomOf="@+id/languageInput"
             android:layout_marginTop="@dimen/_8sdp"
             android:padding="@dimen/_8sdp"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_8sdp"
             android:background="@drawable/background_icon_light"
+            android:padding="@dimen/_8sdp"
             android:text="@string/ai_disclaimer"
             android:textAlignment="center"
             android:textColor="@color/primaryText"
             android:textSize="@dimen/_10ssp"
-            android:layout_marginStart="@dimen/_8sdp"
-            android:layout_marginEnd="@dimen/_8sdp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/generateExamBtn"
-            android:layout_marginTop="@dimen/_16sdp"/>
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

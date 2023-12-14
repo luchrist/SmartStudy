@@ -99,11 +99,10 @@ public class AiGenerateExam extends BaseActivity {
             String language = languageInput.getText().toString().trim();
             String difficulty = "";
             if(difficultySpinner.getSelectedItemPosition() != 1) {
-                difficulty = difficultySpinner.getSelectedItemPosition() == 0 ? "easy" : "difficult";
+                difficulty = difficultySpinner.getSelectedItemPosition() == 0 ? getString(R.string.easy) : getString(R.string.difficult);
             }
-            String prompt = String.format("Create a %s multiple choice quiz in %s about %s" +
-                    " with 4 possible answers a,b,c,d and provide the right answer. " +
-                    "Only pick questions with one correct answer.", difficulty, language, topic);
+            String prompt = String.format(getString(R.string.create_a_s_multiple_choice_quiz_in_s_about_s_with_4_possible_answers_a_b_c_d_and_provide_the_right_answer_only_pick_questions_with_one_correct_answer),
+                    difficulty, language, topic);
 
             JSONObject jsonObject = new JSONObject();
             try {

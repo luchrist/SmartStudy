@@ -287,22 +287,20 @@ public class TimeFragment extends Fragment implements View.OnClickListener {
                         editor.commit();
                     }
                 };
-                int style = AlertDialog.THEME_HOLO_DARK;
-
-                TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), style, timeSetListener, 00, 00, true);
-                timePickerDialog.setTitle("Select Time");
-                timePickerDialog.show();
-
                 if (view.equals(date_button)) {
                     date_picker_dialog.show();
-                    //exeptionTime.setText(String.format(Locale.getDefault(), "%02d:%02d", 00, 00));
+                    exeptionTime.setText(String.format(Locale.getDefault(), "%02d:%02d", 00, 00));
 
                 }else if(view.equals(add)){
                     dbExeptionHelper.addExeptionObject(date_button.getText().toString(), timeToMinutes());
                     Toast.makeText(getContext(), "Saved Successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    int style = AlertDialog.THEME_HOLO_DARK;
+
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), style, timeSetListener, 00, 00, true);
+                    timePickerDialog.setTitle("Select Time");
+                    timePickerDialog.show();
                 }
-
-
             }
 
     private void updateRemainingTime(Button dayTimePicker, TimeObject day) {

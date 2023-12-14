@@ -347,4 +347,7 @@ Die Betreiber der Lern-App behalten sich das Recht vor, diese Nutzungsbedingunge
     <string name="ok_but_you_can_do_better">ok! Ruh dich nicht darauf aus</string>
     <string name="not_eneugh_you_need_to_study_more_or_start_praying">Naja! Du solltest nochmal lernen oder beten</string>
     <string name="horrible_grade_consider_staying_at_home_for_that_test">Kataststrophe, Renn zum Arzt und schreib dich krank!</string>
+    <string name="create_a_s_multiple_choice_quiz_in_s_about_s_with_4_possible_answers_a_b_c_d_and_provide_the_right_answer_only_pick_questions_with_one_correct_answer">Erstelle ein %s multiple choice quiz in %s über %s mit 4 Antwortmöglichkeiten a,b,c,d und sag mir jeweils die richtige Antwort. Nehm nur Fragen, für die es nur eine richtige Antwort gibt.</string>
+    <string name="easy">einfaches</string>
+    <string name="difficult">schweres</string>
 </resources>
