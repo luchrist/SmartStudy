@@ -143,15 +143,6 @@
     <string name="nutzungsbedingungen"><u>Nutzungsbedingungen</u></string>
     <string name="info_user_policies">Um das reibungslose Interagieren aller Nutzer zu gewährleisten, fordern wir alle Nutzer auf unseren Nutzungsbedingungen zu zustimmen.</string>
     <string name="accept_terms">Indem du auf \'Zustimmen\' klickst, bestätigst du, dass du diese Nutzungsbedingungen gelesen, verstanden und akzeptiert hast.</string>
-    <string-array name="weekdays">
-        <item>MONTAG</item>
-        <item>DIENSTAG</item>
-        <item>MITTWOCH</item>
-        <item>DONNERSTAG</item>
-        <item>FREITAG</item>
-        <item>SAMSTAG</item>
-        <item>SONNTAG</item>
-    </string-array>
     <string-array name="difficulty">
         <item>LEICHT</item>
         <item>MITTEL</item>
@@ -350,4 +341,5 @@ Die Betreiber der Lern-App behalten sich das Recht vor, diese Nutzungsbedingunge
     <string name="create_a_s_multiple_choice_quiz_in_s_about_s_with_4_possible_answers_a_b_c_d_and_provide_the_right_answer_only_pick_questions_with_one_correct_answer">Erstelle ein %s multiple choice quiz in %s über %s mit 4 Antwortmöglichkeiten a,b,c,d und sag mir jeweils die richtige Antwort. Nehm nur Fragen, für die es nur eine richtige Antwort gibt.</string>
     <string name="easy">einfaches</string>
     <string name="difficult">schweres</string>
+    <string name="sub_deck_optional">Unterstapel (optional)</string>
 </resources>

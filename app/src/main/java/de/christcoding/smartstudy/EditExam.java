@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -28,6 +29,7 @@ import com.daimajia.androidanimations.library.YoYo;
 import de.christcoding.smartstudy.adapters.TodosAdapter;
 import de.christcoding.smartstudy.models.Event;
 import de.christcoding.smartstudy.models.Group;
+import de.christcoding.smartstudy.models.TimeTableElement;
 import de.christcoding.smartstudy.models.Todo;
 import de.christcoding.smartstudy.utilities.Constants;
 import de.christcoding.smartstudy.utilities.PreferenceManager;
@@ -49,12 +51,17 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
     RecyclerView todosForEventView;
     AppCompatImageView prevEvent, nextEvent;
     Button newEmptyEvent;
-    EditText inputTodo, inputTime, subject, type;
+    AutoCompleteTextView subject;
+    private ArrayAdapter<String> adapter;
+    private List<String> subjects;
+    private List<TimeTableElement> timeTableElements;
+    EditText inputTodo, inputTime, type;
     TextView dueDay, startDate;
     RatingBar volume;
     Spinner colour;
     LocalDate selectedDate;
     DBEventHelper dbHelper;
+    DbHelper dbTimeTableHelper;
     DBTodoHelper dbTodoHelper;
     List<Event> events, todaysEvents;
     List<Todo> allTodos, todosForEvent;
@@ -88,7 +95,7 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
         inputTodo = view.findViewById(R.id.inputTodoEdit);
         inputTime = view.findViewById(R.id.inputTimeEdit);
         colour = view.findViewById(R.id.colourEdit);
-        subject = view.findViewById(R.id.deckName);
+        subject = view.findViewById(R.id.subject);
         type = view.findViewById(R.id.type_edit);
         dueDay = view.findViewById(R.id.dueDay_edit);
         startDate = view.findViewById(R.id.startDateEdit);
@@ -101,6 +108,11 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
         todaysEvents = new ArrayList<>();
         allTodos = new ArrayList<>();
         todosForEvent = new ArrayList<>();
+        subjects = new ArrayList<>();
+        timeTableElements = new ArrayList<>();
+        storeTimeTableElements();
+        extractAllSubjects();
+        setUpSubjectAutoComplete();
 
         todosAdapter = new TodosAdapter(todosForEvent, this);
         todosForEventView.setAdapter(todosAdapter);
@@ -247,6 +259,57 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
         });
         dialog.show();
         return dialog;
+    }
+
+    private int colToInt(String colour) {
+        switch (colour.toUpperCase()){
+            case "RED":
+            case "ROT":
+                return 0;
+            case "BLUE":
+            case "BLAU":
+                return 1;
+            case "GREEN":
+            case "GRÜN":
+                return 2;
+            case "YELLOW":
+            case "GELB":
+                return 3;
+            case "BROWN":
+            case "BRAUN":
+                return 4;
+            case "ORANGE":
+                return 5;
+            case "PINK":
+            case "ROSA":
+                return 6;
+            case "PURPLE":
+            case "LILA":
+                return 7;
+        }
+        return 8;
+    }
+
+    private void extractAllSubjects() {
+        for (TimeTableElement timeTableElement : timeTableElements) {
+            if (!subjects.contains(timeTableElement.getSubject())) {
+                subjects.add(timeTableElement.getSubject());
+            }
+        }
+    }
+
+    private void storeTimeTableElements() {
+        dbTimeTableHelper = new DbHelper(getActivity());
+        Cursor cursor = dbTimeTableHelper.readAllData();
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                TimeTableElement timeTableElement = new TimeTableElement(cursor.getString(0), cursor.getString(1),
+                        cursor.getString(2), cursor.getString(3),
+                        cursor.getString(5), cursor.getString(6),
+                        cursor.getString(4), cursor.getString(7));
+                timeTableElements.add(timeTableElement);
+            }
+        }
     }
 
     private void addPoints() {
@@ -495,6 +558,28 @@ public class EditExam extends DialogFragment implements TodoSelectListener, Date
         else if (DATEPICKED == 1) {
             dueDay.setText(Util.getFormattedDate(date));
         }
+    }
+
+    private void setUpSubjectAutoComplete() {
+        adapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_dropdown_item_1line, subjects);
+        subject.setAdapter(adapter);
+        subject.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus)
+                subject.showDropDown();
+        });
+        changeColour();
+    }
+
+    private void changeColour() {
+        subject.setOnItemClickListener((parent, view, position, id) -> {
+            for (TimeTableElement timeTableElement : timeTableElements) {
+                if (timeTableElement.getSubject().equals(adapter.getItem(position))) {
+                    colour.setSelection(colToInt(timeTableElement.getColour()));
+                    break;
+                }
+            }
+        });
     }
 }
 

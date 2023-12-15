@@ -108,22 +108,29 @@ public class UpdateLesson extends DialogFragment {
     }
 
     private int colToInt(String colString) {
-        switch (colString){
-            case "Red":
+        switch (colString.toUpperCase()){
+            case "RED":
+            case "ROT":
                 return 0;
-            case "Blue":
+            case "BLUE":
+            case "BLAU":
                 return 1;
-            case "Green":
+            case "GREEN":
+            case "GRÜN":
                 return 2;
-            case "Yellow":
+            case "YELLOW":
+            case "GELB":
                 return 3;
-            case "Brown":
+            case "BROWN":
+            case "BRAUN":
                 return 4;
-            case "Orange":
+            case "ORANGE":
                 return 5;
-            case "Pink":
+            case "PINK":
+            case "ROSA":
                 return 6;
-            case "Purple":
+            case "PURPLE":
+            case "LILA":
                 return 7;
         }
         return 8;
@@ -131,18 +138,20 @@ public class UpdateLesson extends DialogFragment {
 
     private int dayToInt(String weekday) {
         switch (weekday){
-            case "Monday":
+            case "MONDAY":
                 return 0;
-            case "Tuesday":
+            case "TUESDAY":
                 return 1;
-            case "Wednesday":
+            case "WEDNESDAY":
                 return 2;
-            case "Thursday":
+            case "THURSDAY":
                 return 3;
-
-            case "Friday":
+            case "FRIDAY":
                 return 4;
-
+            case "SATURDAY":
+                return 5;
+            case "SUNDAY":
+                return 6;
         }
         return 0;
 

@@ -393,6 +393,7 @@ The operators of the Learning App reserve the right to update or amend these Ter
     <string name="create_a_s_multiple_choice_quiz_in_s_about_s_with_4_possible_answers_a_b_c_d_and_provide_the_right_answer_only_pick_questions_with_one_correct_answer">Create a %s multiple choice quiz in %s about %s with 4 possible answers a,b,c,d and provide the right answer. Only pick questions with one correct answer.</string>
     <string name="easy">easy</string>
     <string name="difficult">difficult</string>
+    <string name="sub_deck_optional">Sub Deck (optional)</string>
     <string-array name="languages">
         <item>Afrikaans</item>
         <item>Albanian</item>

@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_8sdp"
             android:ems="10"
-            android:hint="Sub Deck (optional)"
+            android:hint="@string/sub_deck_optional"
             android:completionThreshold="1"
             android:textColor="@color/primaryText"
             app:layout_constraintEnd_toEndOf="parent"

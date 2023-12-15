@@ -87,7 +87,7 @@ public class TimetableFragment extends Fragment implements TimeTableSelectListen
 
     private void setListeners() {
         add.setOnClickListener(v -> {
-            AddLesson alert = new AddLesson(convertToEnglish(day.getText().toString()));
+            AddLesson alert = new AddLesson(day.getText().toString());
             alert.show(getParentFragmentManager(), "test");
         });
         prev.setOnClickListener(v -> {
@@ -98,27 +98,6 @@ public class TimetableFragment extends Fragment implements TimeTableSelectListen
             day.setText(getNextDay());
             showData();
         });
-    }
-
-    private String convertToEnglish(String weekday) {
-        switch (weekday) {
-            case "MONTAG":
-                return "MONDAY";
-            case "DIENSTAG":
-                return "TUESDAY";
-            case "MITTWOCH":
-                return "WEDNESDAY";
-            case "DONNERSTAG":
-                return "THURSDAY";
-            case "FREITAG":
-                return "FRIDAY";
-            case "SAMSTAG":
-                return "SATURDAY";
-            case "SONNTAG":
-                return "SUNDAY";
-            default:
-                return weekday;
-        }
     }
 
     private String getPrevDay() {
