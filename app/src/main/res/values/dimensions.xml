@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="tableTextSize">@dimen/_3ssp</dimen>
+    <dimen name="tableTextSize">@dimen/_4ssp</dimen>
     <dimen name="tablePadding">@dimen/_8sdp</dimen>
 </resources>
