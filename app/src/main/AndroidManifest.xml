@@ -12,43 +12,46 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="de.christcoding.smartstudy.TermsActivity"
+            android:name=".GetNotifiedActivity"
             android:exported="false" />
         <activity
-            android:name="de.christcoding.smartstudy.ForgotPasswordActivity"
+            android:name=".TermsActivity"
             android:exported="false" />
         <activity
-            android:name="de.christcoding.smartstudy.AiExam"
+            android:name=".ForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name="de.christcoding.smartstudy.AiGenerateExam"
+            android:name=".AiExam"
             android:exported="false" />
         <activity
-            android:name="de.christcoding.smartstudy.CreateGroupActivity"
+            android:name=".AiGenerateExam"
             android:exported="false" />
         <activity
-            android:name="de.christcoding.smartstudy.GroupChatActivity"
+            android:name=".CreateGroupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GroupChatActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="de.christcoding.smartstudy.GroupInfoActivity"
+            android:name=".GroupInfoActivity"
             android:exported="false" />
         <activity
-            android:name="de.christcoding.smartstudy.GroupActivity"
+            android:name=".GroupActivity"
             android:exported="false" />
         <activity
-            android:name="de.christcoding.smartstudy.Registration"
+            android:name=".Registration"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="de.christcoding.smartstudy.Login"
+            android:name=".Login"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="de.christcoding.smartstudy.StartActivity"
+            android:name=".StartActivity"
             android:exported="true" />
         <activity
-            android:name="de.christcoding.smartstudy.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,7 +61,7 @@
         </activity>
 
         <service
-            android:name="de.christcoding.smartstudy.firebase.MessagingService"
+            android:name=".firebase.MessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />

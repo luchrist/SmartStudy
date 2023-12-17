@@ -394,6 +394,9 @@ The operators of the Learning App reserve the right to update or amend these Ter
     <string name="easy">easy</string>
     <string name="difficult">difficult</string>
     <string name="sub_deck_optional">Sub Deck (optional)</string>
+    <string name="get_notified">Get Notified</string>
+    <string name="notified_about"><![CDATA[You will be notified about:\n\n- all kind of group activities (Chat Messages, new events, uploaded files)\n- new available coupons & Discount Codes\n- upcoming Events\n- daily Motivation to study]]></string>
+    <string name="i_understand">I understand</string>
     <string-array name="languages">
         <item>Afrikaans</item>
         <item>Albanian</item>

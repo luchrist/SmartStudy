@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -95,7 +96,12 @@ public class GroupFragment extends Fragment implements GroupSelectListener {
 
     private void setListeners() {
         addBtn.setOnClickListener(v -> {
-            startActivity(new Intent(getContext(), CreateGroupActivity.class));
+            int permissionGranted = ContextCompat.checkSelfPermission(getContext(), "android.permission.POST_NOTIFICATIONS");
+            if(permissionGranted == 0) {
+                startActivity(new Intent(getContext(), CreateGroupActivity.class));
+            } else {
+                startActivity(new Intent(getContext(), GetNotifiedActivity.class));
+            }
         });
     }
 
