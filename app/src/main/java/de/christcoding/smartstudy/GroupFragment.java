@@ -1,8 +1,10 @@
 package de.christcoding.smartstudy;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -96,8 +99,8 @@ public class GroupFragment extends Fragment implements GroupSelectListener {
 
     private void setListeners() {
         addBtn.setOnClickListener(v -> {
-            int permissionGranted = ContextCompat.checkSelfPermission(getContext(), "android.permission.POST_NOTIFICATIONS");
-            if(permissionGranted == 0) {
+            int permissionGranted = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.POST_NOTIFICATIONS);
+            if(permissionGranted == PackageManager.PERMISSION_GRANTED || ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.POST_NOTIFICATIONS)) {
                 startActivity(new Intent(getContext(), CreateGroupActivity.class));
             } else {
                 startActivity(new Intent(getContext(), GetNotifiedActivity.class));

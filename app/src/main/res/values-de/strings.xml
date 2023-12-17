@@ -343,6 +343,6 @@ Die Betreiber der Lern-App behalten sich das Recht vor, diese Nutzungsbedingunge
     <string name="difficult">schweres</string>
     <string name="sub_deck_optional">Unterstapel (optional)</string>
     <string name="get_notified">"Werde Benachrichtigt! "</string>
-    <string name="notified_about">Du wirst benachrichtigt über:\\n\\n-alle Gruppen Aktivitäten (Chat Nachrichten, neu hinzugefügte Events, hochgeladene Dateien) \\n-neue verfügbare Gutschein/Rabatt-Codes\\n-bevorstehende Events\\n-tägliche Motivation zum Lernen</string>
+    <string name="notified_about">Du wirst benachrichtigt über:\n\n-alle Gruppen Aktivitäten (Chat Nachrichten, neu hinzugefügte Events, hochgeladene Dateien) \n-neue verfügbare Gutschein/Rabatt-Codes\n-bevorstehende Events\n-tägliche Motivation zum Lernen</string>
     <string name="i_understand">Verstanden</string>
 </resources>
