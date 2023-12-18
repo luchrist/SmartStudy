@@ -60,23 +60,17 @@ public class MessagingService extends FirebaseMessagingService {
         user.fcmToken = message.getData().get(Constants.KEY_FCM_TOKEN);
 
         int notificationId = new Random().nextInt();
-        String channelId = "chat_message";
+        String channelId = "chatMessage";
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = auth.getCurrentUser();
         Intent intent;
         if (currentUser != null){
-             intent = new Intent(this, GroupChatActivity.class);
-            FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS).document(currentUser.getEmail())
-                    .get().addOnSuccessListener(documentSnapshot -> {
-                        User u = documentSnapshot.toObject(User.class);
-                        Member member = new Member(u.userName, u.email, u.image, u.fcmToken, false, true);
-                        intent.putExtra(Constants.KEY_SENDER, member);
-                        PreferenceManager preferenceManager = new PreferenceManager(this);
-                        preferenceManager.putString(Constants.KEY_GROUP_NAME, message.getData().get(Constants.KEY_GROUP_NAME));
-                        preferenceManager.putString(Constants.KEY_GROUP_ID, message.getData().get(Constants.KEY_GROUP_ID));
-                        sendNotification(intent, channelId, user, message, notificationId);
-                    });
+            intent = new Intent(this, MainActivity.class);
+            intent.putExtra(Constants.KEY_GROUP_NAME, message.getData().get(Constants.KEY_GROUP_NAME));
+            intent.putExtra(Constants.KEY_GROUP_ID, message.getData().get(Constants.KEY_GROUP_ID));
+            intent.putExtra("notificationType", "chatMessage");
+            sendNotification(intent, channelId, user, message, notificationId);
         }else {
             intent = new Intent(this, Login.class);
             sendNotification(intent, channelId, user, message, notificationId);
@@ -88,7 +82,7 @@ public class MessagingService extends FirebaseMessagingService {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.round_notifications_24)
+                .setSmallIcon(R.drawable.app_logo)
                 .setContentTitle(user.userName)
                 .setContentText(message.getData().get(Constants.KEY_MSG))
                 .setStyle(new NotificationCompat.BigTextStyle()

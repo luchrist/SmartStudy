@@ -1,5 +1,6 @@
 package de.christcoding.smartstudy;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -218,7 +219,13 @@ public class GroupChatActivity extends BaseActivity {
     };
 
     private void setListeners() {
-        backNav.setOnClickListener(v -> onBackPressed());
+        backNav.setOnClickListener(v -> {
+            if(preferenceManager.getBoolean(Constants.FROM_NOTIFICATION)) {
+                startActivity(new Intent(GroupChatActivity.this, MainActivity.class));
+            } else {
+                onBackPressed();
+            }
+        });
         send.setOnClickListener(v -> sendMessage());
     }
 

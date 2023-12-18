@@ -64,12 +64,13 @@ public class Constants {
     public static final String KEY_BLOCKED_BY = "blockedBy";
     public static final String KEY_COLLECTION_REPORTS = "reports";
     public static final String KEY_IS_POLICY_ACCEPTED = "isPolicyAccepted";
+    public static final String FROM_NOTIFICATION = "fromNotification";
     public static HashMap<String, String> remoteMsgHeaders = null;
     public static HashMap<String, String> getRemoteMsgHeaders() {
         if (remoteMsgHeaders == null) {
             remoteMsgHeaders = new HashMap<>();
             remoteMsgHeaders.put(REMOTE_MSG_AUTHORIZATION,
-                    "key=AAAA79cKFF0:APA91bEYzsycGl0njG5-g2d18hOXXGKqYPxTeS5ZLPZtiOAHZEB_-hD_AzZ0ErIRUPdwbaYmPKSbvRf1iWGzUojZFQF9ivHApCyAN2NE-xHZAEM43T0SfFF16IHF6Ro16-BCI3QR0omf");
+                    "key=AAAAR0GhkAo:APA91bEyw1qWSImLVn0T_f5WMQQly_H_TWWozc95uflotiI4WZd8-HJpHI5pOMDJH1MlcJ1QT8GQTXEcOflpq3JhlHUN6UCdocQcR3MYxxUUePlCOoCqr1QEf_wz6iSAs4RkDvJveOLP");
             remoteMsgHeaders.put(REMOTE_MSG_CONTENT_TYPE, "application/json");
         }
         return remoteMsgHeaders;
