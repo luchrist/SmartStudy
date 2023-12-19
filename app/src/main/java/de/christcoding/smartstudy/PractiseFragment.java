@@ -77,7 +77,6 @@ public class PractiseFragment extends Fragment {
         pathParts = deck.getPath().split(":");
         deckDoc = db.collection(Constants.KEY_COLLECTION_USERS).document(currentUserMail)
                 .collection(Constants.KEY_COLLECTION_DECKS).document(pathParts[0]);
-
         setListeners();
 
         allCards = deck.returnAllCards();
@@ -232,8 +231,7 @@ public class PractiseFragment extends Fragment {
                     cards.remove(foundCard.get());
                     cards.add(currentC);
                     deck.setCards(cards);
-                    pathParts = deck.getPath().split(":");
-                    updateDeckInSubDeck(deck);
+                    deckDoc.set(deck);
                 } else {
                     updateCardInSubDeck(deck, deck.getSubDecks(), currentC);
                 }

@@ -70,9 +70,13 @@
 
         <TextView
             android:id="@+id/errorText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="no Decks exist or check your Network Connection"
+            android:padding="@dimen/_8sdp"
+            android:text="@string/create_your_first_flashcards_deck_or_let_ai_generate_a_custom_quiz_for_you_n_nin_case_you_have_added_decks_before_check_your_network_connection"
+            android:textAlignment="center"
+            android:textColor="@color/primaryText"
+            android:textSize="@dimen/_12sdp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

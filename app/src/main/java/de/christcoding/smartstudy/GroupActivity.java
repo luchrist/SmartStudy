@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -343,6 +344,7 @@ public class GroupActivity extends BaseActivity implements DatePickerDialog.OnDa
         uploadTask.addOnFailureListener(e -> {
             showToast("Failed to upload file");
             e.printStackTrace();
+            Log.d("UploadFile", e.getMessage());
             uploadFiles.setVisibility(View.VISIBLE);
             uploadProgress.setVisibility(View.GONE);
         }).addOnSuccessListener(taskSnapshot -> {

@@ -90,47 +90,19 @@ public class CreateCardDialog extends DialogFragment {
 
             next.setOnClickListener(v -> {
                 nextClicked = true;
-                String subDeck = subDeckName.getText().toString().trim();
                 String frontString = front.getText().toString().trim();
                 String backString = back.getText().toString().trim();
-                boolean reversedBool = reversed.isChecked();
-                boolean matchBool = match.isChecked();
-                CardType cardType = CardType.BASIC;
-                if (matchBool) {
-                    cardType = CardType.MATCHING;
+                if(frontString.isEmpty()) {
+                    front.setError(getString(R.string.front_of_card_cannot_be_empty));
+                    front.requestFocus();
+                    return;
                 }
-                Card card = new Card(frontString, backString, cardType, false);
-                if (subDeck.isEmpty()) {
-                    cards.add(card);
-                    if (reversedBool) {
-                        Card reversedCard = new Card(backString, frontString, cardType, true);
-                        cards.add(reversedCard);
-                    }
-                } else {
-                    boolean foundExisting = false;
-                    for (Deck deck : subDecks) {
-                        if (deck.getName().equals(subDeck)) {
-                            deck.addCard(card);
-                            if (reversedBool) {
-                                Card reversedCard = new Card(backString, frontString, cardType, true);
-                                deck.addCard(reversedCard);
-                            }
-                            foundExisting = true;
-                        }
-                    }
-                    if (!foundExisting) {
-                        List<Card> newCards = new ArrayList<>();
-                        newCards.add(card);
-                        if (reversedBool) {
-                            Card reversedCard = new Card(backString, frontString, cardType, true);
-                            newCards.add(reversedCard);
-                        }
-                        Deck newDeck = new Deck(subDeck, newCards, new ArrayList<>(), String.format("%s:%s", parentDeck.getPath(), subDeck));
-                        subDecks.add(newDeck);
-                        subDeckNames.add(subDeck);
-                        setUpSupDeckNameAutoComplete();
-                    }
+                if(backString.isEmpty()) {
+                    back.setError(getString(R.string.back_of_card_cannot_be_empty));
+                    back.requestFocus();
+                    return;
                 }
+                addCard(frontString, backString);
                 subDeckName.setText("");
                 front.setText("");
                 back.setText("");
@@ -139,15 +111,17 @@ public class CreateCardDialog extends DialogFragment {
                 match.setChecked(false);
             });
             create.setOnClickListener(v -> {
-                if (nextClicked) {
-                    parentDeck.setCards(cards);
-                    parentDeck.setSubDecks(subDecks);
-                    if(pathParts.length == 1) {
-                        masterDeckDoc.set(parentDeck);
-                    } else {
-                        updateDeckInSubDeck();
-                    }
-
+                String front = this.front.getText().toString().trim();
+                String back = this.back.getText().toString().trim();
+                if (!front.isEmpty() && !back.isEmpty()) {
+                    addCard(front, back);
+                }
+                parentDeck.setCards(cards);
+                parentDeck.setSubDecks(subDecks);
+                if (pathParts.length == 1) {
+                    masterDeckDoc.set(parentDeck);
+                } else {
+                    updateDeckInSubDeck();
                 }
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, new EditDeckFragment(parentDeck)).commit();
                 dialog.dismiss();
@@ -164,6 +138,48 @@ public class CreateCardDialog extends DialogFragment {
         });
         dialog.show();
         return dialog;
+    }
+
+    private void addCard(String frontString, String backString) {
+        String subDeck = subDeckName.getText().toString().trim();
+        boolean reversedBool = reversed.isChecked();
+        boolean matchBool = match.isChecked();
+        CardType cardType = CardType.BASIC;
+        if (matchBool) {
+            cardType = CardType.MATCHING;
+        }
+        Card card = new Card(frontString, backString, cardType, false);
+        if (subDeck.isEmpty()) {
+            cards.add(card);
+            if (reversedBool) {
+                Card reversedCard = new Card(backString, frontString, cardType, true);
+                cards.add(reversedCard);
+            }
+        } else {
+            boolean foundExisting = false;
+            for (Deck deck : subDecks) {
+                if (deck.getName().equals(subDeck)) {
+                    deck.addCard(card);
+                    if (reversedBool) {
+                        Card reversedCard = new Card(backString, frontString, cardType, true);
+                        deck.addCard(reversedCard);
+                    }
+                    foundExisting = true;
+                }
+            }
+            if (!foundExisting) {
+                List<Card> newCards = new ArrayList<>();
+                newCards.add(card);
+                if (reversedBool) {
+                    Card reversedCard = new Card(backString, frontString, cardType, true);
+                    newCards.add(reversedCard);
+                }
+                Deck newDeck = new Deck(subDeck, newCards, new ArrayList<>(), String.format("%s:%s", parentDeck.getPath(), subDeck));
+                subDecks.add(newDeck);
+                subDeckNames.add(subDeck);
+                setUpSupDeckNameAutoComplete();
+            }
+        }
     }
 
     private void updateDeckInSubDeck() {

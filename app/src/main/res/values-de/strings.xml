@@ -345,4 +345,7 @@ Die Betreiber der Lern-App behalten sich das Recht vor, diese Nutzungsbedingunge
     <string name="get_notified">"Werde Benachrichtigt! "</string>
     <string name="notified_about">Du wirst benachrichtigt über:\n\n-alle Gruppen Aktivitäten (Chat Nachrichten, neu hinzugefügte Events, hochgeladene Dateien) \n-neue verfügbare Gutschein/Rabatt-Codes\n-bevorstehende Events\n-tägliche Motivation zum Lernen</string>
     <string name="i_understand">Verstanden</string>
+    <string name="create_your_first_flashcards_deck_or_let_ai_generate_a_custom_quiz_for_you_n_nin_case_you_have_added_decks_before_check_your_network_connection">Erstelle deinen ersten Karteikartenstapel oder lass dir ein individuelles Quiz von unserer KI generieren. \n\nWenn du deine bereits erstellten Stapel nicht siehst, kontrolliere deine Netzwerkverbindung</string>
+    <string name="back_of_card_cannot_be_empty">Rückseite darf nicht leer sein</string>
+    <string name="front_of_card_cannot_be_empty">Vorderseite darf nicht leer sein</string>
 </resources>

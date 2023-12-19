@@ -86,7 +86,7 @@
                 android:layout_marginTop="@dimen/_18sdp"
                 android:layout_marginEnd="@dimen/_8sdp"
                 android:textColor="@color/primaryText"
-                android:textSize="@dimen/_12ssp"
+                android:textSize="@dimen/_10ssp"
                 app:layout_constraintEnd_toStartOf="@+id/copyId"
                 app:layout_constraintTop_toTopOf="parent"
                 />

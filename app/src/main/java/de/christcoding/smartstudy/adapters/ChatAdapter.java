@@ -112,7 +112,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 binding.textMessage.setText(R.string.this_message_is_hidden_for_you);
             } else {
                 binding.textMessage.setText(chatMsg.message);
-                binding.imageProfile.setImageBitmap(decodeString(chatMsg.senderImage));
+                if(chatMsg.senderImage != null) {
+                    binding.imageProfile.setImageBitmap(decodeString(chatMsg.senderImage));
+                } else {
+                    binding.imageProfile.setImageResource(R.drawable.baseline_person_24);
+                }
             }
             binding.msgDateTime.setText(chatMsg.dateTime);
             if(!chatMsg.senderId.equals(beforeSenderId)) {

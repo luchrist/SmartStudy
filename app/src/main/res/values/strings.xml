@@ -397,6 +397,9 @@ The operators of the Learning App reserve the right to update or amend these Ter
     <string name="get_notified">Get Notified</string>
     <string name="notified_about"><![CDATA[You will be notified about:\n\n- all kind of group activities (Chat Messages, new events, uploaded files)\n- new available coupons & Discount Codes\n- upcoming Events\n- daily Motivation to study]]></string>
     <string name="i_understand">I understand</string>
+    <string name="create_your_first_flashcards_deck_or_let_ai_generate_a_custom_quiz_for_you_n_nin_case_you_have_added_decks_before_check_your_network_connection">Create your first flashcards deck or let AI generate a custom quiz for you.\n\nIn case you have added decks before, check your Network Connection!</string>
+    <string name="back_of_card_cannot_be_empty">Back of card cannot be empty</string>
+    <string name="front_of_card_cannot_be_empty">Front of card cannot be empty</string>
     <string-array name="languages">
         <item>Afrikaans</item>
         <item>Albanian</item>
